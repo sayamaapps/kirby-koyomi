@@ -1,0 +1,159 @@
+<?php
+
+namespace Koyomi;
+
+/**
+ * A place, Kirby-free. Built by Mapper from a `koyomi-venue` page, or by
+ * tests from a plain array. Read-only.
+ *
+ * Koyomi never embeds a map and never requests anything from a map service.
+ * `mapImage` is a self-hosted static image the editor uploaded; `mapLink` is
+ * a plain link (OpenStreetMap by default, `koyomi.mapUrl` to change) that
+ * only opens on click.
+ */
+final class Venue
+{
+    /**
+     * @param string $id         stable id (page UUID without scheme, else page id)
+     * @param string $country    ISO 3166-1 alpha-2, upper case ("DE"), or ""
+     * @param string $url        the venue page URL ("" if unknown)
+     * @param string $mapImage   absolute URL of the self-hosted map image, or ""
+     * @param string $mapLink    "" = computed by defaultMapLink()
+     */
+    public function __construct(
+        public readonly string $id,
+        public readonly string $name,
+        public readonly string $street = '',
+        public readonly string $postalCode = '',
+        public readonly string $city = '',
+        public readonly string $region = '',
+        public readonly string $country = '',
+        public readonly ?float $lat = null,
+        public readonly ?float $lng = null,
+        public readonly string $url = '',
+        public readonly string $website = '',
+        public readonly string $directions = '',
+        public readonly string $mapImage = '',
+        public readonly string $mapImageAlt = '',
+        public readonly bool $showMap = false,
+        public readonly string $mapLink = '',
+    ) {
+    }
+
+    /**
+     * Keys as in the constructor; values are normalized (strings trimmed,
+     * lat/lng range-checked, URLs must be http(s), country upper-cased and
+     * dropped unless two letters). Unknown keys are ignored.
+     */
+    public static function fromArray(array $data): self
+    {
+        $country = strtoupper(Normalize::string($data['country'] ?? ''));
+        $venue = new self(
+            id: Normalize::string($data['id'] ?? ''),
+            name: Normalize::string($data['name'] ?? ''),
+            street: Normalize::string($data['street'] ?? ''),
+            postalCode: Normalize::string($data['postalCode'] ?? ''),
+            city: Normalize::string($data['city'] ?? ''),
+            region: Normalize::string($data['region'] ?? ''),
+            country: preg_match('/^[A-Z]{2}$/', $country) ? $country : '',
+            lat: Normalize::coordinate($data['lat'] ?? null, -90, 90),
+            lng: Normalize::coordinate($data['lng'] ?? null, -180, 180),
+            url: Normalize::url($data['url'] ?? ''),
+            website: Normalize::url($data['website'] ?? ''),
+            directions: Normalize::string($data['directions'] ?? ''),
+            mapImage: Normalize::url($data['mapImage'] ?? ''),
+            mapImageAlt: Normalize::string($data['mapImageAlt'] ?? ''),
+            showMap: Normalize::bool($data['showMap'] ?? false),
+            mapLink: Normalize::url($data['mapLink'] ?? ''),
+        );
+        return $venue;
+    }
+
+    public function hasCoordinates(): bool
+    {
+        return $this->lat !== null && $this->lng !== null;
+    }
+
+    public function hasAddress(): bool
+    {
+        return $this->street !== '' || $this->city !== '';
+    }
+
+    /**
+     * One line, parts joined with ", " and empty parts left out:
+     * "Seminarweg 1, 12345 Musterstadt, DE". Postal code and city share one part.
+     */
+    public function addressLine(): string
+    {
+        $cityPart = trim($this->postalCode . ' ' . $this->city);
+        return implode(', ', array_values(array_filter([$this->street, $cityPart, $this->country], fn ($p) => $p !== '')));
+    }
+
+    /** Name plus address: "Seminarhaus Beispielhof, Seminarweg 1, 12345 Musterstadt, DE". */
+    public function label(): string
+    {
+        return implode(', ', array_values(array_filter([$this->name, $this->addressLine()], fn ($p) => $p !== '')));
+    }
+
+    /** The configured link, else defaultMapLink(). */
+    public function mapLink(): string
+    {
+        return $this->mapLink !== '' ? $this->mapLink : $this->defaultMapLink();
+    }
+
+    /**
+     * OpenStreetMap, plain link:
+     * - coordinates: https://www.openstreetmap.org/?mlat=47.856&mlon=12.128#map=17/47.856/12.128
+     * - address only: https://www.openstreetmap.org/search?query=<rawurlencode(addressLine())>
+     * - neither: ""
+     */
+    public function defaultMapLink(): string
+    {
+        if ($this->hasCoordinates()) {
+            $lat = self::coordinate($this->lat);
+            $lng = self::coordinate($this->lng);
+            return 'https://www.openstreetmap.org/?mlat=' . $lat . '&mlon=' . $lng . '#map=17/' . $lat . '/' . $lng;
+        }
+        if ($this->hasAddress()) {
+            return 'https://www.openstreetmap.org/search?query=' . rawurlencode($this->addressLine());
+        }
+        return '';
+    }
+
+    /** Up to 6 decimals, trailing zeros trimmed, always "." — 47.85 → "47.85", 12.0 → "12". */
+    public static function coordinate(float $value): string
+    {
+        $text = rtrim(rtrim(sprintf('%.6F', $value), '0'), '.');
+        return $text === '-0' ? '0' : $text;
+    }
+
+    /**
+     * Public array (JSON output, $page->koyomiData()):
+     *   ['id' => 'venue-sonnenhof', 'name' => 'Seminarhaus Beispielhof', 'street' => 'Seminarweg 1',
+     *    'postalCode' => '12345', 'city' => 'Musterstadt', 'region' => 'Bayern', 'country' => 'DE',
+     *    'address' => 'Seminarweg 1, 12345 Musterstadt, DE', 'lat' => 47.856, 'lng' => 12.128,
+     *    'url' => 'https://…/venues/sonnenhof', 'website' => 'https://…', 'directions' => '…',
+     *    'mapImage' => 'https://…/map.jpg'|'' (only when showMap), 'mapImageAlt' => '…', 'mapLink' => 'https://www.openstreetmap.org/…']
+     */
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'street' => $this->street,
+            'postalCode' => $this->postalCode,
+            'city' => $this->city,
+            'region' => $this->region,
+            'country' => $this->country,
+            'address' => $this->addressLine(),
+            'lat' => $this->lat,
+            'lng' => $this->lng,
+            'url' => $this->url,
+            'website' => $this->website,
+            'directions' => $this->directions,
+            'mapImage' => $this->showMap ? $this->mapImage : '',
+            'mapImageAlt' => $this->showMap ? $this->mapImageAlt : '',
+            'mapLink' => $this->mapLink(),
+        ];
+    }
+}

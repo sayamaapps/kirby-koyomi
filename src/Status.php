@@ -1,0 +1,32 @@
+<?php
+
+namespace Koyomi;
+
+/**
+ * Event status (content field `eventStatus` — NOT `status`, which is
+ * Kirby's own draft/unlisted/listed and a Page method).
+ *
+ * Mapping used by the outputs (SPEC.md §7):
+ *   value        label key            schema.org eventStatus           ICS STATUS
+ *   scheduled    status.scheduled     https://schema.org/EventScheduled   CONFIRMED
+ *   cancelled    status.cancelled     https://schema.org/EventCancelled   CANCELLED
+ *   postponed    status.postponed     https://schema.org/EventPostponed   TENTATIVE
+ *   rescheduled  status.rescheduled   https://schema.org/EventRescheduled CONFIRMED
+ *   movedOnline  status.movedOnline   https://schema.org/EventMovedOnline CONFIRMED
+ */
+final class Status
+{
+    public const SCHEDULED = 'scheduled';
+    public const CANCELLED = 'cancelled';
+    public const POSTPONED = 'postponed';
+    public const RESCHEDULED = 'rescheduled';
+    public const MOVED_ONLINE = 'movedOnline';
+
+    public const ALL = [self::SCHEDULED, self::CANCELLED, self::POSTPONED, self::RESCHEDULED, self::MOVED_ONLINE];
+
+    /** Known value (exact, or case-insensitive) or `scheduled`. */
+    public static function normalize(mixed $value): string
+    {
+        return Normalize::choice($value, self::ALL, self::SCHEDULED);
+    }
+}

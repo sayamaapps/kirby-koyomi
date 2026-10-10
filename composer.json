@@ -1,0 +1,43 @@
+{
+    "name": "sayamaapps/kirby-koyomi",
+    "description": "Event calendar for Kirby CMS 5: events, reusable venues and organizers, status and online/hybrid attendance, ICS feeds, JSON-LD and RSS. No third-party requests; online meeting links stay private.",
+    "type": "kirby-plugin",
+    "license": "MIT",
+    "keywords": ["kirby", "kirby-plugin", "kirby-5", "events", "calendar", "ics", "icalendar", "json-ld", "schema-org", "privacy"],
+    "homepage": "https://github.com/simsimmal/kirby-koyomi",
+    "authors": [
+        {
+            "name": "Simon Räder",
+            "homepage": "https://sayamaapps.de"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/simsimmal/kirby-koyomi/issues",
+        "source": "https://github.com/simsimmal/kirby-koyomi"
+    },
+    "require": {
+        "php": "^8.2",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "getkirby/composer-installer": "^1.2"
+    },
+    "require-dev": {
+        "getkirby/cms": "^5.0"
+    },
+    "scripts": {
+        "test": "sh tests/run.sh"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "getkirby/composer-installer": true
+        },
+        "platform": {
+            "php": "8.2.0"
+        }
+    },
+    "extra": {
+        "installer-name": "koyomi",
+        "kirby-cms-path": false
+    }
+}
