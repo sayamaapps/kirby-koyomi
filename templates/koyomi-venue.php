@@ -1,9 +1,27 @@
 <?php
 /**
- * PLACEHOLDER written by the architect — task `present` replaces this file
- * (SPEC.md §8.14). It exists so that the content representations
- * (koyomi-*.ics/.rss/.json) resolve: Kirby only finds a representation when
- * the HTML template of the page exists (Kirby\Cms\Page::representation()).
+ * Venue page (template koyomi-venue, unlisted): the venue, then its upcoming
+ * events as cards. The venues container and the events are read by the page
+ * model; the snippets print nothing while `koyomi.active` is off.
  */
+koyomi_i18n();
+$upcoming = koyomi_active() ? $page->upcomingEvents() : [];
 ?>
-<?= esc($page->title()) ?>
+<?php snippet('koyomi/layout', ['page' => $page], slots: true) ?>
+<h1><?= esc($page->title()) ?></h1>
+<?php snippet('koyomi/venue', ['venue' => $page]) ?>
+<?php if (koyomi_active()) : ?>
+<section class="koyomi-list koyomi-list--upcoming">
+  <h2 class="koyomi-list-title"><?= esc(koyomi_t('venue.upcoming')) ?></h2>
+  <?php if ($upcoming !== []) : ?>
+  <ol class="koyomi-events">
+    <?php foreach ($upcoming as $event) : ?>
+    <li class="koyomi-events-item"><?php snippet('koyomi/card', ['event' => $event]) ?></li>
+    <?php endforeach ?>
+  </ol>
+  <?php else : ?>
+  <p class="koyomi-empty"><?= esc(koyomi_t('list.empty')) ?></p>
+  <?php endif ?>
+</section>
+<?php endif ?>
+<?php endsnippet() ?>

@@ -1,0 +1,1 @@
+<?php echo \Koyomi\Output::eventIcs($page);

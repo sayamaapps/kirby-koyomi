@@ -1,0 +1,113 @@
+# Changelog
+
+All notable changes to this project are documented here. Versions follow
+[Semantic Versioning](https://semver.org) with these project rules:
+
+- **A change to what an output makes public** (HTML pages, `.ics`, `.rss`,
+  `.json`, JSON-LD: a new field, a field that was private and is now shown, a
+  shown field that is hidden) is marked **[privacy text]**. Every site using the
+  plugin must then review its privacy policy, and the privacy texts
+  (`DATENSCHUTZ.md` / `PRIVACY.md`) are updated in the same release.
+- **A change of default output wording, or of a default option that changes
+  what visitors see**, is a **major** version: a site would show something else
+  after a routine update.
+- A change to the names of options, fields, snippets or URLs is breaking and is
+  a major version too.
+
+## [1.0.0] — Unreleased
+
+### Fixed (review round, before the first release)
+
+- Drafts never reach the public output: a draft series part, venue or organizer
+  is left out of the event data, HTML, JSON feed, JSON-LD and ICS. A draft
+  calendar is not the site's calendar. New venues and organizers are created
+  unlisted. [privacy text] (the "Privacy" sections of the texts were corrected:
+  drafts, JSON-LD contents, the RSS organizer address, unlisted events.)
+- Multilingual sites: dates, status, price, venue, organizers and the other
+  shared fields are read from the default language (`translate: false`); the
+  duplicate reset covers every language.
+- A timed event without an end (for example a 23:00 concert with the default
+  duration) is one day: no two-day range in HTML, RSS or JSON-LD, and no
+  invented `endDate` in JSON-LD or `ev:enddate` in RSS.
+- Autumn DST overlap: a local time that occurs twice is written in UTC form in
+  ICS, the same instant as the page and JSON-LD; an overnight end uses the next
+  day's wall time.
+- ICS: control characters in the organizer name are removed from the CN
+  parameter (no injected lines).
+- `$page->koyomiData()`, `isPast()` and `isOngoing()` lower the page cache expiry.
+- The event page template prints only the stored excerpt, so the text is not
+  shown twice.
+- Documentation: the `formats` keys and tokens, the map image and link output
+  of the venue snippet, the layout override with JSON-LD, the multilingual
+  rules.
+
+First release.
+
+### Added
+
+- Events as Kirby pages (`koyomi-event`) inside a calendar page
+  (`koyomi-calendar`): title, excerpt, text blocks, cover image, start and end
+  date and time, all-day events, time zone per event, and a default duration
+  for events without end time.
+- Reusable venues (`koyomi-venue`) and organizers (`koyomi-organizer`) in their
+  own containers, so an address, a map image or a photo is maintained once and
+  picked by every event that uses it.
+- Event status: scheduled, cancelled, postponed, rescheduled (with the original
+  start), moved online. Status is shown as text on the page, in the feeds, in the
+  calendar files and in the structured data.
+- Attendance: in person, online and hybrid, set with two Panel toggles, plus an
+  optional `attendance` field for sites that prefer a select. Online
+  events show the platform name (for example "Zoom"), never the meeting link.
+- Ticket information: free or priced events, currency, price note, availability
+  (available, a few places left, sold out), booking link and button text.
+- Series of related events with "part n of m" navigation.
+- Calendar page with a filter form (category, format, language, featured), a
+  paginated list of upcoming events and an archive of past events
+  (`?view=past`). Filters are plain URL parameters; no JavaScript.
+- Time model with local wall time and an IANA zone per event. Offsets are
+  calculated at output, so daylight saving time is correct for every date.
+  Ends are exclusive, and ongoing events stay in the upcoming list.
+- Calendar files: a per-event `.ics` download, a calendar subscription feed
+  (`/<calendar>.ics`, offered as `webcal://`) with cancelled events marked as
+  cancelled, and VTIMEZONE blocks for the zones in use.
+- RSS 2.0 feed (`/<calendar>.rss`) with the event module (start, end and
+  location). Cancelled events keep their item, with the status in the title.
+- Optional JSON feed (`/<calendar>.json`), off by default.
+- schema.org `Event` JSON-LD on every event page: attendance mode, event status,
+  location (place, virtual location or both), offers, organizer and language.
+- "Add to Google Calendar" link on upcoming events, a plain link that opens only
+  on click.
+- Map: a self-hosted map image and an OpenStreetMap link that opens on click.
+  No map is embedded and no map service is contacted.
+- Options `koyomi.*` for the master switch, zones, currencies, languages, paging,
+  durations, feed window, output switches, the Google link, cancelled events,
+  duplicate reset, date formats, the map link, the page ids of the containers
+  and a pinned clock for previews.
+- Duplicating an event resets its status, previous date, status note and
+  availability (`duplicateReset`).
+- Snippets with `koyomi-*` classes only and no inline styles, scripts or
+  external resources: `koyomi/layout`, `list`, `card`, `event`, `past`,
+  `venue`, `filters`, `pagination`, `subscribe` and `jsonld`. Each one is
+  overridable under `site/snippets/koyomi/`.
+- Templates for the calendar, event, venue and organizer pages, overridable
+  under `site/templates/`, and Panel blueprints, overridable under
+  `site/blueprints/pages/`.
+- Texts in English and German, registered as Kirby translations under the
+  `koyomi.` prefix.
+- Page models for events, calendars, venues and organizers with the helpers
+  `koyomiData()`, `koyomiList()`, `isPast()`, `isOngoing()` and friends, and
+  global helpers `koyomi_option()`, `koyomi_event()`, `koyomi_expires()` and others.
+- Page cache expiry lowered to the next start or end of an event, so cached
+  calendars refresh on time.
+
+### [privacy text]
+
+- Introduces the privacy texts: `PRIVACY.md` (English summary) and
+  `DATENSCHUTZ.md` (German text block for the site's privacy policy). The text
+  block describes what the outputs make public: pages, calendar files, RSS, JSON
+  and JSON-LD, and states that the online meeting link and the organizer's
+  email (unless `showEmail` is on) are never public.
+- Feeds are public addresses. The privacy text says so, and a site that
+  publishes them must include that in its policy.
+- The Google Calendar link sends its data to Google when clicked. The privacy
+  text describes that.

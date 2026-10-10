@@ -3,6 +3,7 @@
 namespace Koyomi\Models;
 
 use Kirby\Cms\Page;
+use Koyomi\Repository;
 
 /**
  * Page model of template `koyomi-calendar`.        OWNER: task `kirby`
@@ -13,13 +14,13 @@ class CalendarPage extends Page
     /** Repository::upcoming($this, $filters). @return list<\Koyomi\Event> */
     public function koyomiUpcoming(array $filters = []): array
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        return Repository::upcoming($this, $filters);
     }
 
     /** Repository::past($this, $filters). @return list<\Koyomi\Event> */
     public function koyomiPast(array $filters = []): array
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        return Repository::past($this, $filters);
     }
 
     /**
@@ -28,30 +29,31 @@ class CalendarPage extends Page
      */
     public function koyomiList(?array $query = null): array
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        $query ??= $this->kirby()->request()->query()->toArray();
+        return Repository::list($this, $query);
     }
 
     /** $this->url() . '.ics' */
     public function icsUrl(): string
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        return $this->url() . '.ics';
     }
 
     /** icsUrl() with the scheme replaced by "webcal://" (https://ex.test/events.ics → webcal://ex.test/events.ics). */
     public function webcalUrl(): string
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        return preg_replace('~^https?://~i', 'webcal://', $this->icsUrl()) ?? $this->icsUrl();
     }
 
     /** $this->url() . '.rss' */
     public function rssUrl(): string
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        return $this->url() . '.rss';
     }
 
     /** $this->url() . '.json' */
     public function jsonUrl(): string
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        return $this->url() . '.json';
     }
 }

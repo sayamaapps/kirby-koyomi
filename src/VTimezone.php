@@ -2,6 +2,8 @@
 
 namespace Koyomi;
 
+use DateTimeZone;
+
 /**
  * VTIMEZONE components from PHP's tz database, Kirby-free.   OWNER: task `ics`
  *
@@ -12,6 +14,12 @@ namespace Koyomi;
  */
 final class VTimezone
 {
+    /** One year in seconds: the margin added on both sides of the event window. */
+    private const MARGIN = 31536000;
+
+    /** Fixed DTSTART of the base observance (RFC 5545 needs a start before any transition). */
+    private const BASE_START = '19700101T000000';
+
     /**
      * Lines (unfolded) BEGIN:VTIMEZONE … END:VTIMEZONE for $zone, covering
      * $from … $to (unix timestamps). The window is widened by one year on
@@ -36,12 +44,57 @@ final class VTimezone
      */
     public static function lines(string $zone, int $from, int $to): array
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        if ($zone === 'UTC') {
+            return [];
+        }
+
+        // PHP lists the state at the window begin first, then every real
+        // transition inside the window.
+        $transitions = (new DateTimeZone($zone))->getTransitions($from - self::MARGIN, $to + self::MARGIN);
+        $base = array_shift($transitions);
+
+        $lines = ['BEGIN:VTIMEZONE', 'TZID:' . $zone];
+        // The base observance is written with a fixed DTSTART and FROM = TO:
+        // it only defines the offset in force before the first real change.
+        $offset = $base['offset'];
+        $lines = array_merge($lines, self::observance($base['isdst'], self::BASE_START, $offset, $offset, $base['abbr']));
+
+        $previous = $offset;
+        foreach ($transitions as $transition) {
+            // DTSTART is the local time BEFORE the change, i.e. UTC + old offset.
+            $dtstart = gmdate('Ymd\THis', $transition['ts'] + $previous);
+            $lines = array_merge($lines, self::observance($transition['isdst'], $dtstart, $previous, $transition['offset'], $transition['abbr']));
+            $previous = $transition['offset'];
+        }
+
+        $lines[] = 'END:VTIMEZONE';
+        return $lines;
     }
 
     /** Seconds → "+0100", "-0500", "+0530", "+0000". */
     public static function offset(int $seconds): string
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        $sign = $seconds < 0 ? '-' : '+';
+        $abs = abs($seconds);
+        return sprintf('%s%02d%02d', $sign, intdiv($abs, 3600), intdiv($abs % 3600, 60));
+    }
+
+    /**
+     * One STANDARD or DAYLIGHT sub-component (six lines). The kind follows the
+     * DST flag of the state the component introduces, not the one it leaves.
+     *
+     * @return list<string>
+     */
+    private static function observance(bool $daylight, string $dtstart, int $from, int $to, string $abbreviation): array
+    {
+        $kind = $daylight ? 'DAYLIGHT' : 'STANDARD';
+        return [
+            'BEGIN:' . $kind,
+            'DTSTART:' . $dtstart,
+            'TZOFFSETFROM:' . self::offset($from),
+            'TZOFFSETTO:' . self::offset($to),
+            'TZNAME:' . $abbreviation,
+            'END:' . $kind,
+        ];
     }
 }

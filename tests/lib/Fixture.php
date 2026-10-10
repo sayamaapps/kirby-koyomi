@@ -29,6 +29,12 @@
  * Every event with online attendance stores an `onlineUrl` from SECRETS;
  * PrivacyTest asserts that none of them, and not HIDDEN_EMAIL, appears in
  * any output.
+ *
+ * Kirby keeps one Responder per App, and Page::kirby() returns the most
+ * recently created App. A test that renders a 404 and then a 200 on the same
+ * App gets the 404 twice, so it creates a fresh App for the second render.
+ * Creating a second App also changes what $page->kirby() returns for pages of
+ * the first, so re-create the main App before using its pages again.
  */
 
 use Kirby\Cms\App;

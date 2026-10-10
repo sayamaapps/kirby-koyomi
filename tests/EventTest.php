@@ -107,6 +107,18 @@ koyomi_test('Koyomi Event', function () {
     expect(false, $e->hasEndTime, 'no end time');
     $e = Event::fromArray(koyomi_raw_event(['endTime' => '']), ['defaultDuration' => 45]);
     expect('2027-03-12T18:45:00+01:00', $iso($e->end), 'configured duration');
+    expect('2027-03-12T18:45:00+01:00', $iso($e->end), 'configured duration');
+
+    // A default duration that crosses midnight is not an end the content gave (review): one day, no end date.
+    $e = Event::fromArray(koyomi_raw_event(['startTime' => '23:00', 'endTime' => '']));
+    expect('2027-03-13T01:00:00+01:00', $iso($e->end), 'late start: the end is still the default duration (ICS, Google)');
+    expect([false, false], [$e->isMultiDay(), $e->hasEndDate], 'late start without end: one day, no end given');
+    expect('2027-03-12', $e->lastDay()->format('Y-m-d'), 'late start without end: lastDay is the start day');
+    $e = Event::fromArray(koyomi_raw_event(['startTime' => '23:00', 'endTime' => '', 'endDate' => '2027-03-14']));
+    expect([true, '2027-03-14'], [$e->hasEndDate, $e->lastDay()->format('Y-m-d')], 'an end date given: the end is explicit and lastDay is that day');
+    // Overnight end on the autumn DST overlap day: the next day's wall time (standard time, as Time::wall gives), not modify().
+    $e = Event::fromArray(koyomi_raw_event(['startDate' => '2027-10-30', 'startTime' => '22:00', 'endTime' => '02:30']));
+    expect('2027-10-31T02:30:00+01:00', $iso($e->end), 'overnight end in the DST overlap takes standard time');
 
     // End time before start time without end date: next day (concert until 01:00).
     $e = Event::fromArray(koyomi_raw_event(['startTime' => '20:00', 'endTime' => '01:00']));

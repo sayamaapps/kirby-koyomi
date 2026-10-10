@@ -3,6 +3,8 @@
 namespace Koyomi\Models;
 
 use Kirby\Cms\Page;
+use Koyomi\Mapper;
+use Koyomi\Repository;
 use Koyomi\Venue;
 
 /**
@@ -10,15 +12,17 @@ use Koyomi\Venue;
  */
 class VenuePage extends Page
 {
+    private ?Venue $koyomiVenueValue = null;
+
     /** Mapper::venue($this), memoized. */
     public function koyomiVenue(): Venue
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        return $this->koyomiVenueValue ??= Mapper::venue($this);
     }
 
     /** Repository::forVenue($this->kirby(), $this). @return list<\Koyomi\Event> */
     public function upcomingEvents(): array
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        return Repository::forVenue($this->kirby(), $this);
     }
 }

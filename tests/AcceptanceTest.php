@@ -48,7 +48,9 @@ koyomi_test('Koyomi acceptance', function () use ($root) {
     $kirby = KoyomiFixture::app($root, ['koyomi.feed' => false, 'koyomi.rss' => false]);
     expect(404, $code($kirby, 'events.ics'), 'feed off');
     expect(404, $code($kirby, 'events.rss'), 'rss off');
-    expect(200, $code($kirby, 'events/retreat.ics'), 'event ics independent of feed');
+    // A fresh App: Kirby keeps one Responder per App, so the 404 of the
+    // lines above would otherwise carry over to this render.
+    expect(200, $code(KoyomiFixture::app($root, ['koyomi.feed' => false, 'koyomi.rss' => false]), 'events/retreat.ics'), 'event ics independent of feed');
     expect(404, $code(KoyomiFixture::app($root, ['koyomi.ics' => false]), 'events/retreat.ics'), 'event ics off');
     expect(404, $code(KoyomiFixture::app($root), 'events/draft-event.ics'), 'draft never served');
 

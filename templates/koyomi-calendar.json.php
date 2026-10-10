@@ -1,0 +1,1 @@
+<?php echo \Koyomi\Output::json($page);

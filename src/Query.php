@@ -22,7 +22,14 @@ final class Query
      */
     public static function upcoming(array $events, DateTimeImmutable $now, array $filters = [], bool $hideCancelled = false): array
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        $open = [];
+        foreach ($events as $event) {
+            if ($event->isPast($now) || ($hideCancelled && $event->isCancelled())) {
+                continue;
+            }
+            $open[] = $event;
+        }
+        return self::sort(self::filter($open, $filters), 'asc');
     }
 
     /**
@@ -33,7 +40,13 @@ final class Query
      */
     public static function past(array $events, DateTimeImmutable $now, array $filters = []): array
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        $ended = [];
+        foreach ($events as $event) {
+            if ($event->isPast($now)) {
+                $ended[] = $event;
+            }
+        }
+        return self::sort(self::filter($ended, $filters), 'desc');
     }
 
     /**
@@ -49,7 +62,28 @@ final class Query
      */
     public static function filter(array $events, array $filters): array
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        $category = self::lower((string) ($filters['category'] ?? ''));
+        $attendance = $filters['attendance'] ?? null;
+        $language = $filters['language'] ?? null;
+        $featured = Normalize::bool($filters['featured'] ?? false);
+
+        $out = [];
+        foreach ($events as $event) {
+            if ($category !== '' && !self::hasCategory($event, $category)) {
+                continue;
+            }
+            if ($attendance !== null && !self::matchesAttendance($event, (string) $attendance)) {
+                continue;
+            }
+            if ($language !== null && !in_array($language, $event->languages, true)) {
+                continue;
+            }
+            if ($featured && !$event->featured) {
+                continue;
+            }
+            $out[] = $event;
+        }
+        return $out;
     }
 
     /**
@@ -61,7 +95,11 @@ final class Query
      */
     public static function sort(array $events, string $direction = 'asc'): array
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        $sign = $direction === 'desc' ? -1 : 1;
+        $key = fn (Event $e): array => [$e->start->getTimestamp(), $e->end->getTimestamp(), self::lower($e->title), $e->id];
+        $events = array_values($events);
+        usort($events, fn (Event $a, Event $b): int => $sign * ($key($a) <=> $key($b)));
+        return $events;
     }
 
     /**
@@ -72,7 +110,21 @@ final class Query
      */
     public static function paginate(array $items, int $page, int $perPage): array
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        $perPage = max(1, $perPage);
+        $items = array_values($items);
+        $total = count($items);
+        $pages = max(1, (int) ceil($total / $perPage));
+        $page = min(max(1, $page), $pages);
+
+        return [
+            'items' => array_slice($items, ($page - 1) * $perPage, $perPage),
+            'page' => $page,
+            'pages' => $pages,
+            'total' => $total,
+            'perPage' => $perPage,
+            'hasPrev' => $page > 1,
+            'hasNext' => $page < $pages,
+        ];
     }
 
     /**
@@ -86,7 +138,44 @@ final class Query
      */
     public static function facets(array $events): array
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        // Keyed by the lower-case name: counts ignore case, the first spelling is kept.
+        $categories = [];
+        $languages = [];
+        $attendance = [Attendance::OFFLINE => 0, Attendance::ONLINE => 0, Attendance::MIXED => 0];
+        $featured = 0;
+
+        foreach ($events as $event) {
+            foreach ($event->categories as $category) {
+                $key = self::lower($category);
+                $categories[$key] ??= ['name' => $category, 'count' => 0];
+                $categories[$key]['count']++;
+            }
+            foreach ($event->languages as $code) {
+                $languages[$code] = ($languages[$code] ?? 0) + 1;
+            }
+            foreach (Attendance::ALL as $mode) {
+                if (self::matchesAttendance($event, $mode)) {
+                    $attendance[$mode]++;
+                }
+            }
+            if ($event->featured) {
+                $featured++;
+            }
+        }
+
+        uasort($categories, fn (array $a, array $b): int => strnatcasecmp($a['name'], $b['name']));
+        $categoryCounts = [];
+        foreach ($categories as $entry) {
+            $categoryCounts[$entry['name']] = $entry['count'];
+        }
+        ksort($languages);
+
+        return [
+            'categories' => $categoryCounts,
+            'languages' => $languages,
+            'attendance' => $attendance,
+            'featured' => $featured,
+        ];
     }
 
     /**
@@ -97,7 +186,13 @@ final class Query
      */
     public static function atVenue(array $events, string $venueId): array
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        $out = [];
+        foreach ($events as $event) {
+            if ($event->physicalVenue()?->id === $venueId) {
+                $out[] = $event;
+            }
+        }
+        return $out;
     }
 
     /**
@@ -108,6 +203,41 @@ final class Query
      */
     public static function byOrganizer(array $events, string $organizerId): array
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        $out = [];
+        foreach ($events as $event) {
+            foreach ($event->organizers as $organizer) {
+                if ($organizer->id === $organizerId) {
+                    $out[] = $event;
+                    break;
+                }
+            }
+        }
+        return $out;
+    }
+
+    /** The attendance filter semantics of filter() and facets(). */
+    private static function matchesAttendance(Event $event, string $mode): bool
+    {
+        return match ($mode) {
+            Attendance::ONLINE => $event->isOnline(),
+            Attendance::OFFLINE => $event->isInPerson(),
+            Attendance::MIXED => $event->effectiveAttendance() === Attendance::MIXED,
+            default => false,
+        };
+    }
+
+    private static function hasCategory(Event $event, string $lowerCategory): bool
+    {
+        foreach ($event->categories as $category) {
+            if (self::lower($category) === $lowerCategory) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static function lower(string $text): string
+    {
+        return mb_strtolower($text);
     }
 }

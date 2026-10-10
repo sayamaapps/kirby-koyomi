@@ -64,6 +64,13 @@ final class Event
         public readonly array $series = [],
         public readonly ?int $seriesPart = null,
         public readonly int $modified = 0,
+        /**
+         * True when the content gives an end: an end time, or an end date after
+         * the start date. False means `end` is the default duration (or the
+         * all-day fallback), which says nothing about the last day, so the event
+         * is shown as a single day even when the default duration crosses midnight.
+         */
+        public readonly bool $hasEndDate = false,
     ) {
     }
 
@@ -126,6 +133,7 @@ final class Event
         $endDate = $endDateGiven ? substr($endDateRaw, 0, 10) : substr($startDate, 0, 10);
 
         $hasEndTime = false;
+        $hasEndDate = false;
         if ($allDay) {
             $end = Time::wall($endDate, '', $zone)->modify('+1 day');
             if ($end <= $start) {
@@ -135,17 +143,23 @@ final class Event
             $end = $endTime !== '' ? Time::wall($endDate, $endTime, $zone) : null;
             if ($end !== null) {
                 $hasEndTime = true;
+                $hasEndDate = true;
                 if (!$endDateGiven && $end < $start) {
-                    $end = $end->modify('+1 day');
+                    // Overnight: the next day's wall time, not modify(), which
+                    // would take the other offset inside the autumn DST overlap.
+                    $nextDay = Time::wall($endDate, '', $zone)->modify('+1 day')->format('Y-m-d');
+                    $end = Time::wall($nextDay, $endTime, $zone);
                 }
             } elseif ($endDateGiven && $endDate > substr($startDate, 0, 10)) {
                 $end = Time::wall($endDate, '', $zone)->modify('+1 day');
+                $hasEndDate = true;
             } else {
                 $end = $start->modify('+' . $duration . ' minutes');
             }
             if ($hasEndTime && $end <= $start) {
                 $end = $start->modify('+' . $duration . ' minutes');
                 $hasEndTime = false;
+                $hasEndDate = false;
             }
         }
 
@@ -216,6 +230,7 @@ final class Event
             series: $series,
             seriesPart: $seriesPart,
             modified: max(0, (int) ($data['modified'] ?? 0)),
+            hasEndDate: $allDay ? $endDateGiven : $hasEndDate,
         );
     }
 
@@ -302,12 +317,17 @@ final class Event
     /**
      * 00:00 of the last day the event touches (INCLUSIVE), event zone.
      * All-day: end − 1 day. Timed: the day of (end − 1 second), so a concert
-     * 20:00–00:00 stays a one-day event.
+     * 20:00–00:00 stays a one-day event. Timed without an end given
+     * (hasEndDate false): the start day, because the default duration is not
+     * an end the organizer chose — a 23:00 concert is not a two-day event.
      */
     public function lastDay(): DateTimeImmutable
     {
         if ($this->allDay) {
             return $this->end->modify('-1 day')->setTime(0, 0);
+        }
+        if (!$this->hasEndDate) {
+            return $this->start->setTime(0, 0);
         }
         $last = $this->end > $this->start ? $this->end->modify('-1 second') : $this->end;
         return $last->setTime(0, 0);

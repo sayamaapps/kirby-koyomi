@@ -2,6 +2,7 @@
 
 namespace Koyomi;
 
+use Kirby\Cms\App;
 use Kirby\Cms\Page;
 
 /**
@@ -27,6 +28,29 @@ final class Hooks
      */
     public static function duplicateAfter(Page $duplicatePage, Page $originalPage): Page
     {
-        throw new \LogicException('Koyomi: not implemented yet: ' . __METHOD__);
+        $kirby = App::instance();
+        // Kirby replaces the duplicate with whatever this returns, so the page is always returned.
+        if (!Options::active($kirby) || !Options::duplicateReset($kirby)) {
+            return $duplicatePage;
+        }
+        if ($duplicatePage->intendedTemplate()->name() !== 'koyomi-event') {
+            return $duplicatePage;
+        }
+        try {
+            // update() without a language writes only the current one. The
+            // status fields are shared across languages (translate: false), but
+            // a text field of another translation is not: every language gets the
+            // reset, so no translation of the copy keeps "cancelled".
+            $page = $duplicatePage;
+            $languages = $kirby->multilang() ? $kirby->languages()->codes() : [null];
+            foreach ($languages as $code) {
+                $page = $page->update(self::DUPLICATE_RESET, $code);
+            }
+            return $page;
+        } catch (\Throwable $e) {
+            // A failing reset must not break duplicating; the copy stays as a plain copy.
+            error_log('Koyomi: duplicate reset failed: ' . $e->getMessage());
+            return $duplicatePage;
+        }
     }
 }
