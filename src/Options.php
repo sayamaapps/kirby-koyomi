@@ -87,6 +87,13 @@ final class Options
         return preg_match('/^[A-Z]{3}$/', $code) ? $code : self::currencies($kirby)[0];
     }
 
+    /** Home country (`koyomi.country`, ISO code, upper case), left out of displayed addresses. Unset or invalid → "". */
+    public static function country(App $kirby): string
+    {
+        $code = strtoupper(trim((string) self::get($kirby, 'country', '')));
+        return preg_match('/^[A-Z]{2}$/', $code) ? $code : '';
+    }
+
     /**
      * Event languages offered in the Panel and the filter, code => custom
      * label ("" = use the translation `language.<code>`).

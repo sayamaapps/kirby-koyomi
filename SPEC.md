@@ -123,6 +123,7 @@ nested (`'koyomi' => ['active' => true]`) both work; `null` = not set.
 | `hideCancelled` | `false` | `hideCancelled()` | Remove cancelled events from upcoming lists and RSS (the ICS feed keeps them as CANCELLED). |
 | `duplicateReset` | `true` | `duplicateReset()` | Reset status fields of duplicated events. |
 | `formats` | `[]` | `formats()` | Per-language date patterns merged over `Format::DEFAULTS` (§8.5). |
+| `country` | `null` | `country()` → `'DE'` or `''` | Home country (ISO code), left out of displayed addresses (`Format::addressLines()`). Invalid → `''`. |
 | `mapUrl` | `null` | `mapUrl()` | `fn (Koyomi\Venue $v): string` replacing the OpenStreetMap link. |
 | `calendar` | first `koyomi-calendar` page | `calendarId()` | Page id of the calendar. |
 | `venues` | first `koyomi-venues` page | `venuesId()` | Page id of the venues container. |
@@ -499,6 +500,8 @@ Other methods (en / de):
 - `availability()`: `''` for available; `Only a few places left`/`Nur noch wenige Plätze`; `Sold out`/`Ausgebucht`.
 - `series()`: `Part 2 of 3`/`Teil 2 von 3`, `''` without series.
 - `languageName('cs')`: `Czech`/`Tschechisch`; custom label wins; unknown `pt-br` → `PT-BR`.
+- `countryName('CZ')`: `Czechia`/`Tschechien` (translation `country.<CODE>`); unknown `MT` → `MT`.
+- `addressLines($venue, $homeCountry = '')`: `['Národní 1', '110 00 Praha', 'Czechia']`, empty lines left out, country by name and left out when it equals `$homeCountry`. Display only — `Venue::addressLine()`/`label()` (ICS, RSS, Google link, OSM search) keep the ISO code.
 - `languages($retreat)`: `German, Czech` / `Deutsch, Tschechisch`.
 - `labels()`: keys `when, dateRange, status, previousStart, attendance, availability, price, series, languages`.
 
@@ -656,7 +659,7 @@ General rules for every snippet:
 | `koyomi/card` | `$event` (required), `$level` (default 3) | `<article class="koyomi-card">` + modifiers `koyomi-card--cancelled`, `--featured`, `--past`, `--ongoing`, `--<status>`; optional `<img class="koyomi-card-image" src alt loading="lazy">`; `<hN class="koyomi-card-title"><a href="url">title</a></hN>`; `<p class="koyomi-card-when"><time datetime="<iso start or date>">Format::when()</time></p>`; `<p class="koyomi-card-status"><strong>status</strong></p>` if not scheduled; `<p class="koyomi-card-badge">event.ongoing / event.past</p>`; `<p class="koyomi-card-place">` venue name + city, attendance label; `<p class="koyomi-card-price">` price · availability (when any); `<p class="koyomi-card-excerpt">` description. |
 | `koyomi/event` | `$event` or `$page` (required one), `$calendarUrl` (default: calendar of the page, else `site()->koyomiCalendar()?->url()`) | Calls `koyomi_expires([$e])`. `<div class="koyomi-event">` + modifiers; `snippet('koyomi/past', …)`; status `<p class="koyomi-status koyomi-status--<status>" role="status"><strong>label</strong> note</p>` + `<p class="koyomi-previous">Format::previousStart()</p>`; `<dl class="koyomi-facts">` with `<dt>event.when</dt><dd class="koyomi-when"><time datetime="<iso start, date for all-day>">when</time></dd>`, `<dt>event.where</dt><dd class="koyomi-where">` (koyomi/venue snippet with `compact => true` for in-person, plus attendance label), `<dt>price.label</dt><dd class="koyomi-price">` price, `<span class="koyomi-price-note">`, `<span class="koyomi-availability">`, languages (`event.languages`), organizers (`event.organizer(s)`: name linked to `link()`, public email as `mailto:`), categories. Booking: if bookingUrl and not past/cancelled: soldout → `<p class="koyomi-booking koyomi-booking--soldout">availability.soldout</p>`, else `<p class="koyomi-booking"><a class="koyomi-booking-link" href target="_blank" rel="noopener">bookingLabel ?: booking.default<span class="koyomi-sr-only"> booking.opensNewTab</span></a></p>`. Calendar links (not past, not cancelled): `<p class="koyomi-calendar-links">` with `<a href="icsUrl" download>calendar.ics</a>` when `Options::route('ics')`, and `<a href="GoogleLink::url()" target="_blank" rel="noopener nofollow">calendar.google</a>` when `Options::google()`; heading text calendar.add. Series: `<nav class="koyomi-series" aria-label="series.title">` `<p>Format::series()</p><ol>` items: link + date, current item `<span aria-current="page">title</span> series.current`. **No title, no text blocks** (the template prints those). |
 | `koyomi/past` | `$event` (required), `$calendarUrl` | Only when the event is past: `<p class="koyomi-past" role="note">event.pastNote <a href="calendarUrl">event.toUpcoming</a></p>` (link only with a URL). |
-| `koyomi/venue` | `$venue` (Venue or VenuePage, required), `$compact` (bool) | `<div class="koyomi-venue">`: name (`<a href=url>` when url and not compact… keep link in compact too), `<p class="koyomi-venue-address">` street `<br>` postal city `<br>` country; not compact: `<p class="koyomi-venue-directions">`, `<img class="koyomi-venue-map" src alt>` when showMap and mapImage (alt = mapImageAlt ?: venue.mapAlt); links `<p class="koyomi-venue-links">` map link (venue.map, target _blank rel noopener) and website. |
+| `koyomi/venue` | `$venue` (Venue or VenuePage, required), `$compact` (bool) | `<div class="koyomi-venue">`: name (`<a href=url>` when url and not compact… keep link in compact too), `<p class="koyomi-venue-address">` `Format::addressLines($venue, Options::country())` joined with `<br>`; not compact: `<p class="koyomi-venue-directions">`, `<img class="koyomi-venue-map" src alt>` when showMap and mapImage (alt = mapImageAlt ?: venue.mapAlt); links `<p class="koyomi-venue-links">` map link (venue.map, target _blank rel noopener) and website. |
 | `koyomi/filters` | `$list` or `$calendar` (→ koyomiList()) | `<form class="koyomi-filters" method="get" action="baseUrl" aria-label="filters.label">`; hidden `view=past` in past view; selects only for non-empty facets: `category` (option text "Name (count)"), `attendance` (counts > 0), `language` (Format::languageName with custom labels); featured checkbox when facets.featured > 0; each select starts with `<option value="">filters.all</option>`; current values `selected`/`checked`; `<button type="submit">filters.apply</button>`; when filtered `<a class="koyomi-filters-reset" href>filters.reset</a>`. |
 | `koyomi/pagination` | `$list` or `$calendar` | Only when pages > 1: `<nav class="koyomi-pagination" aria-label="pagination.label">` `<a rel="prev" href>pagination.previous</a>` `<span>pagination.page</span>` `<a rel="next" href>pagination.next</a>` (links only when URL). |
 | `koyomi/subscribe` | `$calendar` (any Page; default `site()->koyomiCalendar()`) | URLs built from `$calendar->url()` only (no model methods, so the snippet also works in task present's tests): ics = url + `.ics`, webcal = ics with `^https?://` → `webcal://`, rss = url + `.rss`. `<div class="koyomi-subscribe">`: when `Options::route('feed')`: `<a href="<webcal>">calendar.subscribe</a>` + `<p class="koyomi-subscribe-hint">calendar.subscribeHint <code><ics></code></p>`; when `route('rss')`: `<a href="<rss>" type="application/rss+xml">calendar.rss</a>`. |
@@ -770,6 +773,31 @@ finally callback). Every concrete example in §8 must appear as a check.
 | `language.hu` | Hungarian | Ungarisch |
 | `language.ru` | Russian | Russisch |
 | `language.uk` | Ukrainian | Ukrainisch |
+| `country.AT` | Austria | Österreich |
+| `country.BE` | Belgium | Belgien |
+| `country.CH` | Switzerland | Schweiz |
+| `country.CZ` | Czechia | Tschechien |
+| `country.DE` | Germany | Deutschland |
+| `country.DK` | Denmark | Dänemark |
+| `country.ES` | Spain | Spanien |
+| `country.FI` | Finland | Finnland |
+| `country.FR` | France | Frankreich |
+| `country.GB` | United Kingdom | Vereinigtes Königreich |
+| `country.GR` | Greece | Griechenland |
+| `country.HR` | Croatia | Kroatien |
+| `country.HU` | Hungary | Ungarn |
+| `country.IE` | Ireland | Irland |
+| `country.IT` | Italy | Italien |
+| `country.LI` | Liechtenstein | Liechtenstein |
+| `country.LU` | Luxembourg | Luxemburg |
+| `country.NL` | Netherlands | Niederlande |
+| `country.NO` | Norway | Norwegen |
+| `country.PL` | Poland | Polen |
+| `country.PT` | Portugal | Portugal |
+| `country.SE` | Sweden | Schweden |
+| `country.SI` | Slovenia | Slowenien |
+| `country.SK` | Slovakia | Slowakei |
+| `country.US` | United States | Vereinigte Staaten |
 | `status.scheduled` | Scheduled | Findet statt |
 | `status.cancelled` | Cancelled | Abgesagt |
 | `status.postponed` | Postponed | Verschoben |

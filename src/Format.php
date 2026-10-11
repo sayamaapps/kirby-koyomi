@@ -382,6 +382,32 @@ final class Format
         return $name === $key ? strtoupper($code) : $name;
     }
 
+    /** Name of an ISO country code: translation country.<CODE>, else the code as it is ("MT"). */
+    public static function countryName(string $code): string
+    {
+        $key = 'country.' . strtoupper($code);
+        $name = I18n::t($key);
+        return $name === $key ? strtoupper($code) : $name;
+    }
+
+    /**
+     * Address of a venue as display lines, empty ones left out:
+     * ["Národní 1", "110 00 Praha", "Tschechien"]. The country is shown by
+     * name, and left out when it is $homeCountry (`koyomi.country`).
+     *
+     * @return list<string>
+     */
+    public static function addressLines(Venue $venue, string $homeCountry = ''): array
+    {
+        $country = $venue->country !== '' && $venue->country !== strtoupper($homeCountry)
+            ? self::countryName($venue->country)
+            : '';
+        return array_values(array_filter(
+            [$venue->street, trim($venue->postalCode . ' ' . $venue->city), $country],
+            fn (string $line) => $line !== ''
+        ));
+    }
+
     /** Language names of the event joined with ", " ("Deutsch, Tschechisch"). @param array<string,string> $custom code => label */
     public static function languages(Event $event, array $custom = []): string
     {

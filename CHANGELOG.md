@@ -14,6 +14,19 @@ All notable changes to this project are documented here. Versions follow
 - A change to the names of options, fields, snippets or URLs is breaking and is
   a major version too.
 
+## [1.0.1] — 2026-10-11
+
+### Fixed
+
+- `koyomi/venue` printed the country as its raw ISO code ("Praha<br>CZ"). It
+  now prints the name in the site language ("Czechia", "Tschechien"; 24
+  European countries and the US, other codes as they are), via
+  `Format::countryName()` and `Format::addressLines()`.
+- New option `country`: the home country, left out of displayed addresses, so a
+  German site shows "12345 Musterstadt" and "110 00 Praha, Tschechien".
+- JSON-LD (`addressCountry`), calendar files, RSS and the Google link keep the
+  ISO code, as before.
+
 ## [1.0.0] — 2026-10-11
 
 ### Timeline (Simon 11.10.2026: "a calendar is always a time line")

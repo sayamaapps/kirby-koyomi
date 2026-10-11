@@ -27,10 +27,7 @@ if (!$v instanceof \Koyomi\Venue) {
 }
 $compact = (bool) ($compact ?? false);
 
-$addressLines = array_values(array_filter(
-    [$v->street, trim($v->postalCode . ' ' . $v->city), $v->country],
-    fn (string $line) => $line !== ''
-));
+$addressLines = \Koyomi\Format::addressLines($v, \Koyomi\Options::country(\Kirby\Cms\App::instance()));
 $mapLink = $v->mapLink();
 ?>
 <div class="koyomi-venue">

@@ -19,6 +19,14 @@ return [
     'language.de' => 'Deutsch', 'language.en' => 'Englisch', 'language.cs' => 'Tschechisch', 'language.sk' => 'Slowakisch',
     'language.pl' => 'Polnisch', 'language.fr' => 'Französisch', 'language.it' => 'Italienisch', 'language.es' => 'Spanisch',
     'language.nl' => 'Niederländisch', 'language.hu' => 'Ungarisch', 'language.ru' => 'Russisch', 'language.uk' => 'Ukrainisch',
+    // ISO 3166-1 alpha-2, upper case. Unknown codes print as they are.
+    'country.AT' => 'Österreich', 'country.BE' => 'Belgien', 'country.CH' => 'Schweiz', 'country.CZ' => 'Tschechien',
+    'country.DE' => 'Deutschland', 'country.DK' => 'Dänemark', 'country.ES' => 'Spanien', 'country.FI' => 'Finnland',
+    'country.FR' => 'Frankreich', 'country.GB' => 'Vereinigtes Königreich', 'country.GR' => 'Griechenland', 'country.HR' => 'Kroatien',
+    'country.HU' => 'Ungarn', 'country.IE' => 'Irland', 'country.IT' => 'Italien', 'country.LI' => 'Liechtenstein',
+    'country.LU' => 'Luxemburg', 'country.NL' => 'Niederlande', 'country.NO' => 'Norwegen', 'country.PL' => 'Polen',
+    'country.PT' => 'Portugal', 'country.SE' => 'Schweden', 'country.SI' => 'Slowenien', 'country.SK' => 'Slowakei',
+    'country.US' => 'Vereinigte Staaten',
 
     'status.scheduled' => 'Findet statt',
     'status.cancelled' => 'Abgesagt',

@@ -164,6 +164,7 @@ default.
 | `hideCancelled` | `false` | Leave cancelled events out of the upcoming list and the RSS feed. The `.ics` feed keeps them, marked as cancelled. |
 | `duplicateReset` | `true` | When an event is duplicated, clear its status, previous date, status note and availability. Dates are kept, and the copy is a draft. |
 | `formats` | `[]` | Date and time patterns per language, merged over Koyomi's defaults, for example `['de' => ['time' => 'G.i']]`. Range patterns are two-element lists. See [Date formats](#date-formats). |
+| `country` | `null` | Home country as ISO code, for example `'DE'`. Venue addresses on pages leave this country out and name every other one: "Praha, Czechia". Unset: every address names its country. |
 | `mapUrl` | `null` | A closure `fn (Koyomi\Venue $venue): string` that replaces the OpenStreetMap link, for example `fn ($venue) => 'https://maps.example.test/?q=' . urlencode($venue->label())`. |
 | `calendar` | first `koyomi-calendar` page | Page id of the calendar that snippets and feeds use. |
 | `venues` | first `koyomi-venues` page | Page id of the venues container. |
@@ -265,7 +266,7 @@ status `movedOnline` makes the effective attendance online.
 |---|---|---|
 | `title` | title | Name of the venue. |
 | `street`, `postalCode`, `city`, `region` | text | Address. |
-| `country` | text, two letters | ISO country code, for example `DE`. |
+| `country` | text, two letters | ISO country code, for example `DE`. Pages show the country by name ("Germany", "Deutschland"), and leave it out for the `country` option. JSON-LD and calendar files keep the code. |
 | `lat`, `lng` | number | Coordinates. Used for the OpenStreetMap link and for the location in JSON-LD and calendar files. |
 | `mapImage` | file | A static map image you upload. The plugin never loads maps from third parties. |
 | `showMap` | toggle (default off) | Shows `mapImage` on the venue page. Event pages show the venue name and address only, without the map image. |

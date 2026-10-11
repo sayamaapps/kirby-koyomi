@@ -214,6 +214,19 @@ koyomi_test('Koyomi Format', function () {
     })(), 'languageName cs de');
     expect('Čeština', Format::languageName('cs', 'Čeština'), 'languageName: custom label wins');
     expect('PT-BR', Format::languageName('pt-br'), 'languageName: unknown code upper-cased');
+
+    // countryName() and addressLines().
+    expect('Czechia', Format::countryName('CZ'), 'countryName CZ en');
+    expect('Czechia', Format::countryName('cz'), 'countryName: lower case accepted');
+    expect('MT', Format::countryName('MT'), 'countryName: unknown code as is');
+    $prague = \Koyomi\Venue::fromArray(['name' => 'Kulturhaus', 'street' => 'Národní 1', 'postalCode' => '110 00', 'city' => 'Praha', 'country' => 'CZ']);
+    expect(['Národní 1', '110 00 Praha', 'Czechia'], Format::addressLines($prague), 'addressLines: country by name');
+    expect(['Národní 1', '110 00 Praha', 'Czechia'], Format::addressLines($prague, 'DE'), 'addressLines: other country kept');
+    expect(['Národní 1', '110 00 Praha'], Format::addressLines($prague, 'cz'), 'addressLines: home country left out');
+    expect([], Format::addressLines(\Koyomi\Venue::fromArray(['name' => 'Online'])), 'addressLines: empty venue');
+    I18n::setLanguage('de');
+    expect(['Národní 1', '110 00 Praha', 'Tschechien'], Format::addressLines($prague), 'addressLines de');
+    I18n::setLanguage('en');
     $retreat = format_test_event(['languages' => 'de, cs']);
     expect('German, Czech', Format::languages($retreat), 'languages en');
     expect('German, Čeština', Format::languages($retreat, ['cs' => 'Čeština']), 'languages: custom label');

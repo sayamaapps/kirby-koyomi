@@ -28,6 +28,14 @@ return [
     'language.de' => 'German', 'language.en' => 'English', 'language.cs' => 'Czech', 'language.sk' => 'Slovak',
     'language.pl' => 'Polish', 'language.fr' => 'French', 'language.it' => 'Italian', 'language.es' => 'Spanish',
     'language.nl' => 'Dutch', 'language.hu' => 'Hungarian', 'language.ru' => 'Russian', 'language.uk' => 'Ukrainian',
+    // ISO 3166-1 alpha-2, upper case. Unknown codes print as they are.
+    'country.AT' => 'Austria', 'country.BE' => 'Belgium', 'country.CH' => 'Switzerland', 'country.CZ' => 'Czechia',
+    'country.DE' => 'Germany', 'country.DK' => 'Denmark', 'country.ES' => 'Spain', 'country.FI' => 'Finland',
+    'country.FR' => 'France', 'country.GB' => 'United Kingdom', 'country.GR' => 'Greece', 'country.HR' => 'Croatia',
+    'country.HU' => 'Hungary', 'country.IE' => 'Ireland', 'country.IT' => 'Italy', 'country.LI' => 'Liechtenstein',
+    'country.LU' => 'Luxembourg', 'country.NL' => 'Netherlands', 'country.NO' => 'Norway', 'country.PL' => 'Poland',
+    'country.PT' => 'Portugal', 'country.SE' => 'Sweden', 'country.SI' => 'Slovenia', 'country.SK' => 'Slovakia',
+    'country.US' => 'United States',
 
     'status.scheduled' => 'Scheduled',
     'status.cancelled' => 'Cancelled',
