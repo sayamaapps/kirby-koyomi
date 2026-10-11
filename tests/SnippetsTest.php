@@ -260,7 +260,17 @@ koyomi_test('Koyomi snippets', function () use ($root) {
     holds(str_contains($html, '<section class="koyomi-list koyomi-list--upcoming">'), 'list: section and view class');
     holds(str_contains($html, '<h2 class="koyomi-list-title">Upcoming events</h2>'), 'list: default upcoming title');
     holds(str_contains($html, '<ol class="koyomi-events">') && substr_count($html, 'class="koyomi-events-item"') === 2, 'list: one item per event');
-    holds(substr_count($html, '<h3 class="koyomi-card-title">') === 2, 'list: cards at level 3');
+    // Default layout: timeline (koyomi.groupBy 'month') — months at level 3, cards at level 4.
+    holds(str_contains($html, '<div class="koyomi-timeline">') && str_contains($html, 'class="koyomi-today"'), 'list: timeline with today marker');
+    holds(substr_count($html, '<h4 class="koyomi-card-title">') === 2, 'list: cards at level 4 under the month headings');
+    holds(str_contains($html, '<h3 class="koyomi-month-title" id="koyomi-month-2027-03"><time datetime="2027-03">March 2027</time></h3>'), 'list: month heading with datetime');
+    holds(str_contains($html, '<p class="koyomi-card-date" aria-hidden="true"><span class="koyomi-card-weekday">Fri</span> <span class="koyomi-card-day">12–14</span>'), 'card: calendar-sheet date of a multi-day event');
+    holds(str_contains($html, '<p class="koyomi-card-time" aria-hidden="true">Fri 18:00 – Sun 13:00</p>'), 'card: time of day for a multi-day event');
+    $flat = koyomi_snippet_html($kirby, 'koyomi/list', ['events' => [$retreat, $sayamaEvent], 'group' => false]);
+    holds(!str_contains($flat, 'koyomi-timeline') && substr_count($flat, '<h3 class="koyomi-card-title">') === 2, 'list group false: flat list, cards at level 3');
+    $kirbyFlat = KoyomiFixture::app($root, ['koyomi.groupBy' => false]);
+    holds(!str_contains(koyomi_snippet_html($kirbyFlat, 'koyomi/list', ['events' => [$retreat]]), 'koyomi-timeline'), 'koyomi.groupBy false: flat by default');
+    $kirby = KoyomiFixture::app($root);
     holds(!str_contains($html, 'koyomi-list-switch') , 'list with events only: no switch link');
 
     $html = koyomi_snippet_html($kirby, 'koyomi/list', ['events' => [], 'title' => 'Next dates', 'level' => 3]);
@@ -269,8 +279,10 @@ koyomi_test('Koyomi snippets', function () use ($root) {
     $html = koyomi_snippet_html($kirby, 'koyomi/list', ['events' => [], 'title' => false]);
     holds(!str_contains($html, 'koyomi-list-title'), 'list: title false = no heading');
 
-    $html = koyomi_snippet_html($kirby, 'koyomi/list', ['events' => [$retreat], 'level' => 3]);
+    $html = koyomi_snippet_html($kirby, 'koyomi/list', ['events' => [$retreat], 'level' => 3, 'group' => false]);
     holds(str_contains($html, '<h4 class="koyomi-card-title">'), 'list: cards one level below the list heading');
+    $html = koyomi_snippet_html($kirby, 'koyomi/list', ['events' => [$retreat], 'level' => 3]);
+    holds(str_contains($html, '<h4 class="koyomi-month-title"') && str_contains($html, '<h5 class="koyomi-card-title">'), 'timeline: month one level below, cards two levels below the list heading');
 
     $list = [
         'view' => 'upcoming', 'filters' => ['category' => null, 'attendance' => null, 'language' => null, 'featured' => false, 'view' => 'upcoming', 'page' => 1],

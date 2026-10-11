@@ -159,6 +159,8 @@ default.
 | `rss` | `true` | RSS feed, `/<calendar>.rss`. |
 | `json` | `false` | JSON feed, `/<calendar>.json`. Off by default. |
 | `google` | `true` | "Google Calendar" link on the event page. |
+| `groupBy` | `'month'` | Layout of `koyomi/list`. `'month'` is the timeline: a "today" line, then one heading per month with its events, each card with a calendar-sheet date. `false` prints one flat list. |
+| `attendanceSwitch` | `true` | The switch "All · In person · Online" above the calendar list. A hybrid event counts as both. With the switch on, the filter form leaves out its format select. |
 | `hideCancelled` | `false` | Leave cancelled events out of the upcoming list and the RSS feed. The `.ics` feed keeps them, marked as cancelled. |
 | `duplicateReset` | `true` | When an event is duplicated, clear its status, previous date, status note and availability. Dates are kept, and the copy is a draft. |
 | `formats` | `[]` | Date and time patterns per language, merged over Koyomi's defaults, for example `['de' => ['time' => 'G.i']]`. Range patterns are two-element lists. See [Date formats](#date-formats). |
@@ -333,12 +335,13 @@ inline styles and no scripts. Call them from a template:
 | Snippet | Data | Prints |
 |---|---|---|
 | `koyomi/layout` | `$page`, `$slot` | A minimal HTML document with the `<title>`, language and `<main class="koyomi-main">`. In the `<head>` it adds the JSON-LD on event pages. It prints its slot even when Koyomi is off, so the page is never blank. |
-| `koyomi/list` | `$list` or `$events`, `$title` (text or `false`), `$level` (default 2) | A list of cards, the empty message, and a switch between upcoming and past events when `$list` is given. |
-| `koyomi/card` | `$event`, `$level` (default 3) | One event as a card: title link, date, status, place, price, availability and excerpt. |
+| `koyomi/list` | `$list` or `$events`, `$title` (text or `false`), `$level` (default 2), `$group` (`'month'` or `false`, default from `groupBy`) | The events as a timeline: in the upcoming view a `.koyomi-today` line, then a `.koyomi-month` section per month (heading at `$level + 1`, cards at `$level + 2`). With `$group` false one flat list (cards at `$level + 1`). Also the empty message, and a switch between upcoming and past events when `$list` is given. |
+| `koyomi/card` | `$event`, `$level` (default 3) | One event as a card: calendar-sheet date (`.koyomi-card-date` with weekday, day, month and, across months, "until …"), title link, full date and time (`.koyomi-card-when`), time of day alone (`.koyomi-card-time`), status, place, price, availability and excerpt. The sheet date and the time of day are `aria-hidden`; `.koyomi-card-when` carries the full text for screen readers, so a timeline may hide it visually. |
+| `koyomi/switch` | `$list` or `$calendar` | The attendance switch "All · In person · Online" as links with counts, the active one with `aria-current="page"`. A hybrid event counts under both, so nobody has to enter a hybrid event twice. Prints nothing when the view has no in-person or no online event. |
 | `koyomi/event` | `$event` or `$page`, `$calendarUrl` | The facts of one event: status, previous date, when, where, price, languages, organizers, categories, booking, calendar links and series navigation. |
 | `koyomi/past` | `$event`, `$calendarUrl` | A note on past events with a link to the upcoming ones. Prints nothing for upcoming events. |
 | `koyomi/venue` | `$venue` (a venue or venue page), `$compact` | Name and address. With `$compact` off also the directions and the map image (when `showMap` is on). The map and website links are printed in both modes. |
-| `koyomi/filters` | `$list` or `$calendar` | The filter form: category, format, language and featured, as a plain GET form. |
+| `koyomi/filters` | `$list` or `$calendar`, `$attendance` (default `true`) | The filter form: category, format, language and featured, as a plain GET form. With `$attendance` false the format select is left out (the switch shows it) and a chosen format is kept as a hidden field. |
 | `koyomi/pagination` | `$list` or `$calendar` | Previous and next links, only when there is more than one page. |
 | `koyomi/subscribe` | `$calendar` (defaults to the site's calendar) | The `webcal://` subscription link and the RSS link, as far as their switches are on. |
 | `koyomi/jsonld` | `$event` or `$page` | The `<script type="application/ld+json">` block for an event. |

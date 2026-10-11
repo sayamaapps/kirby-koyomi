@@ -22,7 +22,8 @@ final class Format
      *
      * Keys: date (single day, with weekday), dateShort (numeric), time,
      * rangeSameMonth / rangeSameYear / rangeOther (two patterns each: start, end),
-     * with separators rangeSameMonthSep / rangeSep.
+     * with separators rangeSameMonthSep / rangeSep; for the timeline monthTitle
+     * ("November 2026"), day ("6." / "6") and dayMonth ("2. Dez." / "Dec 2").
      */
     public const DEFAULTS = [
         'en' => [
@@ -35,6 +36,9 @@ final class Format
             'rangeOther' => ['j F Y', 'j F Y'],
             'rangeSameMonthSep' => '–',
             'rangeSep' => ' – ',
+            'monthTitle' => 'F Y',
+            'day' => 'j',
+            'dayMonth' => 'M j',
         ],
         'de' => [
             'date' => 'l, j. F Y',
@@ -46,6 +50,9 @@ final class Format
             'rangeOther' => ['j. F Y', 'j. F Y'],
             'rangeSameMonthSep' => '–',
             'rangeSep' => ' – ',
+            'monthTitle' => 'F Y',
+            'day' => 'j.',
+            'dayMonth' => 'j. M',
         ],
     ];
 
@@ -176,6 +183,70 @@ final class Format
             [$startPattern, $endPattern] = self::pair('rangeOther');
         }
         return self::apply($first, $startPattern) . self::single('rangeSep') . self::apply($last, $endPattern);
+    }
+
+    /** Heading of a month in the timeline: "November 2026". */
+    public static function monthTitle(DateTimeImmutable $time): string
+    {
+        return self::apply($time, self::single('monthTitle'));
+    }
+
+    /**
+     * The calendar-sheet date of a card in the timeline, from firstDay() and
+     * lastDay(): one day → ['Fr', '6.', 'Nov.', ''], several days in one month
+     * → ['Fr', '6.–8.', 'Nov.', ''], across months → ['Fr', '30.', 'Okt.', 'bis 2. Nov.'].
+     *
+     * @return array{weekday: string, day: string, month: string, until: string}
+     */
+    public static function dayBlock(Event $event): array
+    {
+        $first = $event->firstDay();
+        $last = $event->lastDay();
+        $dayPattern = self::single('day');
+        $day = self::apply($first, $dayPattern);
+        $until = '';
+        if ($first->format('Y-m-d') !== $last->format('Y-m-d')) {
+            if ($first->format('Y-m') === $last->format('Y-m')) {
+                $day .= self::single('rangeSameMonthSep') . self::apply($last, $dayPattern);
+            } else {
+                $until = I18n::t('date.until', ['date' => self::apply($last, self::single('dayMonth'))]);
+            }
+        }
+        return [
+            'weekday' => self::apply($first, 'D'),
+            'day' => $day,
+            'month' => self::apply($first, 'M'),
+            'until' => $until,
+        ];
+    }
+
+    /**
+     * The time of day for the timeline, the date being shown by dayBlock():
+     * "18:00–21:00 Uhr", "18:00 Uhr", "Fr 18:00 – So 13:00 Uhr", "ganztägig".
+     * Adds the zone like when() when it differs from the site zone.
+     */
+    public static function clock(Event $event): string
+    {
+        if ($event->allDay) {
+            return I18n::t('when.allDay');
+        }
+        $start = $event->start;
+        if ($event->isMultiDay() && $event->hasEndTime) {
+            $text = I18n::t('when.multiDayClock', [
+                'startDay' => self::apply($start, 'D'),
+                'startTime' => self::time($start),
+                'endDay' => self::apply($event->end, 'D'),
+                'endTime' => self::time($event->end),
+            ]);
+        } elseif ($event->hasEndTime && !$event->isMultiDay()) {
+            $text = I18n::t('when.timeRange', ['start' => self::time($start), 'end' => self::time($event->end)]);
+        } else {
+            $text = I18n::t('when.timeSingle', ['time' => self::time($start)]);
+        }
+        if ($event->timezone !== self::siteZone()) {
+            $text = I18n::t('when.timezone', ['when' => $text, 'zone' => str_replace('_', ' ', $event->timezone)]);
+        }
+        return $text;
     }
 
     /**

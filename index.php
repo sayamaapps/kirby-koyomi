@@ -193,6 +193,7 @@ App::plugin('sayamaapps/koyomi', [
         'koyomi/card' => __DIR__ . '/snippets/koyomi/card.php',
         'koyomi/event' => __DIR__ . '/snippets/koyomi/event.php',
         'koyomi/filters' => __DIR__ . '/snippets/koyomi/filters.php',
+        'koyomi/switch' => __DIR__ . '/snippets/koyomi/switch.php',
         'koyomi/pagination' => __DIR__ . '/snippets/koyomi/pagination.php',
         'koyomi/past' => __DIR__ . '/snippets/koyomi/past.php',
         'koyomi/venue' => __DIR__ . '/snippets/koyomi/venue.php',

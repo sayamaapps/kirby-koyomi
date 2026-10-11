@@ -14,7 +14,9 @@
  * @var array|null          $list   Repository::list() shape (SPEC §8.9)
  * @var iterable|null       $events list of Koyomi\Event or event pages
  * @var string|false|null   $title  heading text; false = no heading
- * @var int|null            $level  heading level, 2 by default; the cards use level + 1
+ * @var int|null            $level  heading level, 2 by default; months use level + 1, cards level + 2
+ * @var string|false|null   $group  'month' = timeline with month headings (default from
+ *                                  koyomi.groupBy), false = one flat list (cards use level + 1)
  */
 if (!koyomi_active()) {
     return;
@@ -31,6 +33,8 @@ $view = ($list['view'] ?? 'upcoming') === 'past' ? 'past' : 'upcoming';
 $filtered = (bool) ($list['filtered'] ?? false);
 $title ??= koyomi_t($view === 'past' ? 'list.past' : 'list.upcoming');
 $level = min(6, max(1, (int) ($level ?? 2)));
+$group ??= \Koyomi\Options::groupBy(\Kirby\Cms\App::instance());
+$group = $group === 'month' ? 'month' : false;
 
 $items = [];
 foreach ($events ?? ($list['events'] ?? []) as $item) {
@@ -60,7 +64,23 @@ if ($list !== null) {
   <?php if ($title !== false && $title !== '') : ?>
   <h<?= $level ?> class="koyomi-list-title"><?= esc($title) ?></h<?= $level ?>>
   <?php endif ?>
-  <?php if ($items !== []) : ?>
+  <?php if ($items !== [] && $group === 'month') : ?>
+  <div class="koyomi-timeline">
+    <?php if ($view === 'upcoming') : $today = koyomi_now(); ?>
+    <p class="koyomi-today"><time datetime="<?= esc($today->format('Y-m-d')) ?>"><?= esc(koyomi_t('list.today', ['date' => \Koyomi\Format::date($today)])) ?></time></p>
+    <?php endif ?>
+    <?php foreach (\Koyomi\Query::byMonth($items) as $month) : $monthLevel = min(6, $level + 1); ?>
+    <section class="koyomi-month" aria-labelledby="koyomi-month-<?= esc($month['key'], 'attr') ?>">
+      <h<?= $monthLevel ?> class="koyomi-month-title" id="koyomi-month-<?= esc($month['key'], 'attr') ?>"><time datetime="<?= esc($month['key']) ?>"><?= esc(\Koyomi\Format::monthTitle($month['first'])) ?></time></h<?= $monthLevel ?>>
+      <ol class="koyomi-events">
+        <?php foreach ($month['events'] as $event) : ?>
+        <li class="koyomi-events-item"><?php snippet('koyomi/card', ['event' => $event, 'level' => min(6, $level + 2)]) ?></li>
+        <?php endforeach ?>
+      </ol>
+    </section>
+    <?php endforeach ?>
+  </div>
+  <?php elseif ($items !== []) : ?>
   <ol class="koyomi-events">
     <?php foreach ($items as $event) : ?>
     <li class="koyomi-events-item"><?php snippet('koyomi/card', ['event' => $event, 'level' => $level + 1]) ?></li>

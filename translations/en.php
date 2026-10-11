@@ -195,4 +195,11 @@ return [
     'field.kind' => 'Type',
     'kind.person' => 'Person',
     'kind.organization' => 'Organization',
+    'when.allDay' => 'all day',
+    'when.multiDayClock' => '{startDay} {startTime} – {endDay} {endTime}',
+    'date.until' => 'until {date}',
+    'list.today' => 'Today: {date}',
+    'switch.label' => 'Format',
+    'switch.all' => 'All',
+    'switch.count' => '{count} events',
 ];

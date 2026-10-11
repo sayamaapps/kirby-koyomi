@@ -215,6 +215,31 @@ final class Query
         return $out;
     }
 
+    /**
+     * Groups events by the month of their first day, in the given order (so a
+     * sorted list stays sorted): [['key' => '2026-11', 'first' => DateTimeImmutable,
+     * 'events' => list<Event>], …]. An event that runs over several months
+     * belongs to the month it starts in.
+     *
+     * @param list<Event> $events
+     * @return list<array{key: string, first: \DateTimeImmutable, events: list<Event>}>
+     */
+    public static function byMonth(array $events): array
+    {
+        $groups = [];
+        $index = [];
+        foreach ($events as $event) {
+            $first = $event->firstDay();
+            $key = $first->format('Y-m');
+            if (!isset($index[$key])) {
+                $index[$key] = count($groups);
+                $groups[] = ['key' => $key, 'first' => $first->modify('first day of this month'), 'events' => []];
+            }
+            $groups[$index[$key]]['events'][] = $event;
+        }
+        return $groups;
+    }
+
     /** The attendance filter semantics of filter() and facets(). */
     private static function matchesAttendance(Event $event, string $mode): bool
     {

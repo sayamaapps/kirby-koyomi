@@ -10,6 +10,11 @@
  * Prints nothing when Koyomi is inactive or the data is not an event.
  * Status, "Happening now" and "has taken place" are text, never icons.
  *
+ * For a timeline the card also carries a calendar-sheet date
+ * (.koyomi-card-date: weekday, day, month) and the time of day alone
+ * (.koyomi-card-time). Both are aria-hidden: .koyomi-card-when keeps the full
+ * date and time for screen readers, a site may hide it visually.
+ *
  * @var \Koyomi\Event|\Koyomi\Models\EventPage|null $event (required)
  * @var int|null $level heading level of the title, 3 by default
  */
@@ -40,6 +45,7 @@ if ($ongoing) {
 }
 
 $datetime = $e->allDay ? \Koyomi\Time::date($e->start) : \Koyomi\Time::iso($e->start);
+$sheet = \Koyomi\Format::dayBlock($e);
 $status = \Koyomi\Format::status($e);
 
 // Place: venue name and city (in person only), then the attendance label.
@@ -56,8 +62,10 @@ $priceLine = implode(' · ', array_values(array_filter(
   <?php if ($e->image !== '') : ?>
   <img class="koyomi-card-image" src="<?= esc($e->image) ?>" alt="<?= esc($e->imageAlt) ?>" loading="lazy">
   <?php endif ?>
+  <p class="koyomi-card-date" aria-hidden="true"><span class="koyomi-card-weekday"><?= esc($sheet['weekday']) ?></span> <span class="koyomi-card-day"><?= esc($sheet['day']) ?></span> <span class="koyomi-card-month"><?= esc($sheet['month']) ?></span><?php if ($sheet['until'] !== '') : ?> <span class="koyomi-card-until"><?= esc($sheet['until']) ?></span><?php endif ?></p>
   <h<?= $level ?> class="koyomi-card-title"><?php if ($e->url !== '') : ?><a href="<?= esc($e->url) ?>"><?= esc($e->title) ?></a><?php else : ?><?= esc($e->title) ?><?php endif ?></h<?= $level ?>>
   <p class="koyomi-card-when"><time datetime="<?= esc($datetime) ?>"><?= esc(\Koyomi\Format::when($e)) ?></time></p>
+  <p class="koyomi-card-time" aria-hidden="true"><?= esc(\Koyomi\Format::clock($e)) ?></p>
   <?php if ($status !== '') : ?>
   <p class="koyomi-card-status"><strong><?= esc($status) ?></strong></p>
   <?php endif ?>

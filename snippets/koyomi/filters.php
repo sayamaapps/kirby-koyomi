@@ -12,6 +12,8 @@
  *
  * @var array|null                 $list     Repository::list() shape (SPEC §8.9)
  * @var \Kirby\Cms\Page|null       $calendar used when $list is not given
+ * @var bool|null                  $attendance false = no format select (koyomi/switch shows it);
+ *                                             a chosen format is then kept as a hidden field
  */
 if (!koyomi_active()) {
     return;
@@ -39,8 +41,9 @@ $customLanguages = \Koyomi\Options::languages(\Kirby\Cms\App::instance());
 $categories = $facets['categories'] ?? [];
 $languages = $facets['languages'] ?? [];
 $featuredCount = (int) ($facets['featured'] ?? 0);
+$attendance ??= true;
 $attendanceOptions = [];
-foreach (\Koyomi\Attendance::ALL as $code) {
+foreach ($attendance ? \Koyomi\Attendance::ALL : [] as $code) {
     $count = (int) ($facets['attendance'][$code] ?? 0);
     if ($count > 0) {
         $attendanceOptions[$code] = $count;
@@ -59,6 +62,9 @@ $featuredChecked = !empty($filters['featured']);
 <form class="koyomi-filters" method="get" action="<?= esc($baseUrl) ?>" aria-label="<?= esc(koyomi_t('filters.label')) ?>">
   <?php if ($view === 'past') : ?>
   <input type="hidden" name="view" value="past">
+  <?php endif ?>
+  <?php if (!$attendance && $selectedAttendance !== null) : ?>
+  <input type="hidden" name="attendance" value="<?= esc($selectedAttendance) ?>">
   <?php endif ?>
 
   <?php if ($categories !== []) : ?>

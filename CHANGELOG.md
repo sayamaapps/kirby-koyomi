@@ -16,6 +16,19 @@ All notable changes to this project are documented here. Versions follow
 
 ## [1.0.0] — Unreleased
 
+### Timeline (Simon 11.10.2026: "a calendar is always a time line")
+
+- `koyomi/list` shows the events as a timeline by default: a "today" line,
+  month headings, and per card a calendar-sheet date (weekday, day, month) and
+  the time of day. Option `groupBy` (`'month'` | `false`), snippet parameter
+  `$group`. Helpers `Query::byMonth()`, `Format::monthTitle()`,
+  `Format::dayBlock()`, `Format::clock()`.
+- New snippet `koyomi/switch`: "All · In person · Online" as links with
+  counts. A hybrid event counts under both, so a hybrid event no longer has to
+  be entered twice. Option `attendanceSwitch` (default on); the calendar
+  template shows the switch and leaves the format select out of the filter
+  form (`koyomi/filters` parameter `$attendance`).
+
 ### Fixed (review round, before the first release)
 
 - Drafts never reach the public output: a draft series part, venue or organizer

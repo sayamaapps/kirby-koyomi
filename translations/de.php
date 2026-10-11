@@ -186,4 +186,11 @@ return [
     'field.kind' => 'Art',
     'kind.person' => 'Person',
     'kind.organization' => 'Organisation',
+    'when.allDay' => 'ganztägig',
+    'when.multiDayClock' => '{startDay} {startTime} – {endDay} {endTime} Uhr',
+    'date.until' => 'bis {date}',
+    'list.today' => 'Heute: {date}',
+    'switch.label' => 'Format',
+    'switch.all' => 'Alle',
+    'switch.count' => '{count} Termine',
 ];

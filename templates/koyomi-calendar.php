@@ -14,7 +14,9 @@ $list = koyomi_active() ? $page->koyomiList() : null;
 <?php if ($page->content()->get('intro')->isNotEmpty()) : ?>
 <div class="koyomi-intro"><?= $page->content()->get('intro')->kirbytext() ?></div>
 <?php endif ?>
-<?php snippet('koyomi/filters', ['list' => $list]) ?>
+<?php $switch = \Koyomi\Options::attendanceSwitch($kirby) ?>
+<?php if ($switch) : ?><?php snippet('koyomi/switch', ['list' => $list]) ?><?php endif ?>
+<?php snippet('koyomi/filters', ['list' => $list, 'attendance' => !$switch]) ?>
 <?php snippet('koyomi/list', ['list' => $list]) ?>
 <?php snippet('koyomi/pagination', ['list' => $list]) ?>
 <?php snippet('koyomi/subscribe', ['calendar' => $page]) ?>

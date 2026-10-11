@@ -146,6 +146,21 @@ final class Options
         return self::get($kirby, 'google', true) === true;
     }
 
+    /**
+     * Layout of koyomi/list: 'month' (default) groups the events under month
+     * headings as a timeline, false prints one flat list.
+     */
+    public static function groupBy(App $kirby): string|false
+    {
+        return self::get($kirby, 'groupBy', 'month') === 'month' ? 'month' : false;
+    }
+
+    /** The attendance switch above the calendar list (Alle · Vor Ort · Online), default true. */
+    public static function attendanceSwitch(App $kirby): bool
+    {
+        return self::get($kirby, 'attendanceSwitch', true) === true;
+    }
+
     /** Hide cancelled events from the upcoming list (feeds keep them), default false. */
     public static function hideCancelled(App $kirby): bool
     {
