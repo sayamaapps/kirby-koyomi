@@ -14,7 +14,7 @@ All notable changes to this project are documented here. Versions follow
 - A change to the names of options, fields, snippets or URLs is breaking and is
   a major version too.
 
-## [1.0.0] — Unreleased
+## [1.0.0] — 2026-10-11
 
 ### Timeline (Simon 11.10.2026: "a calendar is always a time line")
 
