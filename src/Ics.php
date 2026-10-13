@@ -324,7 +324,7 @@ final class Ics
     /**
      * LOCATION text (unescaped):
      * - effective online: I18n "ics.online", plus " (<platform>)" when onlinePlatform is set → "Online (Zoom)"
-     * - offline with venue: Venue::label() → "Seminarhaus Beispielhof, Seminarweg 1, 12345 Musterstadt, DE"
+     * - offline with venue: Venue::label() → "Seminarhaus Beispielhof, Musterstraße 1, 12345 Musterstadt, DE"
      * - mixed with venue: Venue::label() + " / " + the online text → "…, DE / Online (Zoom)"
      * - no venue and not online: ""
      *

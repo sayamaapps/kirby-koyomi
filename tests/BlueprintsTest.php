@@ -291,7 +291,7 @@ koyomi_test('Koyomi Blueprints', function () use ($settings, $root) {
         'events' => 'pages/koyomi-calendar',
         'events/retreat' => 'pages/koyomi-event',
         'venues' => 'pages/koyomi-venues',
-        'venues/sonnenhof' => 'pages/koyomi-venue',
+        'venues/beispielhof' => 'pages/koyomi-venue',
         'organizers' => 'pages/koyomi-organizers',
         'organizers/anna' => 'pages/koyomi-organizer',
     ];

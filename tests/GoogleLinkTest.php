@@ -29,11 +29,11 @@ koyomi_test('Koyomi GoogleLink', function () {
         'description' => 'Three days of silence.', 'attendance' => 'mixed', 'venue' => koyomi_raw_venue(),
         'onlinePlatform' => 'Zoom', 'categories' => 'Retreat, Meditation', 'languages' => 'de, cs',
         'price' => '380', 'availability' => 'limited', 'bookingUrl' => 'https://booking.example/retreat',
-        'organizers' => [['id' => 'org-anna', 'name' => 'Anna', 'kind' => 'person', 'website' => 'https://anna.example']],
+        'organizers' => [['id' => 'org-anna', 'name' => 'Anna Beispiel', 'kind' => 'person', 'website' => 'https://anna.example']],
         'image' => 'https://example.test/media/cover.jpg', 'modified' => 1791000000,
     ]));
     expect(
-        'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Silent%20Retreat&dates=20270312T180000%2F20270314T130000&ctz=Europe%2FBerlin&details=Three%20days%20of%20silence.%0A%0Ahttps%3A%2F%2Fexample.test%2Fevents%2Fretreat&location=Seminarhaus%20Sonnenhof%2C%20Seminarweg%201%2C%2012345%20Musterstadt%2C%20DE',
+        'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Silent%20Retreat&dates=20270312T180000%2F20270314T130000&ctz=Europe%2FBerlin&details=Three%20days%20of%20silence.%0A%0Ahttps%3A%2F%2Fexample.test%2Fevents%2Fretreat&location=Seminarhaus%20Beispielhof%2C%20Musterstra%C3%9Fe%201%2C%2012345%20Musterstadt%2C%20DE',
         GoogleLink::url($retreat, 'en'),
         'SPEC §8.6 example'
     );

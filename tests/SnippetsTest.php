@@ -43,7 +43,7 @@ koyomi_test('Koyomi snippets', function () use ($root) {
         'onlinePlatform' => 'Zoom', 'categories' => 'Retreat, Meditation', 'languages' => 'de, cs',
         'price' => '380', 'priceNote' => 'Frühbucher bis 1. Februar', 'availability' => 'limited',
         'bookingUrl' => 'https://booking.example/retreat',
-        'organizers' => [['id' => 'org-anna', 'name' => 'Anna', 'kind' => 'person', 'website' => 'https://anna.example']],
+        'organizers' => [['id' => 'org-anna', 'name' => 'Anna Beispiel', 'kind' => 'person', 'website' => 'https://anna.example']],
         'image' => 'https://example.test/media/cover.jpg', 'imageAlt' => 'Sunrise', 'modified' => 1791000000,
         'featured' => true,
     ];
@@ -88,7 +88,7 @@ koyomi_test('Koyomi snippets', function () use ($root) {
     holds(str_contains($html, 'koyomi-card--past') && str_contains($html, '<p class="koyomi-card-badge">Has taken place</p>'), 'card past: "Has taken place" as text');
 
     $concert = koyomi_snippet_event([
-        'id' => 'evt-concert', 'title' => 'Concert in Prague', 'startDate' => '2027-03-20', 'startTime' => '20:00', 'endTime' => '',
+        'id' => 'evt-concert', 'title' => 'Evening Concert', 'startDate' => '2027-03-20', 'startTime' => '20:00', 'endTime' => '',
         'timezone' => 'Europe/Prague', 'status' => 'rescheduled', 'previousStart' => '2027-02-20 20:00:00',
         'isFree' => false, 'price' => '450', 'currency' => 'CZK',
     ]);
@@ -116,7 +116,7 @@ koyomi_test('Koyomi snippets', function () use ($root) {
     $html = koyomi_snippet_html($kirby, 'koyomi/event', ['event' => $retreat, 'calendarUrl' => 'https://example.test/events']);
     holds(str_contains($html, '<div class="koyomi-event koyomi-event--scheduled koyomi-event--featured">'), 'event: classes');
     holds(str_contains($html, '<dd class="koyomi-when"><time datetime="2027-03-12T18:00:00+01:00">Friday, 12 March 2027, 18:00 – Sunday, 14 March 2027, 13:00</time></dd>'), 'event: when with offset');
-    holds(str_contains($html, '<p class="koyomi-venue-name"><a href="https://example.test/venues/sonnenhof">Seminarhaus Beispielhof</a></p>'), 'event: venue inside where, compact');
+    holds(str_contains($html, '<p class="koyomi-venue-name"><a href="https://example.test/venues/beispielhof">Seminarhaus Beispielhof</a></p>'), 'event: venue inside where, compact');
     holds(str_contains($html, '<p class="koyomi-attendance">Hybrid: in person and online via Zoom</p>'), 'event: attendance label');
     holds(!str_contains($html, 'koyomi-venue-directions') && !str_contains($html, 'koyomi-venue-map'), 'event: venue compact (no directions, no map)');
     holds(str_contains($html, '<dd class="koyomi-price">€380 <span class="koyomi-price-note">Frühbucher bis 1. Februar</span> <span class="koyomi-availability">Only a few places left</span></dd>'), 'event: price, note and availability');
@@ -126,7 +126,7 @@ koyomi_test('Koyomi snippets', function () use ($root) {
     holds(str_contains($html, '<a class="koyomi-calendar-ics" href="https://example.test/events/retreat.ics" download>Download (.ics)</a>'), 'event: ics link');
     holds(str_contains($html, '<a class="koyomi-calendar-google" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Silent%20Retreat'), 'event: Google link, escaped');
     holds(str_contains($html, 'mailto:') === false, 'event: organizer without public email has no mailto');
-    holds(str_contains($html, '<dt>Organizer</dt>') && str_contains($html, '<a href="https://anna.example">Anna</a>'), 'event: organizer name linked to its website');
+    holds(str_contains($html, '<dt>Organizer</dt>') && str_contains($html, '<a href="https://anna.example">Anna Beispiel</a>'), 'event: organizer name linked to its website');
     holds(str_contains($html, '<p class="koyomi-status') === false, 'event: scheduled has no status line');
 
     // Expiry: the page is not cached past the start.
@@ -226,35 +226,35 @@ koyomi_test('Koyomi snippets', function () use ($root) {
     // ---- venue ------------------------------------------------------------------
     $kirby = KoyomiFixture::app($root);
     $venue = Venue::fromArray(koyomi_raw_venue([
-        'mapImage' => 'https://example.test/media/map.jpg', 'mapImageAlt' => 'Map of the Sonnenhof area', 'showMap' => true,
+        'mapImage' => 'https://example.test/media/map.jpg', 'mapImageAlt' => 'Map of the Beispielhof area', 'showMap' => true,
     ]));
     $html = koyomi_snippet_html($kirby, 'koyomi/venue', ['venue' => $venue]);
     holds(str_contains($html, '<div class="koyomi-venue">'), 'venue: wrapper');
-    holds(str_contains($html, '<p class="koyomi-venue-name"><a href="https://example.test/venues/sonnenhof">Seminarhaus Beispielhof</a></p>'), 'venue: name linked');
-    holds(str_contains($html, '<p class="koyomi-venue-address">Seminarweg 1<br>12345 Musterstadt<br>Germany</p>'), 'venue: address lines, country by name');
+    holds(str_contains($html, '<p class="koyomi-venue-name"><a href="https://example.test/venues/beispielhof">Seminarhaus Beispielhof</a></p>'), 'venue: name linked');
+    holds(str_contains($html, '<p class="koyomi-venue-address">Musterstraße 1<br>12345 Musterstadt<br>Germany</p>'), 'venue: address lines, country by name');
     holds(str_contains($html, '<p class="koyomi-venue-directions"><strong>Directions</strong><br>Ten minutes from the station.</p>'), 'venue: directions');
-    holds(str_contains($html, '<img class="koyomi-venue-map" src="https://example.test/media/map.jpg" alt="Map of the Sonnenhof area" loading="lazy">'), 'venue: map image when showMap');
-    holds(str_contains($html, '<a href="https://www.openstreetmap.org/?mlat=47.856&amp;mlon=12.128#map=17/47.856/12.128" target="_blank" rel="noopener">Show on map</a>'), 'venue: OpenStreetMap link');
-    holds(str_contains($html, '<a href="https://sonnenhof.example" rel="noopener">Website</a>'), 'venue: website link');
+    holds(str_contains($html, '<img class="koyomi-venue-map" src="https://example.test/media/map.jpg" alt="Map of the Beispielhof area" loading="lazy">'), 'venue: map image when showMap');
+    holds(str_contains($html, '<a href="https://www.openstreetmap.org/?mlat=48.123&amp;mlon=11.456#map=17/48.123/11.456" target="_blank" rel="noopener">Show on map</a>'), 'venue: OpenStreetMap link');
+    holds(str_contains($html, '<a href="https://beispielhof.example" rel="noopener">Website</a>'), 'venue: website link');
 
     $noMap = Venue::fromArray(koyomi_raw_venue(['mapImage' => 'https://example.test/media/map.jpg', 'showMap' => false]));
     $html = koyomi_snippet_html($kirby, 'koyomi/venue', ['venue' => $noMap]);
     holds(!str_contains($html, 'koyomi-venue-map'), 'venue: no map image when showMap is off');
 
     $html = koyomi_snippet_html($kirby, 'koyomi/venue', ['venue' => $venue, 'compact' => true]);
-    holds(str_contains($html, 'Seminarweg 1') && !str_contains($html, 'koyomi-venue-directions') && !str_contains($html, 'koyomi-venue-map'), 'venue compact: address only');
+    holds(str_contains($html, 'Musterstraße 1') && !str_contains($html, 'koyomi-venue-directions') && !str_contains($html, 'koyomi-venue-map'), 'venue compact: address only');
     holds(str_contains($html, 'koyomi-venue-links'), 'venue compact: links stay');
 
-    $unnamedUrl = Venue::fromArray(['id' => 'venue-x', 'name' => 'Kulturhaus Praha', 'city' => 'Praha', 'country' => 'CZ']);
+    $unnamedUrl = Venue::fromArray(['id' => 'venue-x', 'name' => 'Stadthalle Musterstadt', 'city' => 'Musterstadt', 'country' => 'CZ']);
     $html = koyomi_snippet_html($kirby, 'koyomi/venue', ['venue' => $unnamedUrl]);
-    holds(str_contains($html, '<p class="koyomi-venue-name">Kulturhaus Praha</p>'), 'venue without URL: plain name');
-    holds(str_contains($html, '<p class="koyomi-venue-address">Praha<br>Czechia</p>'), 'venue: address without street');
+    holds(str_contains($html, '<p class="koyomi-venue-name">Stadthalle Musterstadt</p>'), 'venue without URL: plain name');
+    holds(str_contains($html, '<p class="koyomi-venue-address">Musterstadt<br>Czechia</p>'), 'venue: address without street');
     $malta = Venue::fromArray(['id' => 'venue-mt', 'name' => 'Valletta', 'city' => 'Valletta', 'country' => 'MT']);
     holds(str_contains(koyomi_snippet_html($kirby, 'koyomi/venue', ['venue' => $malta]), '<p class="koyomi-venue-address">Valletta<br>MT</p>'), 'venue: unknown country code printed as is');
 
     $kirby = KoyomiFixture::app($root, ['koyomi.country' => 'de']);
-    holds(str_contains(koyomi_snippet_html($kirby, 'koyomi/venue', ['venue' => $venue]), '<p class="koyomi-venue-address">Seminarweg 1<br>12345 Musterstadt</p>'), 'venue: home country (koyomi.country) left out');
-    holds(str_contains(koyomi_snippet_html($kirby, 'koyomi/venue', ['venue' => $unnamedUrl]), '<p class="koyomi-venue-address">Praha<br>Czechia</p>'), 'venue: other country kept with koyomi.country');
+    holds(str_contains(koyomi_snippet_html($kirby, 'koyomi/venue', ['venue' => $venue]), '<p class="koyomi-venue-address">Musterstraße 1<br>12345 Musterstadt</p>'), 'venue: home country (koyomi.country) left out');
+    holds(str_contains(koyomi_snippet_html($kirby, 'koyomi/venue', ['venue' => $unnamedUrl]), '<p class="koyomi-venue-address">Musterstadt<br>Czechia</p>'), 'venue: other country kept with koyomi.country');
 
     $kirby = KoyomiFixture::app($root, ['koyomi.language' => 'de']);
     $html = koyomi_snippet_html($kirby, 'koyomi/venue', ['venue' => $venue]);

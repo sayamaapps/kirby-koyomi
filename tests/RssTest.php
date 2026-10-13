@@ -21,7 +21,7 @@ function rss_event(array $changes = []): Event
         'description' => 'Three days of silence.', 'attendance' => 'mixed', 'venue' => koyomi_raw_venue(),
         'categories' => 'Retreat, Meditation', 'languages' => 'de, cs',
         'price' => '380', 'availability' => 'limited', 'bookingUrl' => 'https://booking.example/retreat',
-        'organizers' => [['id' => 'org-anna', 'name' => 'Anna', 'kind' => 'person', 'website' => 'https://anna.example']],
+        'organizers' => [['id' => 'org-anna', 'name' => 'Anna Beispiel', 'kind' => 'person', 'website' => 'https://anna.example']],
         'image' => 'https://example.test/media/cover.jpg', 'modified' => 1791000000,
     ], $changes)));
 }
@@ -64,7 +64,7 @@ koyomi_test('Koyomi Rss', function () {
         '      <category>Meditation</category>',
         '      <ev:startdate>2027-03-12T18:00:00+01:00</ev:startdate>',
         '      <ev:enddate>2027-03-14T13:00:00+01:00</ev:enddate>',
-        '      <ev:location>Seminarhaus Beispielhof, Seminarweg 1, 12345 Musterstadt, DE</ev:location>',
+        '      <ev:location>Seminarhaus Beispielhof, Musterstraße 1, 12345 Musterstadt, DE</ev:location>',
         '    </item>',
         '  </channel>',
         '</rss>',

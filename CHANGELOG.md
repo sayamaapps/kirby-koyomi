@@ -18,12 +18,12 @@ All notable changes to this project are documented here. Versions follow
 
 ### Fixed
 
-- `koyomi/venue` printed the country as its raw ISO code ("Praha<br>CZ"). It
+- `koyomi/venue` printed the country as its raw ISO code ("Musterstadt<br>CZ"). It
   now prints the name in the site language ("Czechia", "Tschechien"; 24
   European countries and the US, other codes as they are), via
   `Format::countryName()` and `Format::addressLines()`.
 - New option `country`: the home country, left out of displayed addresses, so a
-  German site shows "12345 Musterstadt" and "110 00 Praha, Tschechien".
+  German site shows "12345 Musterstadt" and "12345 Musterstadt, Tschechien".
 - JSON-LD (`addressCountry`), calendar files, RSS and the Google link keep the
   ISO code, as before.
 

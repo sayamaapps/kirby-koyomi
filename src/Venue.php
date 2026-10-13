@@ -81,7 +81,7 @@ final class Venue
 
     /**
      * One line, parts joined with ", " and empty parts left out:
-     * "Seminarweg 1, 12345 Musterstadt, DE". Postal code and city share one part.
+     * "Musterstraße 1, 12345 Musterstadt, DE". Postal code and city share one part.
      */
     public function addressLine(): string
     {
@@ -89,7 +89,7 @@ final class Venue
         return implode(', ', array_values(array_filter([$this->street, $cityPart, $this->country], fn ($p) => $p !== '')));
     }
 
-    /** Name plus address: "Seminarhaus Beispielhof, Seminarweg 1, 12345 Musterstadt, DE". */
+    /** Name plus address: "Seminarhaus Beispielhof, Musterstraße 1, 12345 Musterstadt, DE". */
     public function label(): string
     {
         return implode(', ', array_values(array_filter([$this->name, $this->addressLine()], fn ($p) => $p !== '')));
@@ -103,7 +103,7 @@ final class Venue
 
     /**
      * OpenStreetMap, plain link:
-     * - coordinates: https://www.openstreetmap.org/?mlat=47.856&mlon=12.128#map=17/47.856/12.128
+     * - coordinates: https://www.openstreetmap.org/?mlat=48.123&mlon=11.456#map=17/48.123/11.456
      * - address only: https://www.openstreetmap.org/search?query=<rawurlencode(addressLine())>
      * - neither: ""
      */
@@ -129,10 +129,10 @@ final class Venue
 
     /**
      * Public array (JSON output, $page->koyomiData()):
-     *   ['id' => 'venue-sonnenhof', 'name' => 'Seminarhaus Beispielhof', 'street' => 'Seminarweg 1',
-     *    'postalCode' => '12345', 'city' => 'Musterstadt', 'region' => 'Bayern', 'country' => 'DE',
-     *    'address' => 'Seminarweg 1, 12345 Musterstadt, DE', 'lat' => 47.856, 'lng' => 12.128,
-     *    'url' => 'https://…/venues/sonnenhof', 'website' => 'https://…', 'directions' => '…',
+     *   ['id' => 'venue-beispielhof', 'name' => 'Seminarhaus Beispielhof', 'street' => 'Musterstraße 1',
+     *    'postalCode' => '12345', 'city' => 'Musterstadt', 'region' => 'Musterland', 'country' => 'DE',
+     *    'address' => 'Musterstraße 1, 12345 Musterstadt, DE', 'lat' => 48.123, 'lng' => 11.456,
+     *    'url' => 'https://…/venues/beispielhof', 'website' => 'https://…', 'directions' => '…',
      *    'mapImage' => 'https://…/map.jpg'|'' (only when showMap), 'mapImageAlt' => '…', 'mapLink' => 'https://www.openstreetmap.org/…']
      */
     public function toArray(): array

@@ -54,7 +54,7 @@ function koyomi_berlin(string $wall): int
 
 $root = KoyomiFixture::create();
 $extra = KoyomiFixture::create();
-$upcomingTitles = ['Spring Retreat', 'Evening Meditation on Zoom', 'Silent Retreat', 'Concert in Prague', 'Breathing Workshop', 'Mantra Course 1', 'Mantra Course 2'];
+$upcomingTitles = ['Spring Retreat', 'Evening Meditation on Zoom', 'Silent Retreat', 'Evening Concert', 'Breathing Workshop', 'Mantra Course 1', 'Mantra Course 2'];
 
 // The extra site: an event with an impossible date, and two whose description comes from text blocks.
 KoyomiFixture::write($extra . '/content/1_events/20270399_broken/koyomi-event.txt', [
@@ -84,7 +84,7 @@ $partOne = function () use ($root, $upcomingTitles) {
     $retreat = $raw('events/retreat');
     expect('evt-retreat', $retreat['id'], 'raw: id from the page UUID');
     expect('mixed', $retreat['attendance'], 'raw: attendance from the two toggles (in person and online)');
-    holds($retreat['venue'] instanceof Venue && $retreat['venue']->id === 'venue-sonnenhof', 'raw: venue resolved from page://venue-sonnenhof');
+    holds($retreat['venue'] instanceof Venue && $retreat['venue']->id === 'venue-beispielhof', 'raw: venue resolved from page://venue-beispielhof');
     expect('Sunrise over the mountains', $retreat['imageAlt'], 'raw: cover alt text');
     holds(str_starts_with($retreat['image'], 'https://example.test/') && str_ends_with($retreat['image'], '/cover.jpg'), 'raw: cover is an absolute URL');
     holds($retreat['organizers'][0] instanceof Organizer && $retreat['organizers'][0]->id === 'org-anna', 'raw: organizer resolved');
@@ -137,17 +137,17 @@ $partOne = function () use ($root, $upcomingTitles) {
     }
 
     // 3. Venues and organizers.
-    $sonnenhof = Mapper::venue($kirby->page('venues/sonnenhof'));
-    expect(['venue-sonnenhof', 'Seminarhaus Beispielhof', 'DE'], [$sonnenhof->id, $sonnenhof->name, $sonnenhof->country], 'venue: id, name, country');
-    holds($sonnenhof->hasCoordinates() && abs($sonnenhof->lat - 47.856) < 1e-9, 'venue: coordinates');
-    expect('https://www.openstreetmap.org/?mlat=47.856&mlon=12.128#map=17/47.856/12.128', $sonnenhof->mapLink(), 'venue: OpenStreetMap link from the coordinates');
-    holds($sonnenhof->showMap && str_ends_with($sonnenhof->toArray()['mapImage'], '/map.jpg'), 'venue: map image shown with showMap');
-    expect('Map of the Sonnenhof area', $sonnenhof->mapImageAlt, 'venue: map image alt');
-    $kulturhaus = Mapper::venue($kirby->page('venues/kulturhaus'));
-    holds(!$kulturhaus->hasCoordinates() && !$kulturhaus->showMap && $kulturhaus->mapImage === '', 'venue without coordinates, map or showMap');
-    expect('https://www.openstreetmap.org/search?query=' . rawurlencode('Národní 1, 110 00 Praha, CZ'), $kulturhaus->mapLink(), 'venue: address search link without coordinates');
+    $beispielhof = Mapper::venue($kirby->page('venues/beispielhof'));
+    expect(['venue-beispielhof', 'Seminarhaus Beispielhof', 'DE'], [$beispielhof->id, $beispielhof->name, $beispielhof->country], 'venue: id, name, country');
+    holds($beispielhof->hasCoordinates() && abs($beispielhof->lat - 48.123) < 1e-9, 'venue: coordinates');
+    expect('https://www.openstreetmap.org/?mlat=48.123&mlon=11.456#map=17/48.123/11.456', $beispielhof->mapLink(), 'venue: OpenStreetMap link from the coordinates');
+    holds($beispielhof->showMap && str_ends_with($beispielhof->toArray()['mapImage'], '/map.jpg'), 'venue: map image shown with showMap');
+    expect('Map of the Beispielhof area', $beispielhof->mapImageAlt, 'venue: map image alt');
+    $stadthalle = Mapper::venue($kirby->page('venues/stadthalle'));
+    holds(!$stadthalle->hasCoordinates() && !$stadthalle->showMap && $stadthalle->mapImage === '', 'venue without coordinates, map or showMap');
+    expect('https://www.openstreetmap.org/search?query=' . rawurlencode('Musterstraße 1, 12345 Musterstadt, CZ'), $stadthalle->mapLink(), 'venue: address search link without coordinates');
     $customMap = KoyomiFixture::app($root, ['koyomi.mapUrl' => fn (Venue $v): string => 'https://maps.example/' . $v->id]);
-    expect('https://maps.example/venue-sonnenhof', Mapper::venue($customMap->page('venues/sonnenhof'))->mapLink(), 'venue: koyomi.mapUrl closure');
+    expect('https://maps.example/venue-beispielhof', Mapper::venue($customMap->page('venues/beispielhof'))->mapLink(), 'venue: koyomi.mapUrl closure');
     // Page::kirby() is App::instance(), the most recently created App: re-create the main one before using its pages.
     $kirby = KoyomiFixture::app($root);
 
@@ -169,7 +169,7 @@ $partOne = function () use ($root, $upcomingTitles) {
     expect('organizers', Repository::organizersPage($kirby)?->id(), 'organizers container found');
     $venueSlugs = array_map(fn ($p) => $p->slug(), iterator_to_array(Repository::venuePages($kirby)));
     sort($venueSlugs);
-    expect(['kulturhaus', 'sonnenhof'], $venueSlugs, 'venue pages: the children of the container');
+    expect(['beispielhof', 'stadthalle'], $venueSlugs, 'venue pages: the children of the container');
     expect(2, count(Repository::organizerPages($kirby)), 'organizer pages: two');
     expect(2, $kirby->collection('koyomi/venues')->count(), 'collection koyomi/venues');
     expect(2, $kirby->collection('koyomi/organizers')->count(), 'collection koyomi/organizers');
@@ -183,13 +183,13 @@ $partOne = function () use ($root, $upcomingTitles) {
     $calendar = $kirby->page('events');
     expect($upcomingTitles, koyomi_titles(Repository::upcoming($calendar)), 'upcoming: ongoing first, by start, cancelled listed');
     expect(['Past Workshop'], koyomi_titles(Repository::past($calendar)), 'past');
-    expect(['Silent Retreat', 'Concert in Prague'], koyomi_titles(Repository::upcoming($calendar, ['language' => 'cs'])), 'upcoming with a filter');
+    expect(['Silent Retreat', 'Evening Concert'], koyomi_titles(Repository::upcoming($calendar, ['language' => 'cs'])), 'upcoming with a filter');
     expect(array_values(array_diff($upcomingTitles, ['Breathing Workshop'])), koyomi_titles(Repository::upcoming(KoyomiFixture::app($root, ['koyomi.hideCancelled' => true])->page('events'))), 'hideCancelled removes the cancelled event from upcoming');
     // Page::kirby() is App::instance(), the most recently created App: re-create the main one before using its pages.
     $kirby = KoyomiFixture::app($root);
-    expect(['Silent Retreat', 'Breathing Workshop', 'Mantra Course 1', 'Mantra Course 2'], koyomi_titles(Repository::forVenue($kirby, $kirby->page('venues/sonnenhof'))), 'forVenue: upcoming in person at the venue; the moved-online retreat is left out');
-    expect(['Concert in Prague'], koyomi_titles(Repository::forVenue($kirby, $kirby->page('venues/kulturhaus'))), 'forVenue: the other venue');
-    expect(['Silent Retreat', 'Concert in Prague'], koyomi_titles(Repository::forOrganizer($kirby, $kirby->page('organizers/anna'))), 'forOrganizer: Anna');
+    expect(['Silent Retreat', 'Breathing Workshop', 'Mantra Course 1', 'Mantra Course 2'], koyomi_titles(Repository::forVenue($kirby, $kirby->page('venues/beispielhof'))), 'forVenue: upcoming in person at the venue; the moved-online retreat is left out');
+    expect(['Evening Concert'], koyomi_titles(Repository::forVenue($kirby, $kirby->page('venues/stadthalle'))), 'forVenue: the other venue');
+    expect(['Silent Retreat', 'Evening Concert'], koyomi_titles(Repository::forOrganizer($kirby, $kirby->page('organizers/anna'))), 'forOrganizer: Anna Beispiel');
     expect(['Evening Meditation on Zoom'], koyomi_titles(Repository::forOrganizer($kirby, $kirby->page('organizers/sayama'))), 'forOrganizer: Sayama');
 
     // 5. list(): shape, facets, filters, URLs, paging.
@@ -251,12 +251,12 @@ $partOne = function () use ($root, $upcomingTitles) {
     expect(7, count($calendarPage->koyomiList()['events']), 'koyomiList() without a query reads the request (empty here)');
     expect(2, count($calendarPage->koyomiList(['category' => 'retreat'])['events']), 'koyomiList() with an explicit query');
 
-    $venuePage = $kirby->page('venues/sonnenhof');
+    $venuePage = $kirby->page('venues/beispielhof');
     holds($venuePage instanceof VenuePage && $venuePage->koyomiVenue() === $venuePage->koyomiVenue(), 'VenuePage::koyomiVenue() is memoized');
     expect(['Silent Retreat', 'Breathing Workshop', 'Mantra Course 1', 'Mantra Course 2'], koyomi_titles($venuePage->upcomingEvents()), 'VenuePage::upcomingEvents()');
     $organizerPage = $kirby->page('organizers/anna');
     holds($organizerPage instanceof OrganizerPage && $organizerPage->koyomiOrganizer()->email === '', 'OrganizerPage: hidden email');
-    expect(['Silent Retreat', 'Concert in Prague'], koyomi_titles($organizerPage->upcomingEvents()), 'OrganizerPage::upcomingEvents()');
+    expect(['Silent Retreat', 'Evening Concert'], koyomi_titles($organizerPage->upcomingEvents()), 'OrganizerPage::upcomingEvents()');
     holds($kirby->page('organizers/sayama')->koyomiOrganizer()->email === KoyomiFixture::PUBLIC_EMAIL, 'OrganizerPage: public email');
     expect('events', $kirby->site()->koyomiCalendar()?->id(), 'site()->koyomiCalendar()');
 
@@ -277,7 +277,7 @@ $partOne = function () use ($root, $upcomingTitles) {
     expect(404, $status([], 'events/draft-event.ics'), 'draft event .ics is 404');
     holds(KoyomiFixture::app($root)->page('events/draft-event')?->isDraft() === true, 'the draft is really a draft');
     expect(200, $status([], 'events/unlisted-event.ics'), 'unlisted event .ics works on its own URL');
-    expect(404, $status([], 'venues/sonnenhof.ics'), 'venues have no .ics representation');
+    expect(404, $status([], 'venues/beispielhof.ics'), 'venues have no .ics representation');
 
     // 8. Output headers and expiry (a fresh App per render: the expiry only ever lowers).
     $eventApp = KoyomiFixture::app($root);

@@ -14,16 +14,16 @@
  *
  * Content (clock 2027-03-10 12:00 Europe/Berlin; full field values below):
  *   events/ (koyomi-calendar, listed)
- *     retreat               listed   2027-03-12 18:00 – 03-14 13:00, mixed, Sonnenhof, Zoom, 380 EUR, limited, featured, de+cs, Retreat+Meditation
+ *     retreat               listed   2027-03-12 18:00 – 03-14 13:00, mixed, Beispielhof, Zoom, 380 EUR, limited, featured, de+cs, Retreat+Meditation
  *     zoom-session          listed   2027-03-11 19:00–20:30, online, Zoom, free, en, organizer Sayama (public email)
- *     concert               listed   2027-03-20 20:00 (no end), Europe/Prague, Kulturhaus Praha, 450 CZK, rescheduled from 2027-02-20 20:00
- *     workshop-cancelled    listed   2027-03-25 all day, cancelled, Sonnenhof
- *     past-workshop         listed   2027-02-01 10:00–17:00 (past), Sonnenhof
+ *     concert               listed   2027-03-20 20:00 (no end), Europe/Prague, Stadthalle Musterstadt, 450 CZK, rescheduled from 2027-02-20 20:00
+ *     workshop-cancelled    listed   2027-03-25 all day, cancelled, Beispielhof
+ *     past-workshop         listed   2027-02-01 10:00–17:00 (past), Beispielhof
  *     ongoing-retreat       listed   2027-03-08 – 03-11 all day (ongoing), movedOnline, Jitsi
  *     series-part-1/-2      listed   2027-04-01 / 2027-04-08 10:00–12:00, a series of two, Workshop
  *     unlisted-event        unlisted 2027-03-16 10:00
  *     draft-event           draft    2027-03-15 10:00
- *   venues/ (koyomi-venues, unlisted): sonnenhof (DE, with map image), kulturhaus (CZ, no coordinates)
+ *   venues/ (koyomi-venues, unlisted): beispielhof (DE, with map image), stadthalle (CZ, no coordinates)
  *   organizers/ (koyomi-organizers, unlisted): anna (person, email HIDDEN), sayama (organization, email public)
  *
  * Every event with online attendance stores an `onlineUrl` from SECRETS;
@@ -81,7 +81,7 @@ final class KoyomiFixture
                 'StartDate' => '2027-03-12', 'StartTime' => '18:00:00', 'EndDate' => '2027-03-14', 'EndTime' => '13:00:00',
                 'AllDay' => 'false', 'Timezone' => 'Europe/Berlin',
                 'InPerson' => 'true', 'Online' => 'true',
-                'Venue' => "- page://venue-sonnenhof", 'OnlinePlatform' => 'Zoom', 'OnlineUrl' => self::SECRETS[0],
+                'Venue' => "- page://venue-beispielhof", 'OnlinePlatform' => 'Zoom', 'OnlineUrl' => self::SECRETS[0],
                 'EventStatus' => 'scheduled',
                 'IsFree' => 'false', 'Price' => '380', 'Currency' => 'EUR', 'PriceNote' => 'Frühbucher bis 1. Februar',
                 'Availability' => 'limited', 'BookingUrl' => 'https://booking.example/retreat', 'BookingLabel' => '',
@@ -101,11 +101,11 @@ final class KoyomiFixture
             ],
 
             '1_events/20270320_concert/koyomi-event.txt' => [
-                'Title' => 'Concert in Prague', 'Uuid' => 'evt-concert',
+                'Title' => 'Evening Concert', 'Uuid' => 'evt-concert',
                 'Excerpt' => 'Mantra concert.',
                 'StartDate' => '2027-03-20', 'StartTime' => '20:00:00', 'EndDate' => '', 'EndTime' => '',
                 'AllDay' => 'false', 'Timezone' => 'Europe/Prague',
-                'InPerson' => 'true', 'Online' => 'false', 'Venue' => "- page://venue-kulturhaus",
+                'InPerson' => 'true', 'Online' => 'false', 'Venue' => "- page://venue-stadthalle",
                 'EventStatus' => 'rescheduled', 'PreviousStart' => '2027-02-20 20:00:00', 'StatusNote' => 'New date after the venue flooded.',
                 'IsFree' => 'false', 'Price' => '450', 'Currency' => 'CZK', 'Availability' => 'available',
                 'BookingUrl' => 'https://tickets.example/concert', 'BookingLabel' => 'Tickets',
@@ -116,7 +116,7 @@ final class KoyomiFixture
                 'Title' => 'Breathing Workshop', 'Uuid' => 'evt-cancelled',
                 'StartDate' => '2027-03-25', 'StartTime' => '', 'EndDate' => '', 'EndTime' => '',
                 'AllDay' => 'true', 'Timezone' => 'Europe/Berlin',
-                'InPerson' => 'true', 'Online' => 'false', 'Venue' => "- page://venue-sonnenhof",
+                'InPerson' => 'true', 'Online' => 'false', 'Venue' => "- page://venue-beispielhof",
                 'EventStatus' => 'cancelled', 'StatusNote' => 'Wegen Krankheit abgesagt.',
                 'IsFree' => 'false', 'Price' => '90', 'Currency' => 'EUR', 'Availability' => 'available',
                 'Categories' => 'Workshop', 'EventLanguages' => 'de',
@@ -126,7 +126,7 @@ final class KoyomiFixture
                 'Title' => 'Past Workshop', 'Uuid' => 'evt-past',
                 'StartDate' => '2027-02-01', 'StartTime' => '10:00:00', 'EndDate' => '', 'EndTime' => '17:00:00',
                 'AllDay' => 'false', 'Timezone' => 'Europe/Berlin',
-                'InPerson' => 'true', 'Online' => 'false', 'Venue' => "- page://venue-sonnenhof",
+                'InPerson' => 'true', 'Online' => 'false', 'Venue' => "- page://venue-beispielhof",
                 'EventStatus' => 'scheduled', 'IsFree' => 'false', 'Price' => '120', 'Currency' => 'EUR',
                 'Categories' => 'Workshop', 'EventLanguages' => 'de',
             ],
@@ -135,7 +135,7 @@ final class KoyomiFixture
                 'Title' => 'Spring Retreat', 'Uuid' => 'evt-ongoing',
                 'StartDate' => '2027-03-08', 'StartTime' => '', 'EndDate' => '2027-03-11', 'EndTime' => '',
                 'AllDay' => 'true', 'Timezone' => 'Europe/Berlin',
-                'InPerson' => 'true', 'Online' => 'false', 'Venue' => "- page://venue-sonnenhof",
+                'InPerson' => 'true', 'Online' => 'false', 'Venue' => "- page://venue-beispielhof",
                 'OnlinePlatform' => 'Jitsi', 'OnlineUrl' => self::SECRETS[2],
                 'EventStatus' => 'movedOnline', 'StatusNote' => 'Now online only.',
                 'IsFree' => 'false', 'Price' => '250', 'Currency' => 'EUR', 'Availability' => 'soldout',
@@ -145,14 +145,14 @@ final class KoyomiFixture
             '1_events/20270401_series-part-1/koyomi-event.txt' => [
                 'Title' => 'Mantra Course 1', 'Uuid' => 'evt-series-1',
                 'StartDate' => '2027-04-01', 'StartTime' => '10:00:00', 'EndDate' => '', 'EndTime' => '12:00:00',
-                'Timezone' => 'Europe/Berlin', 'InPerson' => 'true', 'Online' => 'false', 'Venue' => "- page://venue-sonnenhof",
+                'Timezone' => 'Europe/Berlin', 'InPerson' => 'true', 'Online' => 'false', 'Venue' => "- page://venue-beispielhof",
                 'IsFree' => 'true', 'Categories' => 'Workshop', 'EventLanguages' => 'de',
                 'Series' => "- page://evt-series-2", 'SeriesPart' => '1',
             ],
             '1_events/20270408_series-part-2/koyomi-event.txt' => [
                 'Title' => 'Mantra Course 2', 'Uuid' => 'evt-series-2',
                 'StartDate' => '2027-04-08', 'StartTime' => '10:00:00', 'EndDate' => '', 'EndTime' => '12:00:00',
-                'Timezone' => 'Europe/Berlin', 'InPerson' => 'true', 'Online' => 'false', 'Venue' => "- page://venue-sonnenhof",
+                'Timezone' => 'Europe/Berlin', 'InPerson' => 'true', 'Online' => 'false', 'Venue' => "- page://venue-beispielhof",
                 'IsFree' => 'true', 'Categories' => 'Workshop', 'EventLanguages' => 'de',
                 'Series' => "- page://evt-series-1", 'SeriesPart' => '2',
             ],
@@ -170,22 +170,22 @@ final class KoyomiFixture
             ],
 
             'venues/koyomi-venues.txt' => ['Title' => 'Venues', 'Uuid' => 'venues-main'],
-            'venues/sonnenhof/koyomi-venue.txt' => [
-                'Title' => 'Seminarhaus Beispielhof', 'Uuid' => 'venue-sonnenhof',
-                'Street' => 'Seminarweg 1', 'PostalCode' => '12345', 'City' => 'Musterstadt', 'Region' => 'Bayern', 'Country' => 'DE',
-                'Lat' => '47.856', 'Lng' => '12.128', 'MapImage' => "- file://file-sonnenhof-map", 'ShowMap' => 'true',
-                'Website' => 'https://sonnenhof.example', 'Directions' => 'Ten minutes from the station.',
+            'venues/beispielhof/koyomi-venue.txt' => [
+                'Title' => 'Seminarhaus Beispielhof', 'Uuid' => 'venue-beispielhof',
+                'Street' => 'Musterstraße 1', 'PostalCode' => '12345', 'City' => 'Musterstadt', 'Region' => 'Musterland', 'Country' => 'DE',
+                'Lat' => '48.123', 'Lng' => '11.456', 'MapImage' => "- file://file-beispielhof-map", 'ShowMap' => 'true',
+                'Website' => 'https://beispielhof.example', 'Directions' => 'Ten minutes from the station.',
             ],
-            'venues/sonnenhof/map.jpg.txt' => ['Uuid' => 'file-sonnenhof-map', 'Alt' => 'Map of the Sonnenhof area'],
-            'venues/kulturhaus/koyomi-venue.txt' => [
-                'Title' => 'Kulturhaus Praha', 'Uuid' => 'venue-kulturhaus',
-                'Street' => 'Národní 1', 'PostalCode' => '110 00', 'City' => 'Praha', 'Country' => 'CZ',
+            'venues/beispielhof/map.jpg.txt' => ['Uuid' => 'file-beispielhof-map', 'Alt' => 'Map of the Beispielhof area'],
+            'venues/stadthalle/koyomi-venue.txt' => [
+                'Title' => 'Stadthalle Musterstadt', 'Uuid' => 'venue-stadthalle',
+                'Street' => 'Musterstraße 1', 'PostalCode' => '12345', 'City' => 'Musterstadt', 'Country' => 'CZ',
                 'ShowMap' => 'false',
             ],
 
             'organizers/koyomi-organizers.txt' => ['Title' => 'Organizers', 'Uuid' => 'organizers-main'],
             'organizers/anna/koyomi-organizer.txt' => [
-                'Title' => 'Anna', 'Uuid' => 'org-anna', 'Kind' => 'person',
+                'Title' => 'Anna Beispiel', 'Uuid' => 'org-anna', 'Kind' => 'person',
                 'Email' => self::HIDDEN_EMAIL, 'ShowEmail' => 'false', 'Website' => 'https://anna.example',
             ],
             'organizers/sayama/koyomi-organizer.txt' => [
@@ -199,7 +199,7 @@ final class KoyomiFixture
         }
         // Image files referenced above (bytes do not matter; never resized in tests).
         file_put_contents($root . '/content/1_events/20270312_retreat/cover.jpg', 'jpg');
-        file_put_contents($root . '/content/venues/sonnenhof/map.jpg', 'jpg');
+        file_put_contents($root . '/content/venues/beispielhof/map.jpg', 'jpg');
         return $root;
     }
 

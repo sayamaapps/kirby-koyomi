@@ -25,7 +25,7 @@ function jsonld_retreat_fields(): array
         'description' => 'Three days of silence.', 'attendance' => 'mixed', 'venue' => koyomi_raw_venue(),
         'onlinePlatform' => 'Zoom', 'categories' => 'Retreat, Meditation', 'languages' => 'de, cs',
         'price' => '380', 'availability' => 'limited', 'bookingUrl' => 'https://booking.example/retreat',
-        'organizers' => [['id' => 'org-anna', 'name' => 'Anna', 'kind' => 'person', 'website' => 'https://anna.example']],
+        'organizers' => [['id' => 'org-anna', 'name' => 'Anna Beispiel', 'kind' => 'person', 'website' => 'https://anna.example']],
         'image' => 'https://example.test/media/cover.jpg', 'modified' => 1791000000,
     ];
 }
@@ -52,15 +52,15 @@ function jsonld_reference(): array
         'eventStatus' => 'https://schema.org/EventScheduled',
         'location' => [
             ['@type' => 'Place', 'name' => 'Seminarhaus Beispielhof',
-                'address' => ['@type' => 'PostalAddress', 'streetAddress' => 'Seminarweg 1', 'postalCode' => '12345',
-                    'addressLocality' => 'Musterstadt', 'addressRegion' => 'Bayern', 'addressCountry' => 'DE'],
-                'geo' => ['@type' => 'GeoCoordinates', 'latitude' => 47.856, 'longitude' => 12.128],
-                'url' => 'https://sonnenhof.example'],
+                'address' => ['@type' => 'PostalAddress', 'streetAddress' => 'Musterstraße 1', 'postalCode' => '12345',
+                    'addressLocality' => 'Musterstadt', 'addressRegion' => 'Musterland', 'addressCountry' => 'DE'],
+                'geo' => ['@type' => 'GeoCoordinates', 'latitude' => 48.123, 'longitude' => 11.456],
+                'url' => 'https://beispielhof.example'],
             ['@type' => 'VirtualLocation', 'url' => 'https://example.test/events/retreat'],
         ],
         'offers' => ['@type' => 'Offer', 'url' => 'https://booking.example/retreat', 'price' => 380.0,
             'priceCurrency' => 'EUR', 'availability' => 'https://schema.org/LimitedAvailability'],
-        'organizer' => ['@type' => 'Person', 'name' => 'Anna', 'url' => 'https://anna.example'],
+        'organizer' => ['@type' => 'Person', 'name' => 'Anna Beispiel', 'url' => 'https://anna.example'],
         'inLanguage' => ['de', 'cs'],
     ];
 }
@@ -89,7 +89,7 @@ koyomi_test('Koyomi JsonLd', function () use ($root) {
     expect('2027-03-12T18:00:00+00:00', $utc['startDate'], 'UTC zone keeps +00:00 offset');
 
     // previousStartDate: only for rescheduled, after eventStatus.
-    $concert = Event::fromArray(koyomi_raw_event(['id' => 'evt-concert', 'title' => 'Concert in Prague', 'startDate' => '2027-03-20',
+    $concert = Event::fromArray(koyomi_raw_event(['id' => 'evt-concert', 'title' => 'Evening Concert', 'startDate' => '2027-03-20',
         'startTime' => '20:00', 'endDate' => '', 'endTime' => '', 'timezone' => 'Europe/Prague', 'status' => 'rescheduled',
         'previousStart' => '2027-02-20 20:00:00', 'attendance' => 'offline', 'venue' => koyomi_raw_venue()]));
     $d = JsonLd::event($concert);
@@ -127,10 +127,10 @@ koyomi_test('Koyomi JsonLd', function () use ($root) {
 
     $offlineVenue = JsonLd::event(jsonld_retreat(['attendance' => 'offline']));
     expect(['@type' => 'Place', 'name' => 'Seminarhaus Beispielhof',
-        'address' => ['@type' => 'PostalAddress', 'streetAddress' => 'Seminarweg 1', 'postalCode' => '12345',
-            'addressLocality' => 'Musterstadt', 'addressRegion' => 'Bayern', 'addressCountry' => 'DE'],
-        'geo' => ['@type' => 'GeoCoordinates', 'latitude' => 47.856, 'longitude' => 12.128],
-        'url' => 'https://sonnenhof.example'], $offlineVenue['location'], 'offline with venue: one Place object (not a list)');
+        'address' => ['@type' => 'PostalAddress', 'streetAddress' => 'Musterstraße 1', 'postalCode' => '12345',
+            'addressLocality' => 'Musterstadt', 'addressRegion' => 'Musterland', 'addressCountry' => 'DE'],
+        'geo' => ['@type' => 'GeoCoordinates', 'latitude' => 48.123, 'longitude' => 11.456],
+        'url' => 'https://beispielhof.example'], $offlineVenue['location'], 'offline with venue: one Place object (not a list)');
 
     $bare = JsonLd::event(jsonld_retreat(['attendance' => 'offline', 'venue' => ['name' => 'Garden']]));
     expect(['@type' => 'Place', 'name' => 'Garden'], $bare['location'], 'Place without address, geo or url: only the name');
@@ -168,20 +168,20 @@ koyomi_test('Koyomi JsonLd', function () use ($root) {
         'available inside offers');
 
     // Organizers: object for one, list for several, email only when public.
-    expect(['@type' => 'Person', 'name' => 'Anna', 'url' => 'https://anna.example'], JsonLd::event($retreat)['organizer'],
+    expect(['@type' => 'Person', 'name' => 'Anna Beispiel', 'url' => 'https://anna.example'], JsonLd::event($retreat)['organizer'],
         'one organizer: an object, url = website, no email');
 
     $two = JsonLd::event(jsonld_retreat(['organizers' => [
-        ['id' => 'org-anna', 'name' => 'Anna', 'kind' => 'person', 'website' => 'https://anna.example'],
+        ['id' => 'org-anna', 'name' => 'Anna Beispiel', 'kind' => 'person', 'website' => 'https://anna.example'],
         ['id' => 'org-sayama', 'name' => 'Sayama', 'kind' => 'organization', 'url' => 'https://example.test/organizers/sayama',
             'email' => 'info@sayama.example'],
     ]]));
     expect([
-        ['@type' => 'Person', 'name' => 'Anna', 'url' => 'https://anna.example'],
+        ['@type' => 'Person', 'name' => 'Anna Beispiel', 'url' => 'https://anna.example'],
         ['@type' => 'Organization', 'name' => 'Sayama', 'url' => 'https://example.test/organizers/sayama', 'email' => 'info@sayama.example'],
     ], $two['organizer'], 'two organizers: a list; organization type; public email; url falls back to the organizer page');
 
-    $hiddenEmail = JsonLd::event(jsonld_retreat(['organizers' => [['id' => 'org-x', 'name' => 'Anna', 'kind' => 'person', 'email' => '']]]));
+    $hiddenEmail = JsonLd::event(jsonld_retreat(['organizers' => [['id' => 'org-x', 'name' => 'Anna Beispiel', 'kind' => 'person', 'email' => '']]]));
     holds(!array_key_exists('email', $hiddenEmail['organizer']) && !array_key_exists('url', $hiddenEmail['organizer']),
         'organizer without public email or url: neither key');
 

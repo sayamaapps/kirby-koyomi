@@ -63,13 +63,13 @@ koyomi_test('Koyomi Event', function () {
     // Venue
     $venue = Venue::fromArray(koyomi_raw_venue(['country' => 'de', 'mapImage' => 'https://example.test/map.jpg', 'mapImageAlt' => 'Map', 'showMap' => 'false']));
     expect('DE', $venue->country, 'country upper-cased');
-    expect('Seminarweg 1, 12345 Musterstadt, DE', $venue->addressLine(), 'address line');
-    expect('Seminarhaus Beispielhof, Seminarweg 1, 12345 Musterstadt, DE', $venue->label(), 'label');
-    expect('https://www.openstreetmap.org/?mlat=47.856&mlon=12.128#map=17/47.856/12.128', $venue->mapLink(), 'OSM link from coordinates');
+    expect('Musterstraße 1, 12345 Musterstadt, DE', $venue->addressLine(), 'address line');
+    expect('Seminarhaus Beispielhof, Musterstraße 1, 12345 Musterstadt, DE', $venue->label(), 'label');
+    expect('https://www.openstreetmap.org/?mlat=48.123&mlon=11.456#map=17/48.123/11.456', $venue->mapLink(), 'OSM link from coordinates');
     expect('', $venue->toArray()['mapImage'], 'map image hidden unless showMap');
-    $noCoords = Venue::fromArray(['name' => 'Kulturhaus', 'street' => 'Národní 1', 'postalCode' => '110 00', 'city' => 'Praha', 'country' => 'CZ', 'lat' => '999']);
+    $noCoords = Venue::fromArray(['name' => 'Stadthalle', 'street' => 'Musterstraße 1', 'postalCode' => '12345', 'city' => 'Musterstadt', 'country' => 'CZ', 'lat' => '999']);
     expect(null, $noCoords->lat, 'out-of-range latitude dropped');
-    expect('https://www.openstreetmap.org/search?query=N%C3%A1rodn%C3%AD%201%2C%20110%2000%20Praha%2C%20CZ', $noCoords->mapLink(), 'OSM search link from address');
+    expect('https://www.openstreetmap.org/search?query=Musterstra%C3%9Fe%201%2C%2012345%20Musterstadt%2C%20CZ', $noCoords->mapLink(), 'OSM search link from address');
     expect('', Venue::fromArray(['name' => 'Nowhere'])->mapLink(), 'no address, no link');
     expect('https://maps.example/x', Venue::fromArray(['name' => 'X', 'mapLink' => 'https://maps.example/x'])->mapLink(), 'configured map link wins');
     expect('12', Venue::coordinate(12.0), 'coordinate trailing zeros');
@@ -184,7 +184,7 @@ koyomi_test('Koyomi Event', function () {
     expect('limited', $e->availability, 'availability normalized');
     expect('mixed', $e->effectiveAttendance(), 'mixed');
     holds($e->isOnline() && $e->isInPerson(), 'mixed is online and in person');
-    expect('venue-sonnenhof', $e->physicalVenue()?->id, 'venue when in person');
+    expect('venue-beispielhof', $e->physicalVenue()?->id, 'venue when in person');
     expect(['org-a', 'org-b'], array_map(fn ($o) => $o->id, $e->organizers), 'organizers from arrays and objects, junk ignored');
     expect(['Retreat', 'Meditation'], $e->categories, 'categories');
     expect(['de', 'cs'], $e->languages, 'languages');

@@ -23,7 +23,7 @@ $ids = fn (array $events): array => array_map(fn (Event $e) => $e->id, $events);
 
 koyomi_test('Koyomi Query', function () use ($make, $ids, $now) {
     $venue = koyomi_raw_venue();
-    $organizer = ['id' => 'org-anna', 'name' => 'Anna', 'kind' => 'person'];
+    $organizer = ['id' => 'org-anna', 'name' => 'Anna Beispiel', 'kind' => 'person'];
 
     // 1. Upcoming and past around the clock 2027-03-10 12:00.
     $ended = $make(['id' => 'ended', 'startDate' => '2027-03-01', 'startTime' => '18:00', 'endTime' => '20:00']);
@@ -119,12 +119,12 @@ koyomi_test('Koyomi Query', function () use ($make, $ids, $now) {
     expect([1, 2], [Query::paginate([1, 2], 0, 12)['page'], Query::paginate([1, 2], 1, 1)['pages']], 'paginate: page below 1 is 1');
 
     // 7. Venue and organizer lists.
-    $sonnenhof = $make(['id' => 'at-venue', 'venue' => $venue]);
-    $kulturhaus = $make(['id' => 'other-venue', 'venue' => koyomi_raw_venue(['id' => 'venue-kulturhaus', 'name' => 'Kulturhaus'])]);
+    $beispielhof = $make(['id' => 'at-venue', 'venue' => $venue]);
+    $stadthalle = $make(['id' => 'other-venue', 'venue' => koyomi_raw_venue(['id' => 'venue-stadthalle', 'name' => 'Stadthalle'])]);
     $movedAway = $make(['id' => 'moved-away', 'venue' => $venue, 'status' => 'movedOnline']);
     $noVenue = $make(['id' => 'no-venue']);
-    $venueList = [$sonnenhof, $kulturhaus, $movedAway, $noVenue];
-    expect(['at-venue'], $ids(Query::atVenue($venueList, 'venue-sonnenhof')), 'atVenue: physical venue only, moved online excluded');
+    $venueList = [$beispielhof, $stadthalle, $movedAway, $noVenue];
+    expect(['at-venue'], $ids(Query::atVenue($venueList, 'venue-beispielhof')), 'atVenue: physical venue only, moved online excluded');
     expect([], $ids(Query::atVenue($venueList, 'venue-unknown')), 'atVenue: unknown id gives nothing');
 
     $withOrganizer = $make(['id' => 'with-org', 'organizers' => [$organizer]]);
@@ -132,6 +132,6 @@ koyomi_test('Koyomi Query', function () use ($make, $ids, $now) {
     expect(['with-org'], $ids(Query::byOrganizer([$withOrganizer, $withoutOrganizer], 'org-anna')), 'byOrganizer: matched by id');
     expect([], $ids(Query::byOrganizer([$withOrganizer, $withoutOrganizer], 'org-sayama')), 'byOrganizer: other id gives nothing');
     holds(Organizer::fromArray($organizer)->id === 'org-anna', 'organizer value object accepted by the list fixture');
-    holds(Venue::fromArray($venue)->id === 'venue-sonnenhof', 'venue value object accepted by the list fixture');
+    holds(Venue::fromArray($venue)->id === 'venue-beispielhof', 'venue value object accepted by the list fixture');
     holds(Attendance::fromToggles(false, false) === Attendance::OFFLINE, 'both toggles off counts as offline');
 }, fn () => null);

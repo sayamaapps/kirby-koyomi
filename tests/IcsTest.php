@@ -22,7 +22,7 @@ function ics_test_retreat(array $override = []): Event
         'description' => 'Three days of silence.', 'attendance' => 'mixed', 'venue' => koyomi_raw_venue(),
         'onlinePlatform' => 'Zoom', 'categories' => 'Retreat, Meditation', 'languages' => 'de, cs',
         'price' => '380', 'availability' => 'limited', 'bookingUrl' => 'https://booking.example/retreat',
-        'organizers' => [['id' => 'org-anna', 'name' => 'Anna', 'kind' => 'person', 'website' => 'https://anna.example']],
+        'organizers' => [['id' => 'org-anna', 'name' => 'Anna Beispiel', 'kind' => 'person', 'website' => 'https://anna.example']],
         'image' => 'https://example.test/media/cover.jpg', 'modified' => 1791000000,
     ]));
 }
@@ -115,8 +115,8 @@ function ics_test_retreat_vevent(): array
         'DTEND;TZID=Europe/Berlin:20270314T130000',
         'SUMMARY:Silent Retreat',
         'DESCRIPTION:Three days of silence.\\n\\nMore information: https://example.test/events/retreat',
-        'LOCATION:Seminarhaus Beispielhof\\, Seminarweg 1\\, 12345 Musterstadt\\, DE / Online (Zoom)',
-        'GEO:47.856;12.128',
+        'LOCATION:Seminarhaus Beispielhof\\, Musterstraße 1\\, 12345 Musterstadt\\, DE / Online (Zoom)',
+        'GEO:48.123;11.456',
         'URL:https://example.test/events/retreat',
         'STATUS:CONFIRMED',
         'TRANSP:OPAQUE',
@@ -256,7 +256,7 @@ koyomi_test('Koyomi Ics', function () {
 
     // Zones: one VTIMEZONE per zone of the timed events, sorted by name.
     $prague = Event::fromArray(koyomi_raw_event([
-        'id' => 'evt-prague', 'title' => 'Prague', 'startDate' => '2027-03-20', 'startTime' => '20:00',
+        'id' => 'evt-foreign-zone', 'title' => 'Foreign zone', 'startDate' => '2027-03-20', 'startTime' => '20:00',
         'endTime' => '', 'timezone' => 'Europe/Prague',
     ]));
     $berlinOther = Event::fromArray(koyomi_raw_event([
@@ -273,10 +273,10 @@ koyomi_test('Koyomi Ics', function () {
     ]));
     holds(!str_contains(Ics::calendar([$allDayOnly], ics_test_options()), 'VTIMEZONE'), 'no VTIMEZONE for an all-day-only calendar');
     $ordered = ics_test_unfold(Ics::calendar([$prague, $retreat], ics_test_options()));
-    expect(['UID:evt-prague@example.test', 'UID:evt-retreat@example.test'], array_values(array_filter(
+    expect(['UID:evt-foreign-zone@example.test', 'UID:evt-retreat@example.test'], array_values(array_filter(
         $ordered,
         fn (string $l) => str_starts_with($l, 'UID:'),
-    )), 'events keep the given order (Prague first, although it sorts after Berlin)');
+    )), 'events keep the given order (foreign zone first, although it sorts after Berlin)');
 
     // All-day: VALUE=DATE, exclusive DTEND, no TZID.
     $allDay = Event::fromArray(koyomi_raw_event([
@@ -342,7 +342,7 @@ koyomi_test('Koyomi Ics', function () {
     $mixedNoVenue = ics_test_retreat(['venue' => null]);
     expect('LOCATION:Online (Zoom)', ics_test_line(Ics::vevent($mixedNoVenue, ics_test_options()), 'LOCATION:'), 'mixed without venue: online text only');
     expect('', Ics::location($offlineNoVenue, 'en'), 'location(): empty without venue and online');
-    expect('Seminarhaus Beispielhof, Seminarweg 1, 12345 Musterstadt, DE', Ics::location(ics_test_retreat(['attendance' => 'offline', 'onlinePlatform' => '']), 'en'), 'location(): venue label');
+    expect('Seminarhaus Beispielhof, Musterstraße 1, 12345 Musterstadt, DE', Ics::location(ics_test_retreat(['attendance' => 'offline', 'onlinePlatform' => '']), 'en'), 'location(): venue label');
 
     // ORGANIZER: only a public email, first one wins, no quotes in CN.
     $publicOrganizer = ics_test_retreat(['organizers' => [

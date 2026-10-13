@@ -48,7 +48,7 @@ final class Organizer
     }
 
     /**
-     * ['id' => 'org-anna', 'name' => 'Anna', 'kind' => 'person', 'url' => 'https://…/organizers/anna',
+     * ['id' => 'org-anna', 'name' => 'Anna Beispiel', 'kind' => 'person', 'url' => 'https://…/organizers/anna',
      *  'website' => 'https://…', 'email' => ''|'public@…', 'image' => 'https://…'|'', 'imageAlt' => '…']
      */
     public function toArray(): array

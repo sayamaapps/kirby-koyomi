@@ -40,7 +40,7 @@ koyomi_test('Koyomi privacy', function () use ($root) {
             $paths[] = 'events/' . $slug;
         }
         // HTML pages, incl. filtered and past views.
-        array_push($paths, 'events', 'venues/sonnenhof', 'venues/kulturhaus', 'organizers/anna', 'organizers/sayama');
+        array_push($paths, 'events', 'venues/beispielhof', 'venues/stadthalle', 'organizers/anna', 'organizers/sayama');
         foreach ($paths as $path) {
             $response = $kirby->render($path);
             holds($response !== null && $response->code() === 200, "$language: $path renders (got " . ($response?->code() ?? 'null') . ')');
@@ -79,7 +79,7 @@ koyomi_test('Koyomi privacy', function () use ($root) {
             $check("$language: $snippet", $html);
             $all .= $html;
         }
-        foreach (['sonnenhof', 'kulturhaus'] as $slug) {
+        foreach (['beispielhof', 'stadthalle'] as $slug) {
             $html = (string) $kirby->snippet('koyomi/venue', ['venue' => $kirby->page('venues/' . $slug)], true);
             $check("$language: koyomi/venue $slug", $html);
         }

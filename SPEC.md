@@ -164,7 +164,7 @@ Also: `Options::eventDefaults()` → `['timezone','currency','defaultDuration']`
 | `timezone` | select | `Europe/Berlin` | `timezone` |
 | `inPerson` | toggle (default true) | `true`/`false` | `attendance` = `Attendance::fromToggles(inPerson, online)` — unless the content has a valid `attendance` value |
 | `online` | toggle (default false) | `true`/`false` | (see inPerson) |
-| `venue` | pages (single, `kirby.collection("koyomi/venues")`, `when: inPerson: true`, required) | `- page://venue-sonnenhof` | `venue` = `Mapper::venue($venuePage)` or null |
+| `venue` | pages (single, `kirby.collection("koyomi/venues")`, `when: inPerson: true`, required) | `- page://venue-beispielhof` | `venue` = `Mapper::venue($venuePage)` or null |
 | `onlinePlatform` | text (`when: online: true`) | `Zoom` | `onlinePlatform` |
 | `onlineUrl` | url (`when: online: true`) | URL | **never read** |
 | `eventStatus` | select | `scheduled` … | `status` |
@@ -247,14 +247,14 @@ Reference objects used in the examples below (Kirby-free tests build them with
 `koyomi_raw_event()` / `koyomi_raw_venue()` from `tests/lib/expect.php`):
 
 ```php
-$venue   = koyomi_raw_venue();   // Seminarhaus Beispielhof, Seminarweg 1, 12345 Musterstadt, Bayern, DE, 47.856/12.128
+$venue   = koyomi_raw_venue();   // Seminarhaus Beispielhof, Musterstraße 1, 12345 Musterstadt, Musterland, DE, 48.123/11.456
 $retreat = Event::fromArray(koyomi_raw_event([
     'id' => 'evt-retreat', 'title' => 'Silent Retreat', 'url' => 'https://example.test/events/retreat',
     'endDate' => '2027-03-14', 'endTime' => '13:00',         // start 2027-03-12 18:00 Europe/Berlin
     'description' => 'Three days of silence.', 'attendance' => 'mixed', 'venue' => $venue,
     'onlinePlatform' => 'Zoom', 'categories' => 'Retreat, Meditation', 'languages' => 'de, cs',
     'price' => '380', 'availability' => 'limited', 'bookingUrl' => 'https://booking.example/retreat',
-    'organizers' => [['id' => 'org-anna', 'name' => 'Anna', 'kind' => 'person', 'website' => 'https://anna.example']],
+    'organizers' => [['id' => 'org-anna', 'name' => 'Anna Beispiel', 'kind' => 'person', 'website' => 'https://anna.example']],
     'image' => 'https://example.test/media/cover.jpg', 'modified' => 1791000000,
 ]));
 $now = new DateTimeImmutable('2027-03-10 12:00', new DateTimeZone('Europe/Berlin'));   // = 2027-03-10T11:00:00Z
@@ -305,8 +305,8 @@ SUMMARY:Silent Retreat                                cancelled/postponed: "<sta
 DESCRIPTION:Three days of silence.\n\nMore information: https://example.test/events/retreat
                                                       = escape(join("\n\n", non-empty of [statusLine, description, t('ics.more', url)]))
                                                       statusLine (status ≠ scheduled) = label + (note ? ": " + note : "")
-LOCATION:Seminarhaus Beispielhof\, Seminarweg 1\, 12345 Musterstadt\, DE / Online (Zoom)    escape(location())
-GEO:47.856;12.128                                     physicalVenue() with coordinates, Venue::coordinate()
+LOCATION:Seminarhaus Beispielhof\, Musterstraße 1\, 12345 Musterstadt\, DE / Online (Zoom)    escape(location())
+GEO:48.123;11.456                                     physicalVenue() with coordinates, Venue::coordinate()
 URL:https://example.test/events/retreat               not escaped (URI)
 STATUS:CONFIRMED                                      §7 table
 TRANSP:OPAQUE                                         TRANSPARENT when cancelled
@@ -389,15 +389,15 @@ observance (`TZOFFSETFROM:+0900`, `TZOFFSETTO:+0900`, `TZNAME:JST`).
     'eventStatus' => 'https://schema.org/EventScheduled',
     'location' => [
         ['@type' => 'Place', 'name' => 'Seminarhaus Beispielhof',
-         'address' => ['@type' => 'PostalAddress', 'streetAddress' => 'Seminarweg 1', 'postalCode' => '12345',
-                       'addressLocality' => 'Musterstadt', 'addressRegion' => 'Bayern', 'addressCountry' => 'DE'],
-         'geo' => ['@type' => 'GeoCoordinates', 'latitude' => 47.856, 'longitude' => 12.128],
-         'url' => 'https://sonnenhof.example'],
+         'address' => ['@type' => 'PostalAddress', 'streetAddress' => 'Musterstraße 1', 'postalCode' => '12345',
+                       'addressLocality' => 'Musterstadt', 'addressRegion' => 'Musterland', 'addressCountry' => 'DE'],
+         'geo' => ['@type' => 'GeoCoordinates', 'latitude' => 48.123, 'longitude' => 11.456],
+         'url' => 'https://beispielhof.example'],
         ['@type' => 'VirtualLocation', 'url' => 'https://example.test/events/retreat'],
     ],
     'offers' => ['@type' => 'Offer', 'url' => 'https://booking.example/retreat', 'price' => 380.0,
                  'priceCurrency' => 'EUR', 'availability' => 'https://schema.org/LimitedAvailability'],
-    'organizer' => ['@type' => 'Person', 'name' => 'Anna', 'url' => 'https://anna.example'],
+    'organizer' => ['@type' => 'Person', 'name' => 'Anna Beispiel', 'url' => 'https://anna.example'],
     'inLanguage' => ['de', 'cs'],
 ]
 ```
@@ -441,7 +441,7 @@ Used in `<head>` by `snippets/koyomi/layout.php` only when `$page` is a koyomi-e
       <category>Meditation</category>
       <ev:startdate>2027-03-12T18:00:00+01:00</ev:startdate>
       <ev:enddate>2027-03-14T13:00:00+01:00</ev:enddate>
-      <ev:location>Seminarhaus Beispielhof, Seminarweg 1, 12345 Musterstadt, DE</ev:location>
+      <ev:location>Seminarhaus Beispielhof, Musterstraße 1, 12345 Musterstadt, DE</ev:location>
     </item>
   </channel>
 </rss>
@@ -501,7 +501,7 @@ Other methods (en / de):
 - `series()`: `Part 2 of 3`/`Teil 2 von 3`, `''` without series.
 - `languageName('cs')`: `Czech`/`Tschechisch`; custom label wins; unknown `pt-br` → `PT-BR`.
 - `countryName('CZ')`: `Czechia`/`Tschechien` (translation `country.<CODE>`); unknown `MT` → `MT`.
-- `addressLines($venue, $homeCountry = '')`: `['Národní 1', '110 00 Praha', 'Czechia']`, empty lines left out, country by name and left out when it equals `$homeCountry`. Display only — `Venue::addressLine()`/`label()` (ICS, RSS, Google link, OSM search) keep the ISO code.
+- `addressLines($venue, $homeCountry = '')`: `['Musterstraße 1', '12345 Musterstadt', 'Czechia']`, empty lines left out, country by name and left out when it equals `$homeCountry`. Display only — `Venue::addressLine()`/`label()` (ICS, RSS, Google link, OSM search) keep the ISO code.
 - `languages($retreat)`: `German, Czech` / `Deutsch, Tschechisch`.
 - `labels()`: keys `when, dateRange, status, previousStart, attendance, availability, price, series, languages`.
 
@@ -513,7 +513,7 @@ Other methods (en / de):
 `GoogleLink::url($retreat, 'en')` →
 
 ```
-https://calendar.google.com/calendar/render?action=TEMPLATE&text=Silent%20Retreat&dates=20270312T180000%2F20270314T130000&ctz=Europe%2FBerlin&details=Three%20days%20of%20silence.%0A%0Ahttps%3A%2F%2Fexample.test%2Fevents%2Fretreat&location=Seminarhaus%20Sonnenhof%2C%20Seminarweg%201%2C%2012345%20Musterstadt%2C%20DE
+https://calendar.google.com/calendar/render?action=TEMPLATE&text=Silent%20Retreat&dates=20270312T180000%2F20270314T130000&ctz=Europe%2FBerlin&details=Three%20days%20of%20silence.%0A%0Ahttps%3A%2F%2Fexample.test%2Fevents%2Fretreat&location=Seminarhaus%20Beispielhof%2C%20Musterstra%C3%9Fe%201%2C%2012345%20Musterstadt%2C%20DE
 ```
 
 - Parameter order: `action`, `text`, `dates`, `ctz` (timed, zone ≠ UTC only), `details` (omitted when empty), `location` (omitted when empty).

@@ -106,17 +106,17 @@ function koyomi_raw_event(array $override = []): array
 function koyomi_raw_venue(array $override = []): array
 {
     return $override + [
-        'id' => 'venue-sonnenhof',
+        'id' => 'venue-beispielhof',
         'name' => 'Seminarhaus Beispielhof',
-        'street' => 'Seminarweg 1',
+        'street' => 'Musterstraße 1',
         'postalCode' => '12345',
         'city' => 'Musterstadt',
-        'region' => 'Bayern',
+        'region' => 'Musterland',
         'country' => 'DE',
-        'lat' => '47.856',
-        'lng' => '12.128',
-        'url' => 'https://example.test/venues/sonnenhof',
-        'website' => 'https://sonnenhof.example',
+        'lat' => '48.123',
+        'lng' => '11.456',
+        'url' => 'https://example.test/venues/beispielhof',
+        'website' => 'https://beispielhof.example',
         'directions' => 'Ten minutes from the station.',
     ];
 }

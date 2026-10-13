@@ -80,18 +80,18 @@ koyomi_test('Koyomi acceptance', function () use ($root) {
     $kirby = KoyomiFixture::app($root);
     $calendar = $kirby->site()->koyomiCalendar();
     expect('events', $calendar?->id(), 'calendar found');
-    $upcoming = ['Spring Retreat', 'Evening Meditation on Zoom', 'Silent Retreat', 'Concert in Prague', 'Breathing Workshop', 'Mantra Course 1', 'Mantra Course 2'];
+    $upcoming = ['Spring Retreat', 'Evening Meditation on Zoom', 'Silent Retreat', 'Evening Concert', 'Breathing Workshop', 'Mantra Course 1', 'Mantra Course 2'];
     expect($upcoming, $titles($calendar->koyomiUpcoming()), 'upcoming: ongoing first, by start, cancelled listed');
     expect(['Past Workshop'], $titles($calendar->koyomiPast()), 'past');
     expect(array_values(array_diff($upcoming, ['Breathing Workshop'])), $titles(KoyomiFixture::app($root, ['koyomi.hideCancelled' => true])->page('events')->koyomiUpcoming()), 'hideCancelled');
     $list = fn (array $query) => $titles(KoyomiFixture::app($root)->page('events')->koyomiList($query)['events']);
     expect(['Spring Retreat', 'Evening Meditation on Zoom', 'Silent Retreat'], $list(['attendance' => 'online']), 'online filter: moved online + online + hybrid');
     expect(['Spring Retreat', 'Silent Retreat'], $list(['category' => 'retreat']), 'category filter, case-insensitive');
-    expect(['Silent Retreat', 'Concert in Prague'], $list(['language' => 'cs']), 'language filter');
+    expect(['Silent Retreat', 'Evening Concert'], $list(['language' => 'cs']), 'language filter');
     expect(['Silent Retreat'], $list(['featured' => '1']), 'featured filter');
     expect(['Past Workshop'], $list(['view' => 'past']), 'past view');
     $paged = KoyomiFixture::app($root, ['koyomi.perPage' => 3])->page('events')->koyomiList(['page' => '2']);
-    expect(['Concert in Prague', 'Breathing Workshop', 'Mantra Course 1'], $titles($paged['events']), 'page 2 of 3');
+    expect(['Evening Concert', 'Breathing Workshop', 'Mantra Course 1'], $titles($paged['events']), 'page 2 of 3');
     expect([2, 3, 7], [$paged['pagination']['page'], $paged['pagination']['pages'], $paged['pagination']['total']], 'pagination numbers');
     expect('https://example.test/events?page=3', $paged['pagination']['nextUrl'], 'next page URL');
 

@@ -113,9 +113,9 @@ content/
     20270312_silent-retreat/    koyomi-event      (listed)
     20270320_breathing/         koyomi-event      (listed)
   venues/                       koyomi-venues     (unlisted)
-    sonnenhof/                  koyomi-venue      (unlisted)
+    beispielhof/                koyomi-venue      (unlisted)
   organizers/                   koyomi-organizers (unlisted)
-    anna/                    koyomi-organizer  (unlisted)
+    anna/                       koyomi-organizer  (unlisted)
 ```
 
 - The calendar's slug is what the feed URLs use: `/events`, `/events.ics`,
@@ -164,7 +164,7 @@ default.
 | `hideCancelled` | `false` | Leave cancelled events out of the upcoming list and the RSS feed. The `.ics` feed keeps them, marked as cancelled. |
 | `duplicateReset` | `true` | When an event is duplicated, clear its status, previous date, status note and availability. Dates are kept, and the copy is a draft. |
 | `formats` | `[]` | Date and time patterns per language, merged over Koyomi's defaults, for example `['de' => ['time' => 'G.i']]`. Range patterns are two-element lists. See [Date formats](#date-formats). |
-| `country` | `null` | Home country as ISO code, for example `'DE'`. Venue addresses on pages leave this country out and name every other one: "Praha, Czechia". Unset: every address names its country. |
+| `country` | `null` | Home country as ISO code, for example `'DE'`. Venue addresses on pages leave this country out and name every other one: "Musterstadt, Czechia". Unset: every address names its country. |
 | `mapUrl` | `null` | A closure `fn (Koyomi\Venue $venue): string` that replaces the OpenStreetMap link, for example `fn ($venue) => 'https://maps.example.test/?q=' . urlencode($venue->label())`. |
 | `calendar` | first `koyomi-calendar` page | Page id of the calendar that snippets and feeds use. |
 | `venues` | first `koyomi-venues` page | Page id of the venues container. |
@@ -426,11 +426,11 @@ online meeting link, because the event object has no such field.
     'allDay' => false, 'hasEndTime' => true, 'multiDay' => true, 'timezone' => 'Europe/Berlin',
     'description' => 'Three days of silence.', 'image' => 'https://example.test/media/cover.jpg', 'imageAlt' => '',
     'attendance' => 'mixed', 'effectiveAttendance' => 'mixed', 'onlinePlatform' => 'Zoom',
-    'venue' => ['id' => 'venue-sonnenhof', 'name' => 'Seminarhaus Beispielhof', 'address' => 'Seminarweg 1, 12345 Musterstadt, DE', /* … */],
+    'venue' => ['id' => 'venue-beispielhof', 'name' => 'Seminarhaus Beispielhof', 'address' => 'Musterstraße 1, 12345 Musterstadt, DE', /* … */],
     'status' => 'scheduled', 'previousStart' => null, 'statusNote' => '',
     'isFree' => false, 'price' => 380.0, 'currency' => 'EUR', 'priceNote' => '',
     'availability' => 'limited', 'bookingUrl' => 'https://booking.example/retreat', 'bookingLabel' => '',
-    'organizers' => [['id' => 'org-anna', 'name' => 'Anna', 'kind' => 'person', /* … */]],
+    'organizers' => [['id' => 'org-anna', 'name' => 'Anna Beispiel', 'kind' => 'person', /* … */]],
     'categories' => ['Retreat', 'Meditation'], 'languages' => ['de', 'cs'], 'featured' => true,
     'series' => [], 'seriesPart' => null, 'seriesTotal' => 0,
     'icsUrl' => 'https://example.test/events/silent-retreat.ics', 'modified' => 1791000000,

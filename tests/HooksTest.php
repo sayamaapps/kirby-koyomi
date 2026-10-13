@@ -64,13 +64,13 @@ koyomi_test('Koyomi Hooks', function () use ($root) {
     // Another template (a venue): untouched, still a Page.
     $kirby = KoyomiFixture::app($root);
     $kirby->impersonate('kirby');
-    $venue = $kirby->page('venues/kulturhaus');
+    $venue = $kirby->page('venues/stadthalle');
     holds($venue !== null, 'fixture venue exists');
-    $copy = $venue->duplicate('kulturhaus-copy');
+    $copy = $venue->duplicate('stadthalle-copy');
     holds($copy instanceof Page, 'duplicating a venue returns a Page');
     expect('koyomi-venue', $copy->intendedTemplate()->name(), 'venue copy keeps its template');
-    expect('Kulturhaus Praha', $copy->content()->get('title')->value(), 'venue copy keeps its title');
-    expect('Národní 1', $copy->content()->get('street')->value(), 'venue copy keeps its address');
+    expect('Stadthalle Musterstadt', $copy->content()->get('title')->value(), 'venue copy keeps its title');
+    expect('Musterstraße 1', $copy->content()->get('street')->value(), 'venue copy keeps its address');
     holds($copy->content()->get('eventStatus')->isEmpty(), 'venue copy gets no event status');
     $copy->delete(true);
 
