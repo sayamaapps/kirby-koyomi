@@ -632,6 +632,10 @@ a network connection.
 
 Koyomi was written by [Simon Räder](https://sayamaapps.de) for SayamaApps.
 
+## Maintenance
+
+This module is open source under the MIT license and is maintained for the author's own projects. Issues and pull requests are welcome, but there is no support promise and no release schedule. Report security problems privately through GitHub's private vulnerability reporting (the "Report a vulnerability" button on the Security tab).
+
 ## License
 
 MIT, see [LICENSE](LICENSE).
