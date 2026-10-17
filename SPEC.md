@@ -595,7 +595,7 @@ Each Output method: (1) `Options::route()` false → `throw new \Kirby\Exception
 
 | Method | Events | Body | Type | Content-Disposition |
 |---|---|---|---|---|
-| `eventIcs($page)` | the page's Event (404 if null, if page is a draft, or not a koyomi-event) | `Ics::event($e, opts)` | `text/calendar` | `attachment; filename="<slug>.ics"` |
+| `eventIcs($page)` | the page's Event (404 if null, if page is a draft or below one, or not a koyomi-event) | `Ics::event($e, opts)` | `text/calendar` | `attachment; filename="<slug>.ics"` |
 | `calendarIcs($cal)` | `Repository::events()` with `end > now − feedPastDays days`, `Query::sort()` asc, cancelled included | `Ics::calendar($events, opts + ['name' => title, 'timezone' => Options::timezone(), 'refresh' => 'PT6H'])` | `text/calendar` | `inline; filename="<slug>.ics"` |
 | `rss($cal)` | `Repository::upcoming($cal)` | `Rss::feed($events, ['title','link' => url,'self' => rssUrl,'language' => koyomi_i18n(),'now','describe' => fn ($e) => trim(Format::when($e) . "\n\n" . $e->description)])` | `application/rss+xml` | — |
 | `json($cal)` | `Repository::upcoming($cal)` | `json_encode(['calendar' => ['title','url'], 'generated' => Time::iso(now), 'events' => [toArray(), …]], UNESCAPED_SLASHES\|UNESCAPED_UNICODE\|PRESERVE_ZERO_FRACTION\|THROW_ON_ERROR)` | `application/json` | — |

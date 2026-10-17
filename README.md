@@ -124,10 +124,11 @@ content/
   slug (without the date) is the URL: `/events/silent-retreat`.
 - Venue and organizer pages are unlisted: they have a URL for linking and
   feeds, but no navigation shows them. New ones are created unlisted, not as
-  drafts. An event shows a venue or organizer only when the page is not a draft,
-  so publish a draft venue or organizer before you link it. The same holds for
-  the other parts of a series: a draft part is left out of the series navigation
-  until it is published.
+  drafts. An event shows a venue or organizer only when the page is not a draft
+  and does not sit below a draft (such as a "Venues" page put back into draft),
+  so publish a draft venue or organizer, and its container, before you link it.
+  The same holds for the other parts of a series: a draft part, or one below a
+  draft, is left out of the series navigation until it is published.
 - Events, venues and organizers are plain Kirby pages with the templates
   `koyomi-event`, `koyomi-venue` and `koyomi-organizer`. Kirby stores the content
   of a page in `<template>.txt`, or `<template>.<language>.txt` on a multilingual
@@ -591,8 +592,9 @@ Koyomi makes no requests to third parties and sets no cookies. What is public
 depends on the output: pages, `.ics` files, the JSON feed and JSON-LD show the
 event title, date, place, description and organizer name, and the public organizer
 address; the RSS feed has no organizer address. Never public: the online meeting
-link, and the organizer's email unless `showEmail` is on. Drafts are never public,
-not even as a series part, venue or organizer that an event links to.
+link, and the organizer's email unless `showEmail` is on. Drafts, and pages below a
+draft, are never public, not even as a series part, venue or organizer that an
+event links to.
 
 Feeds are public addresses. Anyone who knows the address can read them, and so
 can any calendar app that subscribes to them.

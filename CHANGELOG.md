@@ -14,6 +14,19 @@ All notable changes to this project are documented here. Versions follow
 - A change to the names of options, fields, snippets or URLs is breaking and is
   a major version too.
 
+## [1.0.2] — 2026-10-17
+
+### Fixed
+
+- A venue, organizer or series part below a draft container (for example after the
+  whole "Venues" page was put back into draft) was still shown in a published
+  event's page, JSON-LD, `.ics` files and the JSON feed, although its own URL
+  answered 404. Kirby's `isDraft()` looks at the page alone; Koyomi now treats a
+  page below a draft as a draft everywhere it decides what is public
+  (`Mapper::isDraft()`): references, the calendar lookup for a configured
+  `koyomi.calendar` id, and `/<event>.ics`. Panel pickers are unchanged. The
+  privacy texts name pages below drafts explicitly.
+
 ## [1.0.1] — 2026-10-11
 
 ### Fixed

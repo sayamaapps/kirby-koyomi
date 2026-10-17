@@ -51,10 +51,10 @@ design: it is the place where the event happens.
   Send the link to participants yourself.
 - **An organizer's email address**, unless the organizer's `showEmail` toggle is
   on. Without it the address is not read at all.
-- **Drafts.** An event in draft status appears nowhere. A draft that another event
-  links to (a series part, a venue, an organizer) is left out of that event's
-  output as well: its title, date, address and link are not shown until it is
-  published.
+- **Drafts.** An event in draft status appears nowhere. A draft, or a page below
+  a draft, that another event links to (a series part, a venue, an organizer) is
+  left out of that event's output as well: its title, date, address and link
+  are not shown until it is published.
 
 ## Feeds are public addresses
 
