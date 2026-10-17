@@ -52,10 +52,10 @@ ausdrücklich zugestimmt hat und die Angabe im Panel freigeschaltet ist.
   und Anfahrt sind öffentlich, weil dort die Veranstaltung stattfindet. Die JSON-LD
   enthält zusätzlich das Titelbild und, nur bei eingeschaltetem `showEmail`, die
   öffentliche E-Mail-Adresse der veranstaltenden Person.
-- **Entwürfe.** Eine Veranstaltung im Status Entwurf erscheint nirgends. Ein Entwurf,
-  auf den eine andere Veranstaltung verweist (Teil einer Reihe, Veranstaltungsort,
-  veranstaltende Person), wird in deren Ausgaben ebenfalls nicht gezeigt, bis er
-  veröffentlicht ist.
+- **Entwürfe.** Eine Veranstaltung im Status Entwurf erscheint nirgends. Ein Entwurf
+  oder eine Seite unterhalb eines Entwurfs, auf die eine andere Veranstaltung
+  verweist (Teil einer Reihe, Veranstaltungsort, veranstaltende Person), wird in
+  deren Ausgaben ebenfalls nicht gezeigt, bis sie veröffentlicht ist.
 - **Was nie öffentlich ist.** Der Zugangslink zu Online-Veranstaltungen (`onlineUrl`)
   steht nur im Panel und in der Inhaltsdatei. Er erscheint in keiner Ausgabe. Die
   E-Mail-Adresse einer veranstaltenden Person (`email`) wird nur gelesen und ausgegeben,

@@ -208,14 +208,34 @@ final class Mapper
     }
 
     /**
-     * Not a draft and of the expected template. Drafts are what an editor
-     * has not published yet; they must not reach any output through a
-     * reference (SPEC §0, PRIVACY.md). Unlisted pages are published (they
-     * have their own URL) and stay usable.
+     * A draft, or a page below one. Kirby's own isDraft() looks at the page
+     * alone: a venue under a container the editor put back into draft is
+     * itself "published" (unlisted) for Kirby, yet its URL answers 404 because
+     * Site::find() does not walk into drafts, and toPage()/page() resolve it
+     * anyway. Every public published-check of Koyomi goes through here.
+     */
+    public static function isDraft(Page $page): bool
+    {
+        if ($page->isDraft()) {
+            return true;
+        }
+        foreach ($page->parents() as $parent) {
+            if ($parent->isDraft()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Not a draft (nor below one) and of the expected template. Drafts are
+     * what an editor has not published yet; they must not reach any output
+     * through a reference (SPEC §0, PRIVACY.md). Unlisted pages are published
+     * (they have their own URL) and stay usable.
      */
     private static function isPublished(Page $page, string $template): bool
     {
-        return !$page->isDraft() && $page->intendedTemplate()->name() === $template;
+        return !self::isDraft($page) && $page->intendedTemplate()->name() === $template;
     }
 
     /**

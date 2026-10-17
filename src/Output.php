@@ -26,7 +26,7 @@ final class Output
     public static function eventIcs(Page $event): string
     {
         $kirby = $event->kirby();
-        if (!Options::route($kirby, 'ics') || $event->isDraft() || $event->intendedTemplate()->name() !== 'koyomi-event') {
+        if (!Options::route($kirby, 'ics') || Mapper::isDraft($event) || $event->intendedTemplate()->name() !== 'koyomi-event') {
             throw new NotFoundException();
         }
         try {
