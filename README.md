@@ -60,7 +60,7 @@ it ships `vendor/`.
 Until the package is on Packagist, add the repository first:
 
 ```json
-"repositories": [{ "type": "vcs", "url": "https://github.com/simsimmal/kirby-koyomi" }]
+"repositories": [{ "type": "vcs", "url": "https://github.com/sayamaapps/kirby-koyomi" }]
 ```
 
 Manual installation (copy the folder into `site/plugins/koyomi/`) works too.
