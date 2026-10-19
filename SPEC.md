@@ -113,7 +113,7 @@ nested (`'koyomi' => ['active' => true]`) both work; `null` = not set.
 | `languages` | `['de','en','cs']` | `languages()` → `code => label` | Event languages (Panel multiselect, filter). List or map `['cs' => 'Čeština']`; `''` label = translation `language.<code>`. |
 | `language` | site language | `language()` | Language of snippets/feeds: option → current site language → default language → `locale` → `en`. |
 | `perPage` | `12` | `perPage()` | Events per list page (1–100). |
-| `defaultDuration` | `120` | `defaultDuration()` | Minutes for events without end time. |
+| `defaultDuration` | `120` | `defaultDuration()` | Minutes for events without end time, elapsed (`add(PT…M)`, not `modify()`: across a DST change). |
 | `feedPastDays` | `30` | `feedPastDays()` | Past days kept in the ICS subscription feed. |
 | `ics` | `true` | `route('ics')` | `/<event>.ics`. |
 | `feed` | `true` | `route('feed')` | `/<calendar>.ics` subscription. |

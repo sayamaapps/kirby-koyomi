@@ -14,6 +14,16 @@ All notable changes to this project are documented here. Versions follow
 - A change to the names of options, fields, snippets or URLs is breaking and is
   a major version too.
 
+## [Unreleased]
+
+### Fixed
+
+- An event without an end time lasted `defaultDuration` minutes on the wall clock,
+  not in elapsed time: starting at 01:30 on the night the clocks change, it lasted
+  60 minutes in spring and 180 in autumn — in the `.ics`, the Google link and the
+  past/ongoing decision. It now lasts the minutes set. An end time the content
+  gives keeps its wall time; all-day events keep their calendar days.
+
 ## [1.0.2] — 2026-10-17
 
 ### Fixed

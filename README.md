@@ -153,7 +153,7 @@ default.
 | `languages` | `['de', 'en', 'cs']` | Event languages offered in the Panel and in the language filter. A list (`['de', 'cs']`) or a map of code to label (`['cs' => 'Čeština']`). Without a label the translated language name is used. |
 | `language` | site language | Language of snippets, feeds and calendar file texts. Koyomi ships English and German only; any other value is skipped. Order: this option, the current site language, the default language, the `locale` option, English. |
 | `perPage` | `12` | Events per list page, between 1 and 100. |
-| `defaultDuration` | `120` | Minutes an event without an end time lasts. |
+| `defaultDuration` | `120` | Minutes an event without an end time lasts, as elapsed time (across a DST change too). |
 | `feedPastDays` | `30` | Days after its end an event stays in the `.ics` subscription feed. |
 | `ics` | `true` | Per-event download, `/<calendar>/<event>.ics`. |
 | `feed` | `true` | Subscription feed, `/<calendar>.ics`, offered as `webcal://` link. |
@@ -505,7 +505,8 @@ The Panel's page fields use these queries, which you can reuse in a blueprint:
 - `end` is exclusive. An event that ends at 13:00 on 14 March ends there, and an
   all-day event ends at 00:00 on the day after its last day. In the calendar file
   the end is written the same way, as the ICS standard asks.
-- An event without `endTime` lasts `defaultDuration` minutes (default 120). If it
+- An event without `endTime` lasts `defaultDuration` minutes (default 120) of elapsed
+  time: an event at 01:30 on the night the clocks go forward ends at 04:30. If it
   has an `endDate` later than its start date, it ends at 00:00 after that date.
 - An evening event with an earlier end time and no `endDate` ends the next day: a
   concert from 20:00 to 01:00 ends at 01:00 the following night.
