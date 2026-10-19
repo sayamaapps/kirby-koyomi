@@ -28,6 +28,16 @@ All notable changes to this project are documented here. Versions follow
   download is no scheduling message at all: the line is gone (RFC 5545 does not
   ask for it). No email is published to fill the gap.
 
+### Changed
+
+- **[privacy text]** `DATENSCHUTZ.md`, `PRIVACY.md` and the README said, without a
+  limit, that event pages load nothing from another server. That holds for what
+  Koyomi renders. The event's text is a Kirby blocks field, and a web image or a
+  video block an editor inserts there (or an external image in the calendar intro)
+  loads from its server without a click. The texts now say so and what to do. No
+  output changed; review your privacy policy if your descriptions embed foreign
+  media.
+
 ## [1.0.2] — 2026-10-17
 
 ### Fixed

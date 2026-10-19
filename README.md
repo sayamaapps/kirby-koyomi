@@ -36,7 +36,9 @@ and concerts.
   the right attendance mode, status, location, offers and organizer.
 - **No third-party requests.** No map embed, no font, no script, no tracking.
   The map is a self-hosted image and an OpenStreetMap link that opens on click.
-  The Google Calendar link is a plain link that opens on click.
+  The Google Calendar link is a plain link that opens on click. Media an editor
+  inserts from another server (a web image or a video block in the text, an
+  external image in the intro) are the site's content: see [PRIVACY.md](PRIVACY.md).
 - **The online meeting link stays private.** It is stored in the Panel and
   nowhere else. Koyomi's event object has no such field, so no output can show it.
 - **English and German.** Snippets and feeds follow the site language. Panel

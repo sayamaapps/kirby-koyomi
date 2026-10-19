@@ -24,6 +24,14 @@ privacy terms, and the link is opened in a new tab when the visitor clicks it.
 The plugin sets no cookies, uses no browser storage and records nothing about
 visitors.
 
+This holds for what Koyomi itself renders. An event's "Text" field is a plain
+Kirby blocks field: an image with the source "web", or a video block with a
+YouTube or Vimeo URL, loads from the other server when the page opens, without a
+click. So does an `(image: https://…)` tag in the calendar's intro. Such media are
+the site's content: protect them (a click-to-load gate, for example) and name the
+provider in the privacy policy, or keep to images from your own server — then the
+text block holds as it is.
+
 ## What is public, per output
 
 Everything below is public for anyone who can reach the address, as long as the
