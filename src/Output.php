@@ -58,6 +58,7 @@ final class Output
         $cutoff = $now->modify('-' . Options::feedPastDays($kirby) . ' days');
         $all = Repository::events($calendar);
         koyomi_expires($all);
+        koyomi_expires_at(Expiry::leaving($all, $now, Options::feedPastDays($kirby)));
         $events = Query::sort(array_values(array_filter($all, fn (Event $e): bool => $e->end > $cutoff)), 'asc');
 
         $response = $kirby->response();

@@ -27,6 +27,12 @@ All notable changes to this project are documented here. Versions follow
   had a public email. RFC 5546 asks an organizer for `PUBLISH`, and a feed or
   download is no scheduling message at all: the line is gone (RFC 5545 does not
   ask for it). No email is published to fill the gap.
+- With Kirby's page cache on, the subscription feed and the timeline could go
+  stale: the expiry knew only event starts and ends. A feed with nothing ahead was
+  cached without end and kept an event long after it left the `feedPastDays`
+  window; a calendar whose next event was weeks away kept yesterday's "Today" line.
+  The feed now also expires when the next event leaves its window, and a list that
+  prints the Today line at local midnight. New helper `koyomi_expires_at()`.
 
 ### Changed
 

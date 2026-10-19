@@ -473,6 +473,7 @@ These are global functions, usable in templates and in your own snippets.
 | `koyomi_t('key', [...])` | A Koyomi text in the current language. |
 | `koyomi_event($value)` | An `Event` for an event page, or the event itself; `null` otherwise. |
 | `koyomi_expires($events)` | Lowers the page cache expiry to the next start or end. |
+| `koyomi_expires_at($timestamp)` | Lowers the page cache expiry to a Unix timestamp; `null` changes nothing. |
 
 The site method `$site->koyomiCalendar()` returns the calendar page, or `null`.
 
@@ -521,7 +522,9 @@ The Panel's page fields use these queries, which you can reuse in a blueprint:
 ## Cache expiry
 
 Koyomi lowers the page cache expiry, so a cached calendar or event page refreshes
-when an event starts or ends. The expiry only ever moves earlier, and it has an
+when an event starts or ends. The subscription feed also refreshes when a past
+event leaves its `feedPastDays` window, and a timeline with its "Today" line at
+local midnight. The expiry only ever moves earlier, and it has an
 effect only when Kirby's page cache is active. Lists, the event snippet and the
 calendar's feeds set it, and so do `$page->koyomiData()`, `$page->isPast()` and
 `$page->isOngoing()`. Your own templates therefore need no extra call.
