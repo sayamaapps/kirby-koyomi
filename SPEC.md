@@ -271,7 +271,6 @@ BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//SayamaApps//Koyomi 1.0//EN
 CALSCALE:GREGORIAN
-METHOD:PUBLISH
 X-WR-CALNAME:<escape(name)>                 only if name
 X-WR-CALDESC:<escape(description)>          only if description
 X-WR-TIMEZONE:<timezone>                    only if timezone

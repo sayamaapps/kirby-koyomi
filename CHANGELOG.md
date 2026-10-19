@@ -23,6 +23,10 @@ All notable changes to this project are documented here. Versions follow
   60 minutes in spring and 180 in autumn — in the `.ics`, the Google link and the
   past/ongoing decision. It now lasts the minutes set. An end time the content
   gives keeps its wall time; all-day events keep their calendar days.
+- Calendar files said `METHOD:PUBLISH` without an `ORGANIZER` whenever no organizer
+  had a public email. RFC 5546 asks an organizer for `PUBLISH`, and a feed or
+  download is no scheduling message at all: the line is gone (RFC 5545 does not
+  ask for it). No email is published to fill the gap.
 
 ## [1.0.2] — 2026-10-17
 
