@@ -36,7 +36,9 @@ and concerts.
   the right attendance mode, status, location, offers and organizer.
 - **No third-party requests.** No map embed, no font, no script, no tracking.
   The map is a self-hosted image and an OpenStreetMap link that opens on click.
-  The Google Calendar link is a plain link that opens on click.
+  The Google Calendar link is a plain link that opens on click. Media an editor
+  inserts from another server (a web image or a video block in the text, an
+  external image in the intro) are the site's content: see [PRIVACY.md](PRIVACY.md).
 - **The online meeting link stays private.** It is stored in the Panel and
   nowhere else. Koyomi's event object has no such field, so no output can show it.
 - **English and German.** Snippets and feeds follow the site language. Panel
@@ -153,7 +155,7 @@ default.
 | `languages` | `['de', 'en', 'cs']` | Event languages offered in the Panel and in the language filter. A list (`['de', 'cs']`) or a map of code to label (`['cs' => 'Čeština']`). Without a label the translated language name is used. |
 | `language` | site language | Language of snippets, feeds and calendar file texts. Koyomi ships English and German only; any other value is skipped. Order: this option, the current site language, the default language, the `locale` option, English. |
 | `perPage` | `12` | Events per list page, between 1 and 100. |
-| `defaultDuration` | `120` | Minutes an event without an end time lasts. |
+| `defaultDuration` | `120` | Minutes an event without an end time lasts, as elapsed time (across a DST change too). |
 | `feedPastDays` | `30` | Days after its end an event stays in the `.ics` subscription feed. |
 | `ics` | `true` | Per-event download, `/<calendar>/<event>.ics`. |
 | `feed` | `true` | Subscription feed, `/<calendar>.ics`, offered as `webcal://` link. |
@@ -471,6 +473,7 @@ These are global functions, usable in templates and in your own snippets.
 | `koyomi_t('key', [...])` | A Koyomi text in the current language. |
 | `koyomi_event($value)` | An `Event` for an event page, or the event itself; `null` otherwise. |
 | `koyomi_expires($events)` | Lowers the page cache expiry to the next start or end. |
+| `koyomi_expires_at($timestamp)` | Lowers the page cache expiry to a Unix timestamp; `null` changes nothing. |
 
 The site method `$site->koyomiCalendar()` returns the calendar page, or `null`.
 
@@ -505,7 +508,8 @@ The Panel's page fields use these queries, which you can reuse in a blueprint:
 - `end` is exclusive. An event that ends at 13:00 on 14 March ends there, and an
   all-day event ends at 00:00 on the day after its last day. In the calendar file
   the end is written the same way, as the ICS standard asks.
-- An event without `endTime` lasts `defaultDuration` minutes (default 120). If it
+- An event without `endTime` lasts `defaultDuration` minutes (default 120) of elapsed
+  time: an event at 01:30 on the night the clocks go forward ends at 04:30. If it
   has an `endDate` later than its start date, it ends at 00:00 after that date.
 - An evening event with an earlier end time and no `endDate` ends the next day: a
   concert from 20:00 to 01:00 ends at 01:00 the following night.
@@ -518,7 +522,9 @@ The Panel's page fields use these queries, which you can reuse in a blueprint:
 ## Cache expiry
 
 Koyomi lowers the page cache expiry, so a cached calendar or event page refreshes
-when an event starts or ends. The expiry only ever moves earlier, and it has an
+when an event starts or ends. The subscription feed also refreshes when a past
+event leaves its `feedPastDays` window, and a timeline with its "Today" line at
+local midnight. The expiry only ever moves earlier, and it has an
 effect only when Kirby's page cache is active. Lists, the event snippet and the
 calendar's feeds set it, and so do `$page->koyomiData()`, `$page->isPast()` and
 `$page->isOngoing()`. Your own templates therefore need no extra call.

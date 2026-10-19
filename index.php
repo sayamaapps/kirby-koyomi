@@ -125,10 +125,14 @@ function koyomi_event(mixed $value): ?Event
  */
 function koyomi_expires(array $events): void
 {
-    $kirby = App::instance();
-    $next = Expiry::next($events, Options::now($kirby));
-    if ($next !== null) {
-        $kirby->response()->expires($next);
+    koyomi_expires_at(Expiry::next($events, Options::now(App::instance())));
+}
+
+/** Lowers the page cache expiry to $timestamp; null changes nothing. */
+function koyomi_expires_at(?int $timestamp): void
+{
+    if ($timestamp !== null) {
+        App::instance()->response()->expires($timestamp);
     }
 }
 

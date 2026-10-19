@@ -134,6 +134,22 @@ koyomi_test('Koyomi Event', function () {
     expect('2027-03-12T20:00:00+01:00', $iso($e->end), 'end before start → default duration');
     expect(false, $e->hasEndTime, 'end before start → no end time shown');
 
+    // The default duration is elapsed time: across a DST change it still lasts that many
+    // minutes, not that many on the wall clock (modify() gave 60 in spring, 180 in autumn).
+    $minutes = fn (Event $e): int => intdiv($e->end->getTimestamp() - $e->start->getTimestamp(), 60);
+    $e = Event::fromArray(koyomi_raw_event(['startDate' => '2027-03-28', 'startTime' => '01:30', 'endTime' => '']));
+    expect(['2027-03-28T04:30:00+02:00', 120], [$iso($e->end), $minutes($e)], 'default duration across the spring change: 120 elapsed minutes');
+    $e = Event::fromArray(koyomi_raw_event(['startDate' => '2027-10-31', 'startTime' => '01:30', 'endTime' => '']));
+    expect(['2027-10-31T02:30:00+01:00', 120], [$iso($e->end), $minutes($e)], 'default duration across the autumn change: 120 elapsed minutes');
+    $e = Event::fromArray(koyomi_raw_event(['startDate' => '2027-03-14', 'startTime' => '01:30', 'endTime' => '', 'timezone' => 'America/New_York']));
+    expect(['2027-03-14T04:30:00-04:00', 120], [$iso($e->end), $minutes($e)], 'default duration across the spring change in New York');
+    // The fallback for an end before the start is the same duration.
+    $e = Event::fromArray(koyomi_raw_event(['startDate' => '2027-10-31', 'startTime' => '01:30', 'endDate' => '2027-10-31', 'endTime' => '01:00']));
+    expect(['2027-10-31T02:30:00+01:00', 120, false], [$iso($e->end), $minutes($e), $e->hasEndTime], 'end before start across the autumn change: 120 elapsed minutes');
+    // An end time the content gives keeps its wall time.
+    $e = Event::fromArray(koyomi_raw_event(['startDate' => '2027-03-28', 'startTime' => '01:30', 'endTime' => '04:30']));
+    expect(['2027-03-28T04:30:00+02:00', 120], [$iso($e->end), $minutes($e)], 'explicit end across the spring change stays 04:30');
+
     // Multi-day timed retreat.
     $e = Event::fromArray(koyomi_raw_event(['endDate' => '2027-03-14', 'endTime' => '13:00']));
     expect('2027-03-14T13:00:00+01:00', $iso($e->end), 'multi-day end');

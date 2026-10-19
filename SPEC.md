@@ -30,7 +30,7 @@ implemented yet: …')`). Keep every public signature exactly as in the stub.
 | Third parties | None. No map embeds, no fonts, no scripts. Map = self-hosted image + plain OpenStreetMap link. Google Calendar = plain link. |
 | Outputs | Kirby **content representations**, not custom routes: `/<calendar>.ics` (feed), `/<event>.ics`, `/<calendar>.rss`, `/<calendar>.json` (default off). |
 | Filters | Query string (`?category=…&attendance=…&language=…&featured=1&view=past&page=2`), plain GET form, no JS. Kirby does not page-cache requests with query data. |
-| Cache | Lists and event pages lower the page cache expiry to the next start/end in the future (`$kirby->response()->expires($ts)`, verified in `vendor/getkirby/cms/src/Cms/Responder.php`: it only ever lowers). |
+| Cache | Lists and event pages lower the page cache expiry to the next start/end in the future (`$kirby->response()->expires($ts)`, verified in `vendor/getkirby/cms/src/Cms/Responder.php`: it only ever lowers). The subscription feed also to the moment the next event leaves its `feedPastDays` window (`Expiry::leaving()`), a timeline with its Today line to the next local midnight (`Expiry::midnight()`). |
 | Duplicate | `page.duplicate:after` resets `eventStatus`, `previousStart`, `statusNote`, `availability` (option `koyomi.duplicateReset`, default true). Dates are kept (the copy is a draft). |
 | Not in v1 | Recurring events (RRULE), RSVP/registration/capacity, WordPress import, month grid, Panel calendar view, scheduled publishing. |
 
@@ -65,7 +65,8 @@ content/*.txt ──► Mapper (Kirby) ──► Event / Venue / Organizer (Kirb
 | `koyomi_i18n(): string` | sets `I18n` language + `Format::configure(Options::formats(), Options::timezone())`, returns the language. **Every snippet and Output method calls it first** (after the active check). |
 | `koyomi_t(string $key, array $values = []): string` | `I18n::t()` |
 | `koyomi_event(mixed $value): ?Event` | Event → itself; `EventPage` → `->koyomi()`; else null. Snippets accept Event or page through this. |
-| `koyomi_expires(array $events): void` | `$kirby->response()->expires(Expiry::next($events, now))` when not null |
+| `koyomi_expires(array $events): void` | `koyomi_expires_at(Expiry::next($events, now))` |
+| `koyomi_expires_at(?int $timestamp): void` | `$kirby->response()->expires($timestamp)` when not null |
 
 Site method: `$site->koyomiCalendar(): ?Page` (= `Repository::calendar()`).
 Collections: `kirby.collection("koyomi/events")`, `("koyomi/venues")`, `("koyomi/organizers")`.
@@ -113,7 +114,7 @@ nested (`'koyomi' => ['active' => true]`) both work; `null` = not set.
 | `languages` | `['de','en','cs']` | `languages()` → `code => label` | Event languages (Panel multiselect, filter). List or map `['cs' => 'Čeština']`; `''` label = translation `language.<code>`. |
 | `language` | site language | `language()` | Language of snippets/feeds: option → current site language → default language → `locale` → `en`. |
 | `perPage` | `12` | `perPage()` | Events per list page (1–100). |
-| `defaultDuration` | `120` | `defaultDuration()` | Minutes for events without end time. |
+| `defaultDuration` | `120` | `defaultDuration()` | Minutes for events without end time, elapsed (`add(PT…M)`, not `modify()`: across a DST change). |
 | `feedPastDays` | `30` | `feedPastDays()` | Past days kept in the ICS subscription feed. |
 | `ics` | `true` | `route('ics')` | `/<event>.ics`. |
 | `feed` | `true` | `route('feed')` | `/<calendar>.ics` subscription. |
@@ -271,7 +272,6 @@ BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//SayamaApps//Koyomi 1.0//EN
 CALSCALE:GREGORIAN
-METHOD:PUBLISH
 X-WR-CALNAME:<escape(name)>                 only if name
 X-WR-CALDESC:<escape(description)>          only if description
 X-WR-TIMEZONE:<timezone>                    only if timezone
@@ -553,6 +553,11 @@ semantics (a mixed event counts for offline, online and mixed); featured count.
 `Expiry::next()` (done, `tests/ExpiryTest.php`): min over all events of start
 and end that are `> now` (strictly); null if none. Fixture clock example:
 zoom session start 2027-03-11 19:00 Berlin = `1804788000`.
+`Expiry::leaving($events, $now, $days)`: min over all events of end + `$days`
+days (wall days, in `$now`'s zone) that is `> now`; null if none — the
+subscription feed keeps `end > now − feedPastDays days`. `Expiry::midnight($now)`:
+the next local midnight in `$now`'s zone (23 or 25 hours on the change days);
+`koyomi/list` passes it while it prints the Today line.
 
 ### 8.9 `Repository` (task kirby)
 

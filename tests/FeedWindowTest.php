@@ -77,4 +77,36 @@ koyomi_test('Koyomi feed window', function () use ($root) {
     $app = KoyomiFixture::app($root);
     holds($app->page('events/ended-recently')->isPast(), 'isPast() true for the event that ended');
     holds($app->response()->expires() === null, 'isPast() of a past event with no later start: no expiry from this event alone');
+
+    // The page cache also goes stale when an event leaves the feed window and, for a
+    // timeline with its "Today" line, at local midnight — not only at starts and ends.
+    // A site whose next event is weeks away: one that ended 11 days ago, one on 1 May.
+    $sparse = feed_window_site();
+    try {
+        foreach (['20270201_old-workshop', '20270310_running-today', '20270312_plan'] as $dir) {
+            unlink("$sparse/content/1_events/$dir/koyomi-event.txt");
+            rmdir("$sparse/content/1_events/$dir");
+        }
+        mkdir("$sparse/content/1_events/20270501_may");
+        KoyomiFixture::write("$sparse/content/1_events/20270501_may/koyomi-event.txt", [
+            'Title' => 'May', 'Uuid' => 'evt-may', 'StartDate' => '2027-05-01', 'StartTime' => '18:00:00', 'EndTime' => '20:00:00',
+            'AllDay' => 'false', 'Timezone' => 'Europe/Berlin', 'InPerson' => 'true', 'Online' => 'false',
+        ]);
+        $app = KoyomiFixture::app($sparse);
+        holds(str_contains((string) $app->render('events.ics')?->body(), 'UID:evt-recent@example.test'), 'sparse site: the event that ended 11 days ago is in the feed');
+        expect(feed_window_berlin('2027-03-29 11:00'), $app->response()->expires(), 'feed: expires when that event leaves the 30-day window, not at the next start in May');
+        $app = KoyomiFixture::app($sparse, ['koyomi.feedPastDays' => 0]);
+        $app->render('events.ics');
+        expect(feed_window_berlin('2027-05-01 18:00'), $app->response()->expires(), 'feedPastDays 0: nothing to leave, the next start');
+
+        $app = KoyomiFixture::app($sparse, ['koyomi.groupBy' => 'month']);
+        $html = (string) $app->render('events')?->body();
+        holds(str_contains($html, 'class="koyomi-today"'), 'calendar page: the timeline shows its Today line');
+        expect(feed_window_berlin('2027-03-11 00:00'), $app->response()->expires(), 'calendar page with a Today line: expires at local midnight');
+        $app = KoyomiFixture::app($sparse, ['koyomi.groupBy' => false]);
+        $app->render('events');
+        expect(feed_window_berlin('2027-05-01 18:00'), $app->response()->expires(), 'flat list without a Today line: the next start');
+    } finally {
+        KoyomiFixture::remove($sparse);
+    }
 }, fn () => KoyomiFixture::remove($root));

@@ -14,6 +14,36 @@ All notable changes to this project are documented here. Versions follow
 - A change to the names of options, fields, snippets or URLs is breaking and is
   a major version too.
 
+## [1.1.0] — 2026-10-19
+
+### Fixed
+
+- An event without an end time lasted `defaultDuration` minutes on the wall clock,
+  not in elapsed time: starting at 01:30 on the night the clocks change, it lasted
+  60 minutes in spring and 180 in autumn — in the `.ics`, the Google link and the
+  past/ongoing decision. It now lasts the minutes set. An end time the content
+  gives keeps its wall time; all-day events keep their calendar days.
+- Calendar files said `METHOD:PUBLISH` without an `ORGANIZER` whenever no organizer
+  had a public email. RFC 5546 asks an organizer for `PUBLISH`, and a feed or
+  download is no scheduling message at all: the line is gone (RFC 5545 does not
+  ask for it). No email is published to fill the gap.
+- With Kirby's page cache on, the subscription feed and the timeline could go
+  stale: the expiry knew only event starts and ends. A feed with nothing ahead was
+  cached without end and kept an event long after it left the `feedPastDays`
+  window; a calendar whose next event was weeks away kept yesterday's "Today" line.
+  The feed now also expires when the next event leaves its window, and a list that
+  prints the Today line at local midnight. New helper `koyomi_expires_at()`.
+
+### Changed
+
+- **[privacy text]** `DATENSCHUTZ.md`, `PRIVACY.md` and the README said, without a
+  limit, that event pages load nothing from another server. That holds for what
+  Koyomi renders. The event's text is a Kirby blocks field, and a web image or a
+  video block an editor inserts there (or an external image in the calendar intro)
+  loads from its server without a click. The texts now say so and what to do. No
+  output changed; review your privacy policy if your descriptions embed foreign
+  media.
+
 ## [1.0.2] — 2026-10-17
 
 ### Fixed

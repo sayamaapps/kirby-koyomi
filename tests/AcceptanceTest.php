@@ -95,10 +95,14 @@ koyomi_test('Koyomi acceptance', function () use ($root) {
     expect([2, 3, 7], [$paged['pagination']['page'], $paged['pagination']['pages'], $paged['pagination']['total']], 'pagination numbers');
     expect('https://example.test/events?page=3', $paged['pagination']['nextUrl'], 'next page URL');
 
-    // 6. Cache expiry: the next start/end after now (zoom session starts 2027-03-11 19:00 Berlin).
+    // 6. Cache expiry: the next start/end after now (zoom session starts 2027-03-11 19:00 Berlin),
+    // and for the timeline with its Today line the local midnight before it.
     $kirby = KoyomiFixture::app($root);
     $kirby->render('events');
-    expect((new DateTimeImmutable('2027-03-11 19:00', new DateTimeZone('Europe/Berlin')))->getTimestamp(), $kirby->response()->expires(), 'calendar page expires when the next event starts');
+    expect((new DateTimeImmutable('2027-03-11 00:00', new DateTimeZone('Europe/Berlin')))->getTimestamp(), $kirby->response()->expires(), 'calendar page (timeline, Today line) expires at local midnight');
+    $kirby = KoyomiFixture::app($root, ['koyomi.groupBy' => false]);
+    $kirby->render('events');
+    expect((new DateTimeImmutable('2027-03-11 19:00', new DateTimeZone('Europe/Berlin')))->getTimestamp(), $kirby->response()->expires(), 'calendar page (flat list) expires when the next event starts');
     $kirby = KoyomiFixture::app($root);
     $kirby->render('events/retreat');
     expect((new DateTimeImmutable('2027-03-12 18:00', new DateTimeZone('Europe/Berlin')))->getTimestamp(), $kirby->response()->expires(), 'event page expires at its start');

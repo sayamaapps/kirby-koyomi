@@ -211,12 +211,13 @@ koyomi_test('Koyomi Ics', function () {
     holds(ics_test_line(Ics::vevent(koyomi_test_event_modified(0), ics_test_options()), 'LAST-MODIFIED:') === null, 'LAST-MODIFIED omitted when modified = 0');
 
     // calendar(): header, timezone and the complete document of $retreat.
+    // No METHOD: a feed or download is no iTIP message, and PUBLISH would need an
+    // ORGANIZER (RFC 5546 §3.2.1), which an organizer without a public email lacks.
     $header = [
         'BEGIN:VCALENDAR',
         'VERSION:2.0',
         'PRODID:-//SayamaApps//Koyomi 1.0//EN',
         'CALSCALE:GREGORIAN',
-        'METHOD:PUBLISH',
     ];
     $expectedDocument = array_merge(
         $header,
@@ -247,12 +248,13 @@ koyomi_test('Koyomi Ics', function () {
             'REFRESH-INTERVAL;VALUE=DURATION:PT6H',
             'X-PUBLISHED-TTL:PT6H',
         ]),
-        array_slice($withHeader, 0, 10),
+        array_slice($withHeader, 0, count($header) + 5),
         'calendar header with X-WR-* and refresh, in SPEC order',
     );
-    expect('BEGIN:VTIMEZONE', $withHeader[10], 'VTIMEZONE follows the header');
+    expect('BEGIN:VTIMEZONE', $withHeader[count($header) + 5], 'VTIMEZONE follows the header');
     $noWrLines = ics_test_unfold(Ics::calendar([$retreat], ics_test_options()));
     holds(ics_test_line($noWrLines, 'X-WR-') === null && ics_test_line($noWrLines, 'REFRESH-INTERVAL') === null, 'X-WR-* and refresh omitted when not given');
+    holds(ics_test_line($withHeader, 'METHOD') === null && ics_test_line($noWrLines, 'METHOD') === null, 'no METHOD line in the calendar header');
 
     // Zones: one VTIMEZONE per zone of the timed events, sorted by name.
     $prague = Event::fromArray(koyomi_raw_event([

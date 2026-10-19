@@ -45,6 +45,14 @@ ausdrücklich zugestimmt hat und die Angabe im Panel freigeschaltet ist.
 
 ## Hinweise für den Betreiber
 
+- **Fremde Medien in Beschreibung und Einleitung.** Der Satz „ohne Verbindung zu
+  Drittanbietern“ gilt für das, was Koyomi selbst ausgibt. Das Feld „Text“ einer
+  Veranstaltung ist ein normales Kirby-Blocks-Feld: Ein Bild mit der Quelle „Web“
+  oder ein Video-Block mit YouTube- oder Vimeo-Adresse lädt beim Aufruf vom fremden
+  Server, ohne Klick. Dasselbe gilt für ein `(image: https://…)` in der Einleitung
+  des Kalenders. Wer solche Medien einfügt, schützt sie (etwa mit einer
+  Klick-Schranke) und nennt den Anbieter im Datenschutztext – oder bleibt bei
+  Bildern vom eigenen Server; dann stimmt der Textbaustein unverändert.
 - **Was öffentlich ist.** Seiten, Kalenderdateien (`.ics`), RSS-Feed, JSON-Feed (nur
   wenn eingeschaltet) und JSON-LD in den Veranstaltungsseiten enthalten dieselben
   Angaben: Titel, Termin, Status, Ort, Beschreibung, Veranstaltende und deren

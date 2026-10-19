@@ -60,7 +60,6 @@ final class Ics
                 'VERSION:2.0',
                 'PRODID:' . self::PRODID,
                 'CALSCALE:GREGORIAN',
-                'METHOD:PUBLISH',
             ];
             $name = (string) ($options['name'] ?? '');
             if ($name !== '') {

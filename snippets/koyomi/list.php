@@ -66,7 +66,7 @@ if ($list !== null) {
   <?php endif ?>
   <?php if ($items !== [] && $group === 'month') : ?>
   <div class="koyomi-timeline">
-    <?php if ($view === 'upcoming') : $today = koyomi_now(); ?>
+    <?php if ($view === 'upcoming') : $today = koyomi_now(); koyomi_expires_at(\Koyomi\Expiry::midnight($today)); ?>
     <p class="koyomi-today"><time datetime="<?= esc($today->format('Y-m-d')) ?>"><?= esc(koyomi_t('list.today', ['date' => \Koyomi\Format::date($today)])) ?></time></p>
     <?php endif ?>
     <?php foreach (\Koyomi\Query::byMonth($items) as $month) : $monthLevel = min(6, $level + 1); ?>
