@@ -594,7 +594,7 @@ Duplicating an event resets the status in every language.
 
 ## Privacy
 
-Koyomi processes no visitor data: it sets no cookies, uses no browser storage and makes no request to a third party. Its ICS and RSS feeds and any organizer contact data it shows are the site's own published content. There is nothing to add to a site's privacy policy.
+Koyomi processes no visitor data: it sets no cookies, uses no browser storage and makes no request to a third party. Its ICS and RSS feeds and any organizer contact data it shows are the site's own published content. The "Google Calendar" link is a plain link: Google receives the event data only when a visitor follows it, like any external link. There is nothing to add to a site's privacy policy.
 
 ## Not in v1
 
