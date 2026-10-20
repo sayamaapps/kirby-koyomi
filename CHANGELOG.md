@@ -3,16 +3,17 @@
 All notable changes to this project are documented here. Versions follow
 [Semantic Versioning](https://semver.org) with these project rules:
 
-- **A change to what an output makes public** (HTML pages, `.ics`, `.rss`,
-  `.json`, JSON-LD: a new field, a field that was private and is now shown, a
-  shown field that is hidden) is marked **[privacy text]**. Every site using the
-  plugin must then review its privacy policy, and the privacy texts
-  (`DATENSCHUTZ.md` / `PRIVACY.md`) are updated in the same release.
 - **A change of default output wording, or of a default option that changes
   what visitors see**, is a **major** version: a site would show something else
   after a routine update.
 - A change to the names of options, fields, snippets or URLs is breaking and is
   a major version too.
+
+## [Unreleased]
+
+### Removed
+
+- **`DATENSCHUTZ.md` and `PRIVACY.md`.** Koyomi processes no visitor data, so it has no place in a site's privacy policy. The README says so under "Privacy".
 
 ## [1.1.0] — 2026-10-19
 

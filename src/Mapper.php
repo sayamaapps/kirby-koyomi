@@ -230,7 +230,7 @@ final class Mapper
     /**
      * Not a draft (nor below one) and of the expected template. Drafts are
      * what an editor has not published yet; they must not reach any output
-     * through a reference (SPEC §0, PRIVACY.md). Unlisted pages are published
+     * through a reference (SPEC §0). Unlisted pages are published
      * (they have their own URL) and stay usable.
      */
     private static function isPublished(Page $page, string $template): bool
