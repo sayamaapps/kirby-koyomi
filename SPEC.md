@@ -95,7 +95,7 @@ plugin root and works around it (never edits the file).
 | `src/Format.php` (except `configure()`, `reset()`, `pattern()`, `siteZone()` — done, keep them), `src/GoogleLink.php`, `snippets/koyomi/{layout,list,card,event,filters,pagination,past,venue,subscribe}.php`, `templates/koyomi-calendar.php`, `templates/koyomi-event.php`, `templates/koyomi-venue.php`, `templates/koyomi-organizer.php`, `tests/FormatTest.php`, `tests/GoogleLinkTest.php`, `tests/SnippetsTest.php` | task **present** |
 | `src/Query.php`, `src/Filters.php`, `src/Mapper.php`, `src/Repository.php`, `src/Output.php`, `src/Models/{CalendarPage,EventPage,VenuePage,OrganizerPage}.php`, `templates/koyomi-calendar.ics.php`, `templates/koyomi-calendar.rss.php`, `templates/koyomi-calendar.json.php`, `templates/koyomi-event.ics.php`, `tests/QueryTest.php`, `tests/FiltersTest.php`, `tests/KirbyTest.php` | task **kirby** |
 | `src/Blueprints.php`, `src/Hooks.php`, `tests/BlueprintsTest.php`, `tests/HooksTest.php` | task **panel** |
-| `README.md`, `CHANGELOG.md`, `PRIVACY.md`, `DATENSCHUTZ.md` | task **docs** |
+| `README.md`, `CHANGELOG.md` | task **docs** |
 
 ---
 
@@ -715,7 +715,7 @@ finally callback). Every concrete example in §8 must appear as a check.
 
 - PHP **8.2 compatible**: no typed class constants, `#[\Override]`, `json_validate`, `mb_str_pad`, `str_increment` (8.3); no property hooks, asymmetric visibility, `array_find`, `mb_trim`, `new Foo()->x` without parentheses (8.4); no pipe operator, `clone with`, `array_first/last` (8.5). Local PHP is 8.5 — be careful.
 - `declare(strict_types=1)` is not used in this family; keep the style of the existing files (final classes, static methods, docblocks explaining *why*).
-- Code, identifiers, comments in English. German only in translations and DATENSCHUTZ.md.
+- Code, identifiers, comments in English. German only in translations.
 - Do not edit files you do not own. Missing something in a shared file → `NOTES-<task>.md` in the plugin root, then work around it.
 - Do not change public signatures of the stubs. Private helpers are fine.
 - Run your tests until green. Run `I18nTest` and `EventTest` too (they must stay green). `PrivacyTest`/`AcceptanceTest` may stay red until all tasks are merged.

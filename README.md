@@ -38,7 +38,7 @@ and concerts.
   The map is a self-hosted image and an OpenStreetMap link that opens on click.
   The Google Calendar link is a plain link that opens on click. Media an editor
   inserts from another server (a web image or a video block in the text, an
-  external image in the intro) are the site's content: see [PRIVACY.md](PRIVACY.md).
+  external image in the intro) are the site's content and load from that server when the page opens.
 - **The online meeting link stays private.** It is stored in the Panel and
   nowhere else. Koyomi's event object has no such field, so no output can show it.
 - **English and German.** Snippets and feeds follow the site language. Panel
@@ -594,24 +594,7 @@ Duplicating an event resets the status in every language.
 
 ## Privacy
 
-Koyomi makes no requests to third parties and sets no cookies. What is public
-depends on the output: pages, `.ics` files, the JSON feed and JSON-LD show the
-event title, date, place, description and organizer name, and the public organizer
-address; the RSS feed has no organizer address. Never public: the online meeting
-link, and the organizer's email unless `showEmail` is on. Drafts, and pages below a
-draft, are never public, not even as a series part, venue or organizer that an
-event links to.
-
-Feeds are public addresses. Anyone who knows the address can read them, and so
-can any calendar app that subscribes to them.
-
-The privacy texts are in two files:
-
-- [PRIVACY.md](PRIVACY.md): an English summary of what the plugin does.
-- [DATENSCHUTZ.md](DATENSCHUTZ.md): the German text block for your site's privacy
-  policy, which is the authoritative version.
-
-Both describe the implementation. They are not legal advice.
+Koyomi processes no visitor data: it sets no cookies, uses no browser storage and makes no request to a third party. Its ICS and RSS feeds and any organizer contact data it shows are the site's own published content. The "Google Calendar" link is a plain link: Google receives the event data only when a visitor follows it, like any external link. There is nothing to add to a site's privacy policy.
 
 ## Not in v1
 
