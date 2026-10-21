@@ -30,7 +30,7 @@ implemented yet: …')`). Keep every public signature exactly as in the stub.
 | Third parties | None. No map embeds, no fonts, no scripts. Map = self-hosted image + plain OpenStreetMap link. Google Calendar = plain link. |
 | Outputs | Kirby **content representations**, not custom routes: `/<calendar>.ics` (feed), `/<event>.ics`, `/<calendar>.rss`, `/<calendar>.json` (default off). |
 | Filters | Query string (`?category=…&attendance=…&language=…&featured=1&view=past&page=2`), plain GET form, no JS. Kirby does not page-cache requests with query data. |
-| Cache | Lists and event pages lower the page cache expiry to the next start/end in the future (`$kirby->response()->expires($ts)`, verified in `vendor/getkirby/cms/src/Cms/Responder.php`: it only ever lowers). |
+| Cache | Lists and event pages lower the page cache expiry to the next start/end in the future (`$kirby->response()->expires($ts)`, verified in `vendor/getkirby/cms/src/Cms/Responder.php`: it only ever lowers). The subscription feed also to the moment the next event leaves its `feedPastDays` window (`Expiry::leaving()`), a timeline with its Today line to the next local midnight (`Expiry::midnight()`). |
 | Duplicate | `page.duplicate:after` resets `eventStatus`, `previousStart`, `statusNote`, `availability` (option `koyomi.duplicateReset`, default true). Dates are kept (the copy is a draft). |
 | Not in v1 | Recurring events (RRULE), RSVP/registration/capacity, WordPress import, month grid, Panel calendar view, scheduled publishing. |
 
@@ -65,7 +65,8 @@ content/*.txt ──► Mapper (Kirby) ──► Event / Venue / Organizer (Kirb
 | `koyomi_i18n(): string` | sets `I18n` language + `Format::configure(Options::formats(), Options::timezone())`, returns the language. **Every snippet and Output method calls it first** (after the active check). |
 | `koyomi_t(string $key, array $values = []): string` | `I18n::t()` |
 | `koyomi_event(mixed $value): ?Event` | Event → itself; `EventPage` → `->koyomi()`; else null. Snippets accept Event or page through this. |
-| `koyomi_expires(array $events): void` | `$kirby->response()->expires(Expiry::next($events, now))` when not null |
+| `koyomi_expires(array $events): void` | `koyomi_expires_at(Expiry::next($events, now))` |
+| `koyomi_expires_at(?int $timestamp): void` | `$kirby->response()->expires($timestamp)` when not null |
 
 Site method: `$site->koyomiCalendar(): ?Page` (= `Repository::calendar()`).
 Collections: `kirby.collection("koyomi/events")`, `("koyomi/venues")`, `("koyomi/organizers")`.
@@ -94,7 +95,7 @@ plugin root and works around it (never edits the file).
 | `src/Format.php` (except `configure()`, `reset()`, `pattern()`, `siteZone()` — done, keep them), `src/GoogleLink.php`, `snippets/koyomi/{layout,list,card,event,filters,pagination,past,venue,subscribe}.php`, `templates/koyomi-calendar.php`, `templates/koyomi-event.php`, `templates/koyomi-venue.php`, `templates/koyomi-organizer.php`, `tests/FormatTest.php`, `tests/GoogleLinkTest.php`, `tests/SnippetsTest.php` | task **present** |
 | `src/Query.php`, `src/Filters.php`, `src/Mapper.php`, `src/Repository.php`, `src/Output.php`, `src/Models/{CalendarPage,EventPage,VenuePage,OrganizerPage}.php`, `templates/koyomi-calendar.ics.php`, `templates/koyomi-calendar.rss.php`, `templates/koyomi-calendar.json.php`, `templates/koyomi-event.ics.php`, `tests/QueryTest.php`, `tests/FiltersTest.php`, `tests/KirbyTest.php` | task **kirby** |
 | `src/Blueprints.php`, `src/Hooks.php`, `tests/BlueprintsTest.php`, `tests/HooksTest.php` | task **panel** |
-| `README.md`, `CHANGELOG.md`, `PRIVACY.md`, `DATENSCHUTZ.md` | task **docs** |
+| `README.md`, `CHANGELOG.md` | task **docs** |
 
 ---
 
@@ -113,7 +114,7 @@ nested (`'koyomi' => ['active' => true]`) both work; `null` = not set.
 | `languages` | `['de','en','cs']` | `languages()` → `code => label` | Event languages (Panel multiselect, filter). List or map `['cs' => 'Čeština']`; `''` label = translation `language.<code>`. |
 | `language` | site language | `language()` | Language of snippets/feeds: option → current site language → default language → `locale` → `en`. |
 | `perPage` | `12` | `perPage()` | Events per list page (1–100). |
-| `defaultDuration` | `120` | `defaultDuration()` | Minutes for events without end time. |
+| `defaultDuration` | `120` | `defaultDuration()` | Minutes for events without end time, elapsed (`add(PT…M)`, not `modify()`: across a DST change). |
 | `feedPastDays` | `30` | `feedPastDays()` | Past days kept in the ICS subscription feed. |
 | `ics` | `true` | `route('ics')` | `/<event>.ics`. |
 | `feed` | `true` | `route('feed')` | `/<calendar>.ics` subscription. |
@@ -271,7 +272,6 @@ BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//SayamaApps//Koyomi 1.0//EN
 CALSCALE:GREGORIAN
-METHOD:PUBLISH
 X-WR-CALNAME:<escape(name)>                 only if name
 X-WR-CALDESC:<escape(description)>          only if description
 X-WR-TIMEZONE:<timezone>                    only if timezone
@@ -553,6 +553,11 @@ semantics (a mixed event counts for offline, online and mixed); featured count.
 `Expiry::next()` (done, `tests/ExpiryTest.php`): min over all events of start
 and end that are `> now` (strictly); null if none. Fixture clock example:
 zoom session start 2027-03-11 19:00 Berlin = `1804788000`.
+`Expiry::leaving($events, $now, $days)`: min over all events of end + `$days`
+days (wall days, in `$now`'s zone) that is `> now`; null if none — the
+subscription feed keeps `end > now − feedPastDays days`. `Expiry::midnight($now)`:
+the next local midnight in `$now`'s zone (23 or 25 hours on the change days);
+`koyomi/list` passes it while it prints the Today line.
 
 ### 8.9 `Repository` (task kirby)
 
@@ -595,7 +600,7 @@ Each Output method: (1) `Options::route()` false → `throw new \Kirby\Exception
 
 | Method | Events | Body | Type | Content-Disposition |
 |---|---|---|---|---|
-| `eventIcs($page)` | the page's Event (404 if null, if page is a draft, or not a koyomi-event) | `Ics::event($e, opts)` | `text/calendar` | `attachment; filename="<slug>.ics"` |
+| `eventIcs($page)` | the page's Event (404 if null, if page is a draft or below one, or not a koyomi-event) | `Ics::event($e, opts)` | `text/calendar` | `attachment; filename="<slug>.ics"` |
 | `calendarIcs($cal)` | `Repository::events()` with `end > now − feedPastDays days`, `Query::sort()` asc, cancelled included | `Ics::calendar($events, opts + ['name' => title, 'timezone' => Options::timezone(), 'refresh' => 'PT6H'])` | `text/calendar` | `inline; filename="<slug>.ics"` |
 | `rss($cal)` | `Repository::upcoming($cal)` | `Rss::feed($events, ['title','link' => url,'self' => rssUrl,'language' => koyomi_i18n(),'now','describe' => fn ($e) => trim(Format::when($e) . "\n\n" . $e->description)])` | `application/rss+xml` | — |
 | `json($cal)` | `Repository::upcoming($cal)` | `json_encode(['calendar' => ['title','url'], 'generated' => Time::iso(now), 'events' => [toArray(), …]], UNESCAPED_SLASHES\|UNESCAPED_UNICODE\|PRESERVE_ZERO_FRACTION\|THROW_ON_ERROR)` | `application/json` | — |
@@ -710,7 +715,7 @@ finally callback). Every concrete example in §8 must appear as a check.
 
 - PHP **8.2 compatible**: no typed class constants, `#[\Override]`, `json_validate`, `mb_str_pad`, `str_increment` (8.3); no property hooks, asymmetric visibility, `array_find`, `mb_trim`, `new Foo()->x` without parentheses (8.4); no pipe operator, `clone with`, `array_first/last` (8.5). Local PHP is 8.5 — be careful.
 - `declare(strict_types=1)` is not used in this family; keep the style of the existing files (final classes, static methods, docblocks explaining *why*).
-- Code, identifiers, comments in English. German only in translations and DATENSCHUTZ.md.
+- Code, identifiers, comments in English. German only in translations.
 - Do not edit files you do not own. Missing something in a shared file → `NOTES-<task>.md` in the plugin root, then work around it.
 - Do not change public signatures of the stubs. Private helpers are fine.
 - Run your tests until green. Run `I18nTest` and `EventTest` too (they must stay green). `PrivacyTest`/`AcceptanceTest` may stay red until all tasks are merged.

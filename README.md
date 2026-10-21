@@ -36,7 +36,9 @@ and concerts.
   the right attendance mode, status, location, offers and organizer.
 - **No third-party requests.** No map embed, no font, no script, no tracking.
   The map is a self-hosted image and an OpenStreetMap link that opens on click.
-  The Google Calendar link is a plain link that opens on click.
+  The Google Calendar link is a plain link that opens on click. Media an editor
+  inserts from another server (a web image or a video block in the text, an
+  external image in the intro) are the site's content and load from that server when the page opens.
 - **The online meeting link stays private.** It is stored in the Panel and
   nowhere else. Koyomi's event object has no such field, so no output can show it.
 - **English and German.** Snippets and feeds follow the site language. Panel
@@ -60,7 +62,7 @@ it ships `vendor/`.
 Until the package is on Packagist, add the repository first:
 
 ```json
-"repositories": [{ "type": "vcs", "url": "https://github.com/simsimmal/kirby-koyomi" }]
+"repositories": [{ "type": "vcs", "url": "https://github.com/sayamaapps/kirby-koyomi" }]
 ```
 
 Manual installation (copy the folder into `site/plugins/koyomi/`) works too.
@@ -124,10 +126,11 @@ content/
   slug (without the date) is the URL: `/events/silent-retreat`.
 - Venue and organizer pages are unlisted: they have a URL for linking and
   feeds, but no navigation shows them. New ones are created unlisted, not as
-  drafts. An event shows a venue or organizer only when the page is not a draft,
-  so publish a draft venue or organizer before you link it. The same holds for
-  the other parts of a series: a draft part is left out of the series navigation
-  until it is published.
+  drafts. An event shows a venue or organizer only when the page is not a draft
+  and does not sit below a draft (such as a "Venues" page put back into draft),
+  so publish a draft venue or organizer, and its container, before you link it.
+  The same holds for the other parts of a series: a draft part, or one below a
+  draft, is left out of the series navigation until it is published.
 - Events, venues and organizers are plain Kirby pages with the templates
   `koyomi-event`, `koyomi-venue` and `koyomi-organizer`. Kirby stores the content
   of a page in `<template>.txt`, or `<template>.<language>.txt` on a multilingual
@@ -152,7 +155,7 @@ default.
 | `languages` | `['de', 'en', 'cs']` | Event languages offered in the Panel and in the language filter. A list (`['de', 'cs']`) or a map of code to label (`['cs' => 'Čeština']`). Without a label the translated language name is used. |
 | `language` | site language | Language of snippets, feeds and calendar file texts. Koyomi ships English and German only; any other value is skipped. Order: this option, the current site language, the default language, the `locale` option, English. |
 | `perPage` | `12` | Events per list page, between 1 and 100. |
-| `defaultDuration` | `120` | Minutes an event without an end time lasts. |
+| `defaultDuration` | `120` | Minutes an event without an end time lasts, as elapsed time (across a DST change too). |
 | `feedPastDays` | `30` | Days after its end an event stays in the `.ics` subscription feed. |
 | `ics` | `true` | Per-event download, `/<calendar>/<event>.ics`. |
 | `feed` | `true` | Subscription feed, `/<calendar>.ics`, offered as `webcal://` link. |
@@ -470,6 +473,7 @@ These are global functions, usable in templates and in your own snippets.
 | `koyomi_t('key', [...])` | A Koyomi text in the current language. |
 | `koyomi_event($value)` | An `Event` for an event page, or the event itself; `null` otherwise. |
 | `koyomi_expires($events)` | Lowers the page cache expiry to the next start or end. |
+| `koyomi_expires_at($timestamp)` | Lowers the page cache expiry to a Unix timestamp; `null` changes nothing. |
 
 The site method `$site->koyomiCalendar()` returns the calendar page, or `null`.
 
@@ -504,7 +508,8 @@ The Panel's page fields use these queries, which you can reuse in a blueprint:
 - `end` is exclusive. An event that ends at 13:00 on 14 March ends there, and an
   all-day event ends at 00:00 on the day after its last day. In the calendar file
   the end is written the same way, as the ICS standard asks.
-- An event without `endTime` lasts `defaultDuration` minutes (default 120). If it
+- An event without `endTime` lasts `defaultDuration` minutes (default 120) of elapsed
+  time: an event at 01:30 on the night the clocks go forward ends at 04:30. If it
   has an `endDate` later than its start date, it ends at 00:00 after that date.
 - An evening event with an earlier end time and no `endDate` ends the next day: a
   concert from 20:00 to 01:00 ends at 01:00 the following night.
@@ -517,7 +522,9 @@ The Panel's page fields use these queries, which you can reuse in a blueprint:
 ## Cache expiry
 
 Koyomi lowers the page cache expiry, so a cached calendar or event page refreshes
-when an event starts or ends. The expiry only ever moves earlier, and it has an
+when an event starts or ends. The subscription feed also refreshes when a past
+event leaves its `feedPastDays` window, and a timeline with its "Today" line at
+local midnight. The expiry only ever moves earlier, and it has an
 effect only when Kirby's page cache is active. Lists, the event snippet and the
 calendar's feeds set it, and so do `$page->koyomiData()`, `$page->isPast()` and
 `$page->isOngoing()`. Your own templates therefore need no extra call.
@@ -587,23 +594,7 @@ Duplicating an event resets the status in every language.
 
 ## Privacy
 
-Koyomi makes no requests to third parties and sets no cookies. What is public
-depends on the output: pages, `.ics` files, the JSON feed and JSON-LD show the
-event title, date, place, description and organizer name, and the public organizer
-address; the RSS feed has no organizer address. Never public: the online meeting
-link, and the organizer's email unless `showEmail` is on. Drafts are never public,
-not even as a series part, venue or organizer that an event links to.
-
-Feeds are public addresses. Anyone who knows the address can read them, and so
-can any calendar app that subscribes to them.
-
-The privacy texts are in two files:
-
-- [PRIVACY.md](PRIVACY.md): an English summary of what the plugin does.
-- [DATENSCHUTZ.md](DATENSCHUTZ.md): the German text block for your site's privacy
-  policy, which is the authoritative version.
-
-Both describe the implementation. They are not legal advice.
+Koyomi processes no visitor data: it sets no cookies, uses no browser storage and makes no request to a third party. Its ICS and RSS feeds and any organizer contact data it shows are the site's own published content. The "Google Calendar" link is a plain link: Google receives the event data only when a visitor follows it, like any external link. There is nothing to add to a site's privacy policy.
 
 ## Not in v1
 

@@ -212,14 +212,15 @@ final class Repository
     /**
      * The page the option names if it has the template, else the first page
      * with that template: site children, then the index. $withDrafts = false
-     * (public lookups) skips drafts everywhere, including the configured id,
-     * which `$kirby->page()` would otherwise find anyway.
+     * (public lookups) skips drafts and pages below drafts everywhere,
+     * including the configured id, which `$kirby->page()` would otherwise
+     * find anyway (it falls back to the drafts of a parent).
      */
     private static function findByTemplate(App $kirby, string $template, ?string $configuredId, bool $withDrafts): ?Page
     {
         if ($configuredId !== null) {
             $page = $kirby->page($configuredId);
-            if ($page !== null && ($withDrafts || !$page->isDraft()) && $page->intendedTemplate()->name() === $template) {
+            if ($page !== null && ($withDrafts || !Mapper::isDraft($page)) && $page->intendedTemplate()->name() === $template) {
                 return $page;
             }
         }

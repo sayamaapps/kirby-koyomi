@@ -2,6 +2,7 @@
 
 namespace Koyomi;
 
+use DateInterval;
 use DateTimeImmutable;
 use InvalidArgumentException;
 
@@ -100,7 +101,7 @@ final class Event
      * - all-day end: endDate + 1 day at 00:00; if that is not after start, start + 1 day. hasEndTime = false.
      * - timed end: endDate + endTime. If endDate was EMPTY and endTime < startTime, the end is on the
      *   next day (concert 20:00–01:00). No endTime: endDate > startDate → 00:00 after endDate,
-     *   else start + defaultDuration minutes; hasEndTime = false. An end not after start → start +
+     *   else start + defaultDuration minutes (elapsed, across DST too); hasEndTime = false. An end not after start → start +
      *   defaultDuration, hasEndTime = false.
      * - price: isFree → null; else Normalize::amount(). currency: /^[A-Z]{3}$/ after upper-casing, else default.
      * - previousStart: parsed in the event zone, kept only when status is `rescheduled`.
@@ -117,7 +118,8 @@ final class Event
         $defaults += self::DEFAULTS;
         $id = Normalize::string($data['id'] ?? '');
         $zone = Time::zone(Normalize::string($data['timezone'] ?? ''), (string) $defaults['timezone']);
-        $duration = max(0, (int) $defaults['defaultDuration']);
+        // Elapsed minutes: modify() adds wall-clock minutes, an hour off across a DST change.
+        $length = new DateInterval('PT' . max(0, (int) $defaults['defaultDuration']) . 'M');
 
         $startDate = Normalize::string($data['startDate'] ?? '');
         $startTime = Normalize::string($data['startTime'] ?? '');
@@ -154,10 +156,10 @@ final class Event
                 $end = Time::wall($endDate, '', $zone)->modify('+1 day');
                 $hasEndDate = true;
             } else {
-                $end = $start->modify('+' . $duration . ' minutes');
+                $end = $start->add($length);
             }
             if ($hasEndTime && $end <= $start) {
-                $end = $start->modify('+' . $duration . ' minutes');
+                $end = $start->add($length);
                 $hasEndTime = false;
                 $hasEndDate = false;
             }

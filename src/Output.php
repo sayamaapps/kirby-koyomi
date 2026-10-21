@@ -26,7 +26,7 @@ final class Output
     public static function eventIcs(Page $event): string
     {
         $kirby = $event->kirby();
-        if (!Options::route($kirby, 'ics') || $event->isDraft() || $event->intendedTemplate()->name() !== 'koyomi-event') {
+        if (!Options::route($kirby, 'ics') || Mapper::isDraft($event) || $event->intendedTemplate()->name() !== 'koyomi-event') {
             throw new NotFoundException();
         }
         try {
@@ -58,6 +58,7 @@ final class Output
         $cutoff = $now->modify('-' . Options::feedPastDays($kirby) . ' days');
         $all = Repository::events($calendar);
         koyomi_expires($all);
+        koyomi_expires_at(Expiry::leaving($all, $now, Options::feedPastDays($kirby)));
         $events = Query::sort(array_values(array_filter($all, fn (Event $e): bool => $e->end > $cutoff)), 'asc');
 
         $response = $kirby->response();

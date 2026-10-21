@@ -3,16 +3,60 @@
 All notable changes to this project are documented here. Versions follow
 [Semantic Versioning](https://semver.org) with these project rules:
 
-- **A change to what an output makes public** (HTML pages, `.ics`, `.rss`,
-  `.json`, JSON-LD: a new field, a field that was private and is now shown, a
-  shown field that is hidden) is marked **[privacy text]**. Every site using the
-  plugin must then review its privacy policy, and the privacy texts
-  (`DATENSCHUTZ.md` / `PRIVACY.md`) are updated in the same release.
 - **A change of default output wording, or of a default option that changes
   what visitors see**, is a **major** version: a site would show something else
   after a routine update.
 - A change to the names of options, fields, snippets or URLs is breaking and is
   a major version too.
+
+## [Unreleased]
+
+### Removed
+
+- **`DATENSCHUTZ.md` and `PRIVACY.md`.** Koyomi processes no visitor data, so it has no place in a site's privacy policy. The README says so under "Privacy".
+
+## [1.1.0] — 2026-10-19
+
+### Fixed
+
+- An event without an end time lasted `defaultDuration` minutes on the wall clock,
+  not in elapsed time: starting at 01:30 on the night the clocks change, it lasted
+  60 minutes in spring and 180 in autumn — in the `.ics`, the Google link and the
+  past/ongoing decision. It now lasts the minutes set. An end time the content
+  gives keeps its wall time; all-day events keep their calendar days.
+- Calendar files said `METHOD:PUBLISH` without an `ORGANIZER` whenever no organizer
+  had a public email. RFC 5546 asks an organizer for `PUBLISH`, and a feed or
+  download is no scheduling message at all: the line is gone (RFC 5545 does not
+  ask for it). No email is published to fill the gap.
+- With Kirby's page cache on, the subscription feed and the timeline could go
+  stale: the expiry knew only event starts and ends. A feed with nothing ahead was
+  cached without end and kept an event long after it left the `feedPastDays`
+  window; a calendar whose next event was weeks away kept yesterday's "Today" line.
+  The feed now also expires when the next event leaves its window, and a list that
+  prints the Today line at local midnight. New helper `koyomi_expires_at()`.
+
+### Changed
+
+- **[privacy text]** `DATENSCHUTZ.md`, `PRIVACY.md` and the README said, without a
+  limit, that event pages load nothing from another server. That holds for what
+  Koyomi renders. The event's text is a Kirby blocks field, and a web image or a
+  video block an editor inserts there (or an external image in the calendar intro)
+  loads from its server without a click. The texts now say so and what to do. No
+  output changed; review your privacy policy if your descriptions embed foreign
+  media.
+
+## [1.0.2] — 2026-10-17
+
+### Fixed
+
+- A venue, organizer or series part below a draft container (for example after the
+  whole "Venues" page was put back into draft) was still shown in a published
+  event's page, JSON-LD, `.ics` files and the JSON feed, although its own URL
+  answered 404. Kirby's `isDraft()` looks at the page alone; Koyomi now treats a
+  page below a draft as a draft everywhere it decides what is public
+  (`Mapper::isDraft()`): references, the calendar lookup for a configured
+  `koyomi.calendar` id, and `/<event>.ics`. Panel pickers are unchanged. The
+  privacy texts name pages below drafts explicitly.
 
 ## [1.0.1] — 2026-10-11
 
