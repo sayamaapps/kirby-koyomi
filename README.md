@@ -24,12 +24,6 @@ Koyomi keeps venues and organizers as pages of their own, so an address changes 
 composer require sayamaapps/kirby-koyomi
 ```
 
-Until the package is on Packagist, add the repository to `composer.json` first:
-
-```json
-"repositories": [{ "type": "vcs", "url": "https://github.com/sayamaapps/kirby-koyomi" }]
-```
-
 Composer installs to `site/plugins/koyomi/`. Add that path to `.gitignore` and deploy it like `vendor/`. Copying the folder there by hand works too.
 
 ## Setup
