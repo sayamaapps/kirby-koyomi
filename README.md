@@ -225,23 +225,23 @@ The Panel stores these fields. Read them in your own code with
 | `startDate` | date | First day. Required. |
 | `startTime` | time | Start time. Required unless `allDay`. |
 | `endDate` | date | Last day. Empty for a single day. |
-| `endTime` | time | End time. Empty for an open end, see [Time zones and daylight saving time](#time-zones-and-daylight-saving-time). |
+| `endTime` | time | End time. Empty for an open end, see [Time zones and daylight saving time](#time-zones-and-daylight-saving-time). Asked by Fude. |
 | `allDay` | toggle | All-day event. Start and end are dates, and the times are hidden. |
 | `timezone` | select | IANA zone of the wall times above, for example `Europe/Berlin`. |
 | `inPerson` | toggle (default on) | The event takes place in person. Requires a `venue`. |
 | `online` | toggle (default off) | The event takes place online, or online as well as in person. |
 | `venue` | page | The venue, from the venues container. Required when `inPerson` is on. |
 | `onlinePlatform` | text | Name of the platform, for example `Zoom`. Shown publicly ("Online via Zoom"). |
-| `onlineUrl` | url | The meeting link. Panel only: never shown, never in a feed, never in a calendar file. Send it to participants yourself. |
+| `onlineUrl` | url | The meeting link. Required when `online` is on. Panel only: never shown, never in a feed, never in a calendar file. Send it to participants yourself. |
 | `eventStatus` | select | `scheduled`, `cancelled`, `postponed`, `rescheduled` or `movedOnline`. |
 | `previousStart` | date with time | Original start, shown when the event is `rescheduled`. |
 | `statusNote` | textarea | Note on the status, for example the reason for a cancellation. |
 | `isFree` | toggle | Free of charge. Hides the price fields. |
-| `price` | number | Price in `currency`. |
+| `price` | number | Price in `currency`. Asked by Fude. |
 | `currency` | select | Currency of `price`. |
 | `priceNote` | text | Note on the price, for example "early bird until 1 March". |
 | `availability` | select | `available`, `limited` (only a few places left) or `soldout`. |
-| `bookingUrl` | url | Link where people register or buy. It leads to an external provider. |
+| `bookingUrl` | url | Link where people register or buy. It leads to an external provider. Asked by Fude. |
 | `bookingLabel` | text | Text of the booking button. Defaults to "Register" / "Zur Anmeldung". |
 | `organizers` | pages | One or more organizers, from the organizers container. |
 | `categories` | tags | Free categories, for example `Retreat, Meditation`. Used for the filter. |
@@ -268,13 +268,31 @@ status `movedOnline` makes the effective attendance online.
 | Field | Panel type | Meaning |
 |---|---|---|
 | `title` | title | Name of the venue. |
-| `street`, `postalCode`, `city`, `region` | text | Address. |
+| `street`, `postalCode`, `city` | text | Address. Required: an in-person event needs one. |
+| `region` | text | Region or state, optional. |
 | `country` | text, two letters | ISO country code, for example `DE`. Pages show the country by name ("Germany", "Deutschland"), and leave it out for the `country` option. JSON-LD and calendar files keep the code. |
 | `lat`, `lng` | number | Coordinates. Used for the OpenStreetMap link and for the location in JSON-LD and calendar files. |
 | `mapImage` | file | A static map image you upload. The plugin never loads maps from third parties. |
 | `showMap` | toggle (default off) | Shows `mapImage` on the venue page. Event pages show the venue name and address only, without the map image. |
 | `website` | url | The venue's website. |
 | `directions` | textarea | How to get there. |
+
+### Changes by chat (Fude)
+
+With the separate package [Fude](https://github.com/sayamaapps/kirby-fude) (1.6 or
+later), a site can let a chat bot create and change events. Koyomi says what the
+bot needs; the site declares which fields it may write. Fude reads `required`,
+`when` and `fudeAsk` from these blueprints. Without Fude the key `fudeAsk` does
+nothing.
+
+| | Event | Venue |
+|---|---|---|
+| **Required** | `title`, `startDate`, `startTime` (unless `allDay`), `venue` (in person), `onlineUrl` (online), `eventStatus` (has a default) | `title`, `street`, `postalCode`, `city` |
+| **Asked** (once, "don't know" is fine) | `endTime`, `price` (unless `isFree`), `bookingUrl` | — |
+| **Free** | everything else | everything else |
+
+A site may be stricter (an end time required for all its events) in its Fude
+declaration, never looser.
 
 ### Organizer (`koyomi-organizer`)
 

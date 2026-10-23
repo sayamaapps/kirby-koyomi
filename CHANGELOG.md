@@ -9,7 +9,23 @@ All notable changes to this project are documented here. Versions follow
 - A change to the names of options, fields, snippets or URLs is breaking and is
   a major version too.
 
-## [Unreleased]
+## [1.2.0] — 2026-10-23
+
+### Changed
+
+- **A venue needs an address:** `street`, `postalCode` and `city` are required.
+  An in-person event points to its venue, and a venue without an address
+  leaves visitors without a way to get there. Existing venues without one ask
+  for it at the next save in the Panel; pages and feeds are unchanged.
+- **An online event needs its meeting link:** `onlineUrl` is required while
+  `online` is on. It stays private as before.
+
+### Added
+
+- **`fudeAsk` on `endTime`, `price` and `bookingUrl`:** with the package Fude
+  (1.6 or later), a chat bot asks for them before it drafts a new event and
+  takes "don't know". Kirby and sites without Fude ignore the key. README:
+  "Changes by chat (Fude)".
 
 ### Removed
 

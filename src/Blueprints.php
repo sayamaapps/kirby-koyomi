@@ -199,6 +199,8 @@ final class Blueprints
                             'type' => 'time',
                             'width' => '1/2',
                             'when' => ['allDay' => false],
+                            // For the package Fude: a chat bot asks for it before a new event. Kirby ignores the key.
+                            'fudeAsk' => true,
                         ],
                         'allDay' => [
                             'label' => I18n::all('field.allDay'),
@@ -248,6 +250,7 @@ final class Blueprints
                             'type' => 'url',
                             'width' => '1/2',
                             'when' => ['online' => true],
+                            'required' => true,
                             'help' => I18n::all('field.onlineUrl.help'),
                         ],
                     ],
@@ -290,6 +293,7 @@ final class Blueprints
                             'step' => 0.01,
                             'width' => '1/3',
                             'when' => ['isFree' => false],
+                            'fudeAsk' => true,
                         ],
                         'currency' => [
                             'label' => I18n::all('field.currency'),
@@ -315,6 +319,7 @@ final class Blueprints
                             'label' => I18n::all('field.bookingUrl'),
                             'type' => 'url',
                             'width' => '2/3',
+                            'fudeAsk' => true,
                         ],
                         'bookingLabel' => [
                             'label' => I18n::all('field.bookingLabel'),
@@ -397,20 +402,24 @@ final class Blueprints
                 'main' => [
                     'width' => '2/3',
                     'fields' => [
+                        // An in-person event needs an address: a venue without one is incomplete.
                         'street' => [
                             'label' => I18n::all('field.street'),
                             'type' => 'text',
                             'width' => '2/3',
+                            'required' => true,
                         ],
                         'postalCode' => [
                             'label' => I18n::all('field.postalCode'),
                             'type' => 'text',
                             'width' => '1/3',
+                            'required' => true,
                         ],
                         'city' => [
                             'label' => I18n::all('field.city'),
                             'type' => 'text',
                             'width' => '1/2',
+                            'required' => true,
                         ],
                         'region' => [
                             'label' => I18n::all('field.region'),
