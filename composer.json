@@ -1,6 +1,6 @@
 {
     "name": "sayamaapps/kirby-koyomi",
-    "description": "Event calendar for Kirby CMS 5: events, reusable venues and organizers, status and online/hybrid attendance, ICS feeds, JSON-LD and RSS. No third-party requests; online meeting links stay private.",
+    "description": "Event calendar for Kirby 5: venues, organizers, status, online events, ICS, RSS and JSON-LD.",
     "type": "kirby-plugin",
     "license": "MIT",
     "keywords": ["kirby", "kirby-plugin", "kirby-5", "events", "calendar", "ics", "icalendar", "json-ld", "schema-org", "privacy"],
@@ -38,6 +38,9 @@
     },
     "extra": {
         "installer-name": "koyomi",
-        "kirby-cms-path": false
+        "kirby-cms-path": false,
+        "kirby": {
+            "compatible": "^5.0"
+        }
     }
 }
