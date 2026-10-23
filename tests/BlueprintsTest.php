@@ -87,6 +87,10 @@ koyomi_test('Koyomi Blueprints', function () use ($settings, $root) {
         expect(false, $venueFields[$name]['translate'] ?? null, "venue $name: translate false");
     }
     holds(!array_key_exists('translate', $venueFields['directions'] ?? []), 'venue directions stays translatable');
+    foreach (['street', 'postalCode', 'city'] as $name) {
+        holds(($venueFields[$name]['required'] ?? false) === true, "venue $name is required");
+    }
+    holds(!isset($venueFields['region']['required']) && !isset($venueFields['country']['required']), 'venue region and country stay optional');
     $organizerFields = koyomi_blueprint_fields(Blueprints::organizer($settings));
     foreach (['kind', 'email', 'showEmail', 'website', 'photo'] as $name) {
         expect(false, $organizerFields[$name]['translate'] ?? null, "organizer $name: translate false");
@@ -155,8 +159,12 @@ koyomi_test('Koyomi Blueprints', function () use ($settings, $root) {
     holds(!isset($fields['startDate']['when']) && !isset($fields['endDate']['when']), 'dates have no when');
 
     // required and defaults
-    foreach (['startDate', 'startTime', 'timezone', 'venue', 'eventStatus'] as $name) {
+    foreach (['startDate', 'startTime', 'timezone', 'venue', 'onlineUrl', 'eventStatus'] as $name) {
         holds(($fields[$name]['required'] ?? false) === true, "$name is required");
+    }
+    // For the package Fude: asked before a new event, never required.
+    foreach (['endTime', 'price', 'bookingUrl'] as $name) {
+        holds(($fields[$name]['fudeAsk'] ?? false) === true && !isset($fields[$name]['required']), "$name is asked by Fude");
     }
     expect(false, $fields['allDay']['default'], 'allDay default false');
     expect(true, $fields['inPerson']['default'], 'inPerson default true');
