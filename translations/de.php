@@ -135,6 +135,7 @@ return [
     'tab.details' => 'Details',
 
     'section.events' => 'Veranstaltungen',
+    'fude.events' => 'Veranstaltungen dieses Kalenders, gefunden über ihr Startdatum. Ein neuer Termin einer früheren Veranstaltung kann deren Angaben übernehmen.',
     'section.drafts' => 'Entwürfe',
     'section.venues' => 'Veranstaltungsorte',
     'section.organizers' => 'Veranstalter',

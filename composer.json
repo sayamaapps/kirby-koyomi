@@ -24,6 +24,9 @@
     "require-dev": {
         "getkirby/cms": "^5.0"
     },
+    "conflict": {
+        "sayamaapps/kirby-fude": "<1.7"
+    },
     "scripts": {
         "test": "sh tests/run.sh"
     },

@@ -64,7 +64,12 @@ Read a field in a template with `$page->content()->get('startDate')`.
 
 ### Fude
 
-Fude 1.6 or later reads `required`, `when` and `fudeAsk` from the blueprints. A site may be stricter in its Fude declaration, never looser.
+Fude 1.7 or later reads the `fude` markers, `required`, `when` and `fudeAsk` from the blueprints. The events section of `koyomi-calendar` is one collection per calendar, named `<calendar-id>-events`, key `startDate`, actions `create` and `update` (cancel with `eventStatus`, no deleting). A site may be stricter in its Fude declaration, never looser: a `pages` collection in `site/config/fude.php` for the calendar and `koyomi-event` replaces the derived one. A site that replaces the calendar blueprint keeps the `fude` key on its events section; without it, every event becomes a collection of its own.
+
+| | Event |
+|---|---|
+| **Reachable** | `title`, `excerpt`, `startDate`, `startTime`, `endDate`, `endTime`, `inPerson`, `online`, `venue`, `onlineUrl`, `eventStatus`, `statusNote`, `price`, `priceNote`, `availability`, `bookingUrl` |
+| **Not reachable** | `text` (blocks), `categories` (tags), `eventLanguages` (multiselect), `organizers` and `series` (several pages): types Fude cannot set; also `cover`, `allDay`, `timezone`, `onlinePlatform`, `previousStart`, `isFree`, `currency`, `bookingLabel`, `featured`, `seriesPart` |
 
 | | Event | Venue |
 |---|---|---|
