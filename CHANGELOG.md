@@ -9,6 +9,23 @@ All notable changes to this project are documented here. Versions follow
 - A change to the names of options, fields, snippets or URLs is breaking and is
   a major version too.
 
+## [1.3.0] — 2026-10-24
+
+### Added
+
+- **Events by chat (Fude 1.7 or later).** The calendar's events section and
+  these event fields carry a `fude` marker: `title`, `excerpt`, `startDate`,
+  `startTime`, `endDate`, `endTime`, `inPerson`, `online`, `venue`,
+  `onlineUrl`, `eventStatus`, `statusNote`, `price`, `priceNote`,
+  `availability` and `bookingUrl`. Fude derives one collection per calendar,
+  found by the start date, without a line in `site/config/fude.php`. Kirby
+  and sites without Fude ignore the key; pages and feeds are unchanged.
+
+### Changed
+
+- **`composer.json` conflicts with Fude before 1.7**, which would read the
+  event markers as one collection per event and fail beyond 30 events.
+
 ## [1.2.0] — 2026-10-23
 
 ### Changed

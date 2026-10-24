@@ -144,6 +144,7 @@ return [
     'tab.details' => 'Details',
 
     'section.events' => 'Events',
+    'fude.events' => 'Events of this calendar, found by their start date. A new date of an earlier event can take its values.',
     'section.drafts' => 'Drafts',
     'section.venues' => 'Venues',
     'section.organizers' => 'Organizers',

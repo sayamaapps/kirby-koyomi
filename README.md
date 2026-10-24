@@ -131,7 +131,7 @@ Koyomi processes no visitor data: no cookies, no browser storage, no third-party
 
 ## Changes by chat (Fude)
 
-With the separate package [Fude](https://github.com/sayamaapps/kirby-fude) 1.6 or later, a chat bot can create and change events. Koyomi's blueprints mark the required and asked fields; see [docs/reference.md](docs/reference.md#fude). Without Fude, the `fudeAsk` key does nothing.
+With the separate package [Fude](https://github.com/sayamaapps/kirby-fude) 1.7 or later, a chat bot can create and change events. Koyomi's blueprints mark the fields and the calendar's events section, so each calendar is one Fude collection without a line in `site/config/fude.php`; an event is found by its start date. Date, times, venue, online link, price, booking link, status and short text are reachable; the full text (`blocks`), categories (`tags`), languages (`multiselect`), organizers and series (several pages) are not, because Fude cannot set those types, and neither are the cover and the other fields. Details: [docs/reference.md](docs/reference.md#fude). Without Fude, the `fude` and `fudeAsk` keys do nothing.
 
 ## Maintenance
 

@@ -26,6 +26,17 @@ namespace Koyomi;
  */
 final class Blueprints
 {
+    /**
+     * Event fields a chat bot may set through the package Fude: the fields
+     * of the events collection that the calendar's events section declares.
+     * Fields of a type Fude cannot set (blocks, files, tags, multiselect,
+     * pages with several pages) are not among them.
+     */
+    public const FUDE_FIELDS = [
+        'excerpt', 'startDate', 'startTime', 'endDate', 'endTime', 'inPerson', 'online', 'venue', 'onlineUrl',
+        'eventStatus', 'statusNote', 'price', 'priceNote', 'availability', 'bookingUrl',
+    ];
+
     /** Blueprint names index.php registers, all under pages/. */
     public const NAMES = ['koyomi-calendar', 'koyomi-event', 'koyomi-venues', 'koyomi-venue', 'koyomi-organizers', 'koyomi-organizer'];
 
@@ -81,6 +92,32 @@ final class Blueprints
         return $walk($blueprint);
     }
 
+    /**
+     * Marks every field named in FUDE_FIELDS with `fude: true`, wherever it
+     * sits. The package Fude reads the markers of koyomi-event only through
+     * the calendar's events section; Kirby ignores the key.
+     */
+    private static function fude(array $blueprint): array
+    {
+        $walk = function (array $node) use (&$walk): array {
+            foreach ($node as $key => $value) {
+                if (!is_array($value)) {
+                    continue;
+                }
+                if ($key === 'fields') {
+                    foreach ($value as $name => $field) {
+                        if (is_string($name) && in_array($name, self::FUDE_FIELDS, true) && is_array($field)) {
+                            $value[$name] = $field + ['fude' => true];
+                        }
+                    }
+                }
+                $node[$key] = $walk($value);
+            }
+            return $node;
+        };
+        return $walk($blueprint);
+    }
+
     public static function calendar(array $settings): array
     {
         return [
@@ -108,6 +145,10 @@ final class Blueprints
                             'sortBy' => 'startDate desc',
                             'info' => '{{ page.startDate.toDate("d.m.Y") }}',
                             'limit' => 50,
+                            // For the package Fude (1.7 or later): the events are one collection a chat
+                            // bot may change, with the fields marked in koyomi-event. Kirby ignores the key.
+                            // The start date is the key: the same workshop comes back under the same title.
+                            'fude' => ['key' => 'startDate', 'description' => I18n::all('fude.events')],
                         ],
                     ],
                 ],
@@ -131,7 +172,7 @@ final class Blueprints
 
     public static function event(array $settings): array
     {
-        return self::shared([
+        return self::fude(self::shared([
             'title' => I18n::all('blueprint.event'),
             'icon' => 'calendar',
             // Folder name from the start date: 20270312_retreat. Kirby re-derives it on change.
@@ -366,7 +407,7 @@ final class Blueprints
                     ],
                 ],
             ],
-        ]);
+        ]));
     }
 
     public static function venues(array $settings): array

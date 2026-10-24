@@ -189,6 +189,19 @@ koyomi_test('Koyomi Blueprints', function () use ($settings, $root) {
     foreach (['endTime', 'price', 'bookingUrl'] as $name) {
         holds(($fields[$name]['fudeAsk'] ?? false) === true && !isset($fields[$name]['required']), "$name is asked by Fude");
     }
+    // For the package Fude: the marked fields are exactly FUDE_FIELDS, each of a type Fude can set.
+    $marked = array_keys(array_filter($fields, fn ($field) => ($field['fude'] ?? null) === true));
+    sort($marked);
+    $fudeFields = Blueprints::FUDE_FIELDS;
+    sort($fudeFields);
+    expect($fudeFields, $marked, 'marked fields are FUDE_FIELDS');
+    foreach ($marked as $name) {
+        holds(in_array($fields[$name]['type'], ['text', 'textarea', 'date', 'time', 'toggle', 'select', 'number', 'url', 'pages'], true), "$name has a type Fude can set");
+    }
+    expect(false, $fields['venue']['multiple'], 'the marked pages field holds one page');
+    foreach (['text', 'categories', 'eventLanguages', 'organizers', 'series'] as $name) {
+        holds(!isset($fields[$name]['fude']), "$name is not marked (type Fude cannot set)");
+    }
     expect(false, $fields['allDay']['default'], 'allDay default false');
     expect(true, $fields['inPerson']['default'], 'inPerson default true');
     expect(false, $fields['online']['default'], 'online default false');
@@ -261,6 +274,9 @@ koyomi_test('Koyomi Blueprints', function () use ($settings, $root) {
     expect(['koyomi-event'], $calendar['columns']['main']['sections']['events']['templates'], 'calendar lists events only');
     expect(50, $calendar['columns']['main']['sections']['events']['limit'], 'calendar events limit 50');
     expect('startDate desc', $calendar['columns']['main']['sections']['events']['sortBy'], 'calendar sorts by start date');
+    expect('startDate', $calendar['columns']['main']['sections']['events']['fude']['key'] ?? null, 'events section: Fude marker, keyed by the start date');
+    koyomi_assert_labels($calendar['columns']['main']['sections']['events']['fude']['description'] ?? null, 'events section Fude description');
+    holds(!isset($calendar['columns']['main']['sections']['drafts']['fude']), 'drafts section is not marked');
 
     // Containers and children: draft + unlisted only
     $statusDraftUnlisted = ['draft' => true, 'unlisted' => true, 'listed' => false];
