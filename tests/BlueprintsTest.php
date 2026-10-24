@@ -42,6 +42,29 @@ function koyomi_blueprint_fields(array $node, array &$out = []): array
     return $out;
 }
 
+/**
+ * The tab names of a Kirby blueprint. Blueprint::tabs() returns a list of
+ * arrays in Kirby 5 and a Tabs collection of Tab objects in Kirby 6.
+ */
+function koyomi_tab_names(object $blueprint): array
+{
+    $names = [];
+    foreach ($blueprint->tabs() as $tab) {
+        $names[] = is_array($tab) ? $tab['name'] : $tab->name();
+    }
+    return $names;
+}
+
+/**
+ * The section names of a Kirby blueprint. Kirby 5 keeps sections apart
+ * (Blueprint::sections()); Kirby 6 folds every section into a field of the
+ * same name and no longer has the method.
+ */
+function koyomi_section_names(object $blueprint): array
+{
+    return array_keys(method_exists($blueprint, 'sections') ? $blueprint->sections() : $blueprint->fields());
+}
+
 /** Every key used as a field name, at any depth (for the status/image rule). */
 function koyomi_field_names(array $node): array
 {
@@ -309,8 +332,8 @@ koyomi_test('Koyomi Blueprints', function () use ($settings, $root) {
         expect($name, $page->blueprint()->name(), "$path blueprint name");
         // These must not throw: the Panel reads them.
         holds(is_array($page->blueprint()->fields()), "$path fields() works");
-        holds(is_array($page->blueprint()->tabs()), "$path tabs() works");
-        holds(is_array($page->blueprint()->sections()), "$path sections() works");
+        holds(koyomi_tab_names($page->blueprint()) !== [], "$path tabs() works");
+        holds(koyomi_section_names($page->blueprint()) !== [], "$path sections() works");
     }
 
     // Field names as Kirby sees them (lower-cased by the Form layer): the event's fields are all there.
