@@ -195,6 +195,8 @@ koyomi_test('Koyomi Blueprints', function () use ($settings, $root) {
     $fudeFields = Blueprints::FUDE_FIELDS;
     sort($fudeFields);
     expect($fudeFields, $marked, 'marked fields are FUDE_FIELDS');
+    // A free event becomes paid by chat: the toggle comes along with the price.
+    expect(true, in_array('isFree', $marked, true), 'isFree reachable by Fude');
     foreach ($marked as $name) {
         holds(in_array($fields[$name]['type'], ['text', 'textarea', 'date', 'time', 'toggle', 'select', 'number', 'url', 'pages'], true), "$name has a type Fude can set");
     }

@@ -9,6 +9,20 @@ All notable changes to this project are documented here. Versions follow
 - A change to the names of options, fields, snippets or URLs is breaking and is
   a major version too.
 
+## [1.4.0] — 2026-10-25
+
+### Added
+
+- **`isFree` is reachable for Fude.** A free event becomes paid by chat:
+  `isFree: false` and the price in one draft. Fude asks for the price only
+  while the event is not free. Before, the bot could set a price on a free
+  event that showed nowhere (Fude 1.7.2 or later refuses that now).
+
+### Changed
+
+- The reference says what the date key means: a day with several events is
+  edited in the Panel.
+
 ## [1.3.0] — 2026-10-24
 
 ### Added
