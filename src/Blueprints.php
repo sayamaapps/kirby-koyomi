@@ -34,7 +34,7 @@ final class Blueprints
      */
     public const FUDE_FIELDS = [
         'excerpt', 'startDate', 'startTime', 'endDate', 'endTime', 'inPerson', 'online', 'venue', 'onlineUrl',
-        'eventStatus', 'statusNote', 'price', 'priceNote', 'availability', 'bookingUrl',
+        'eventStatus', 'statusNote', 'isFree', 'price', 'priceNote', 'availability', 'bookingUrl',
     ];
 
     /** Blueprint names index.php registers, all under pages/. */
