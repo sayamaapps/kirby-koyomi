@@ -9,6 +9,14 @@ All notable changes to this project are documented here. Versions follow
 - A change to the names of options, fields, snippets or URLs is breaking and is
   a major version too.
 
+## [Unreleased]
+
+### Fixed
+
+- **README privacy statement.** It said nothing is loaded from third parties, but
+  an image or video block with a web address in an event's text loads from that
+  server when the page opens. The README says so again. No output changed.
+
 ## [1.4.0] — 2026-10-25
 
 ### Added
