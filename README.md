@@ -2,7 +2,7 @@
 
 Event calendar for [Kirby CMS](https://getkirby.com) 5, with ICS files, feeds and structured data.
 
-Koyomi keeps venues and organizers as pages of their own, so an address changes in one place. Status and attendance are event fields, and the event page, calendar files, feeds and JSON-LD all read the same data. Nothing is loaded from third parties.
+Koyomi keeps venues and organizers as pages of their own, so an address changes in one place. Status and attendance are event fields, and the event page, calendar files, feeds and JSON-LD all read the same data. The plugin loads nothing from third parties itself; media an editor embeds from another server is the exception, see [Privacy](#privacy).
 
 ## Features
 
@@ -11,7 +11,7 @@ Koyomi keeps venues and organizers as pages of their own, so an address changes 
 - Local wall time with an IANA zone; daylight saving time is handled on output.
 - ICS download per event, `webcal://` subscription, RSS and an optional JSON feed.
 - schema.org `Event` JSON-LD on every event page.
-- English and German texts; no cookies, no scripts, no third-party requests.
+- English and German texts; no cookies, no scripts, no third-party requests from the plugin itself.
 
 ## Requirements
 
@@ -127,7 +127,9 @@ Every option is `koyomi.<name>`, flat or nested. `null` means "not set".
 
 ## Privacy
 
-Koyomi processes no visitor data: no cookies, no browser storage, no third-party requests. The "Google Calendar" link is an ordinary link; Google receives event data only when a visitor follows it. The online meeting link (`onlineUrl`) is never output, so no page or feed contains it.
+Koyomi processes no visitor data: no cookies, no browser storage, no third-party requests from the plugin. The "Google Calendar" link is an ordinary link; Google receives event data only when a visitor follows it. The online meeting link (`onlineUrl`) is never output, so no page or feed contains it.
+
+The exception is media in an event's text. An image or video block with an address on another server loads from there when the page opens, and a video embed runs that provider's script. Upload images to the site instead, or leave such blocks out. Without them there is nothing to add to a site's privacy policy.
 
 ## Changes by chat (Fude)
 
