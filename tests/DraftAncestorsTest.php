@@ -1,17 +1,8 @@
 <?php
-/**
- * A page below a draft is a draft (review finding KOY-001): a venue or
- * organizer that is itself unlisted but lives under a container the editor put
- * back into draft has isDraft() === false, yet its own URL answers 404. Events
- * that reference it, the calendar lookup and /<event>.ics must treat it as a
- * draft; the same pages under a published container stay visible.
- *   php tests/DraftAncestorsTest.php
- */
-require dirname(__DIR__) . '/vendor/autoload.php';
-require __DIR__ . '/lib/expect.php';
-require __DIR__ . '/lib/Fixture.php';
 
 use Kirby\Exception\NotFoundException;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\TestCase;
 use Koyomi\Mapper;
 use Koyomi\Output;
 use Koyomi\Repository;
@@ -77,93 +68,115 @@ function ancestors_site(): string
     return $root;
 }
 
-$root = ancestors_site();
-$archiveRoot = ancestors_bare_root();
-$jsonOptions = ['koyomi.json' => true];
+/**
+ * A page below a draft is a draft (review finding KOY-001): a venue or
+ * organizer that is itself unlisted but lives under a container the editor put
+ * back into draft has isDraft() === false, yet its own URL answers 404. Events
+ * that reference it, the calendar lookup and /<event>.ics must treat it as a
+ * draft; the same pages under a published container stay visible.
+ */
+#[CoversNothing]
+final class DraftAncestorsTest extends TestCase
+{
+	public function testSuite(): void
+	{
+		$root = ancestors_site();
 
-$body = fn (string $root, string $path, array $options = []): string => (string) KoyomiFixture::app($root, $options)->render($path)?->body();
+		$archiveRoot = ancestors_bare_root();
 
-$partOne = function () use ($root, $body, $jsonOptions) {
-    $kirby = KoyomiFixture::app($root);
+		$jsonOptions = ['koyomi.json' => true];
 
-    // What the test guards against: Kirby's own isDraft() is false for the children.
-    foreach ([['venues/hidden', 'venues'], ['organizers/hidden', 'organizers'], ['region/venues/far', 'region']] as [$childId, $topId]) {
-        $child = $kirby->page('_drafts/' . $childId);
-        holds($child !== null, $childId . ': the page below the draft resolves');
-        expect(false, $child->isDraft(), $childId . ': Kirby says the page itself is no draft');
-        expect(true, $kirby->page('_drafts/' . $topId)->isDraft(), $topId . ': the container is a draft');
-        expect(true, Mapper::isDraft($child), $childId . ': Mapper::isDraft() sees the draft above');
-        expect(null, $kirby->site()->find($childId), $childId . ': Kirby\'s Site::find() does not reach it');
-    }
-    expect(false, Mapper::isDraft($kirby->page('places/open')), 'a venue below a published container is no draft');
-    expect(false, Mapper::isDraft($kirby->page('events/open-places')), 'a published event is no draft');
 
-    // The mapped data.
-    $hidden = Mapper::raw($kirby->page('events/hidden-places'));
-    expect(null, $hidden['venue'], 'venue below a draft container: not in the event data');
-    expect([], $hidden['organizers'], 'organizer below a draft container: not in the event data');
-    expect(null, Mapper::raw($kirby->page('events/far-place'))['venue'], 'venue two levels below a draft: not in the event data');
-    $open = Mapper::raw($kirby->page('events/open-places'));
-    holds($open['venue'] !== null && count($open['organizers']) === 1, 'counter-check: venue and organizer below published containers are kept');
+		$body = fn (string $root, string $path, array $options = []): string => (string) KoyomiFixture::app($root, $options)->render($path)?->body();
 
-    // Every output of the hidden event and the far event, and the feeds.
-    $secrets = ['Hidden Hall', 'Verstecktgasse', 'Hidden Host', 'hidden-host@example.org', 'Faraway Hall', 'Fernweg'];
-    $outputs = [
-        'event HTML' => $body($root, 'events/hidden-places'),
-        'far event HTML' => $body($root, 'events/far-place'),
-        'event ICS' => $body($root, 'events/hidden-places.ics'),
-        'far event ICS' => $body($root, 'events/far-place.ics'),
-        'calendar ICS' => $body($root, 'events.ics'),
-        'calendar JSON' => $body($root, 'events.json', $jsonOptions),
-        'calendar RSS' => $body($root, 'events.rss'),
-    ];
-    foreach ($outputs as $name => $text) {
-        holds(str_contains($text, 'Event') || str_contains($text, 'BEGIN:VCALENDAR'), $name . ': rendered something');
-        foreach ($secrets as $secret) {
-            holds(!str_contains($text, $secret), $name . ': does not contain "' . $secret . '"');
-        }
-    }
 
-    // Counter-check: the same kind of pages below a published container are shown.
-    $openHtml = $body($root, 'events/open-places');
-    holds(str_contains($openHtml, 'Open Hall') && str_contains($openHtml, 'Open Host'), 'counter-check HTML: venue and organizer below published containers are shown');
-    $openIcs = $body($root, 'events/open-places.ics');
-    holds(str_contains($openIcs, 'Open Hall'), 'counter-check ICS: the venue below a published container is shown');
-    holds(str_contains($body($root, 'events.json', $jsonOptions), 'Open Hall'), 'counter-check JSON: the venue below a published container is shown');
+		$partOne = function () use ($root, $body, $jsonOptions) {
+		    $kirby = KoyomiFixture::app($root);
 
-    // The direct URLs are 404.
-    foreach (['venues/hidden', 'organizers/hidden', 'region/venues/far'] as $path) {
-        $response = KoyomiFixture::app($root)->render($path);
-        expect(404, $response?->code(), $path . ': the page\'s own URL answers 404');
-    }
-};
+		    // What the test guards against: Kirby's own isDraft() is false for the children.
+		    foreach ([['venues/hidden', 'venues'], ['organizers/hidden', 'organizers'], ['region/venues/far', 'region']] as [$childId, $topId]) {
+		        $child = $kirby->page('_drafts/' . $childId);
+		        holds($child !== null, $childId . ': the page below the draft resolves');
+		        expect(false, $child->isDraft(), $childId . ': Kirby says the page itself is no draft');
+		        expect(true, $kirby->page('_drafts/' . $topId)->isDraft(), $topId . ': the container is a draft');
+		        expect(true, Mapper::isDraft($child), $childId . ': Mapper::isDraft() sees the draft above');
+		        expect(null, $kirby->site()->find($childId), $childId . ': Kirby\'s Site::find() does not reach it');
+		    }
+		    expect(false, Mapper::isDraft($kirby->page('places/open')), 'a venue below a published container is no draft');
+		    expect(false, Mapper::isDraft($kirby->page('events/open-places')), 'a published event is no draft');
 
-$partTwo = function () use ($archiveRoot) {
-    // A calendar below a draft container: the configured id finds it through
-    // App::page() (draft fallback), but it is not public.
-    $w = fn (string $path, array $fields) => KoyomiFixture::write($archiveRoot . '/content/' . $path, $fields);
-    $w('_drafts/archive/default.txt', ['Title' => 'Archive']);
-    $w('_drafts/archive/events/koyomi-calendar.txt', ['Title' => 'Archived events', 'Uuid' => 'calendar-archive']);
-    $w('_drafts/archive/events/20270501_buried/koyomi-event.txt', ancestors_event('Buried Event', 'evt-buried', '2027-05-01'));
+		    // The mapped data.
+		    $hidden = Mapper::raw($kirby->page('events/hidden-places'));
+		    expect(null, $hidden['venue'], 'venue below a draft container: not in the event data');
+		    expect([], $hidden['organizers'], 'organizer below a draft container: not in the event data');
+		    expect(null, Mapper::raw($kirby->page('events/far-place'))['venue'], 'venue two levels below a draft: not in the event data');
+		    $open = Mapper::raw($kirby->page('events/open-places'));
+		    holds($open['venue'] !== null && count($open['organizers']) === 1, 'counter-check: venue and organizer below published containers are kept');
 
-    $kirby = KoyomiFixture::app($archiveRoot, ['koyomi.calendar' => '_drafts/archive/events']);
-    $calendarPage = $kirby->page('_drafts/archive/events');
-    holds($calendarPage !== null && $calendarPage->intendedTemplate()->name() === 'koyomi-calendar', 'the configured calendar page resolves');
-    expect(false, $calendarPage->isDraft(), 'the calendar page itself is no draft in Kirby\'s eyes');
-    expect(null, Repository::calendar($kirby), 'a calendar below a draft container is not the calendar');
-    expect(null, $kirby->site()->koyomiCalendar(), 'site()->koyomiCalendar() is null for it too');
+		    // Every output of the hidden event and the far event, and the feeds.
+		    $secrets = ['Hidden Hall', 'Verstecktgasse', 'Hidden Host', 'hidden-host@example.org', 'Faraway Hall', 'Fernweg'];
+		    $outputs = [
+		        'event HTML' => $body($root, 'events/hidden-places'),
+		        'far event HTML' => $body($root, 'events/far-place'),
+		        'event ICS' => $body($root, 'events/hidden-places.ics'),
+		        'far event ICS' => $body($root, 'events/far-place.ics'),
+		        'calendar ICS' => $body($root, 'events.ics'),
+		        'calendar JSON' => $body($root, 'events.json', $jsonOptions),
+		        'calendar RSS' => $body($root, 'events.rss'),
+		    ];
+		    foreach ($outputs as $name => $text) {
+		        holds(str_contains($text, 'Event') || str_contains($text, 'BEGIN:VCALENDAR'), $name . ': rendered something');
+		        foreach ($secrets as $secret) {
+		            holds(!str_contains($text, $secret), $name . ': does not contain "' . $secret . '"');
+		        }
+		    }
 
-    $kirby = KoyomiFixture::app($archiveRoot);
-    $event = $kirby->page('_drafts/archive/events/buried') ?? $kirby->page('archive/events/buried');
-    holds($event !== null && $event->intendedTemplate()->name() === 'koyomi-event', 'the event below the draft container resolves');
-    expect(false, $event->isDraft(), 'the event itself is no draft in Kirby\'s eyes');
-    throws(NotFoundException::class, fn () => Output::eventIcs($event), 'eventIcs() of an event below a draft container');
-};
+		    // Counter-check: the same kind of pages below a published container are shown.
+		    $openHtml = $body($root, 'events/open-places');
+		    holds(str_contains($openHtml, 'Open Hall') && str_contains($openHtml, 'Open Host'), 'counter-check HTML: venue and organizer below published containers are shown');
+		    $openIcs = $body($root, 'events/open-places.ics');
+		    holds(str_contains($openIcs, 'Open Hall'), 'counter-check ICS: the venue below a published container is shown');
+		    holds(str_contains($body($root, 'events.json', $jsonOptions), 'Open Hall'), 'counter-check JSON: the venue below a published container is shown');
 
-koyomi_test('Koyomi draft ancestors', function () use ($partOne, $partTwo) {
-    $partOne();
-    $partTwo();
-}, function () use ($root, $archiveRoot) {
-    KoyomiFixture::remove($root);
-    KoyomiFixture::remove($archiveRoot);
-});
+		    // The direct URLs are 404.
+		    foreach (['venues/hidden', 'organizers/hidden', 'region/venues/far'] as $path) {
+		        $response = KoyomiFixture::app($root)->render($path);
+		        expect(404, $response?->code(), $path . ': the page\'s own URL answers 404');
+		    }
+		};
+
+
+		$partTwo = function () use ($archiveRoot) {
+		    // A calendar below a draft container: the configured id finds it through
+		    // App::page() (draft fallback), but it is not public.
+		    $w = fn (string $path, array $fields) => KoyomiFixture::write($archiveRoot . '/content/' . $path, $fields);
+		    $w('_drafts/archive/default.txt', ['Title' => 'Archive']);
+		    $w('_drafts/archive/events/koyomi-calendar.txt', ['Title' => 'Archived events', 'Uuid' => 'calendar-archive']);
+		    $w('_drafts/archive/events/20270501_buried/koyomi-event.txt', ancestors_event('Buried Event', 'evt-buried', '2027-05-01'));
+
+		    $kirby = KoyomiFixture::app($archiveRoot, ['koyomi.calendar' => '_drafts/archive/events']);
+		    $calendarPage = $kirby->page('_drafts/archive/events');
+		    holds($calendarPage !== null && $calendarPage->intendedTemplate()->name() === 'koyomi-calendar', 'the configured calendar page resolves');
+		    expect(false, $calendarPage->isDraft(), 'the calendar page itself is no draft in Kirby\'s eyes');
+		    expect(null, Repository::calendar($kirby), 'a calendar below a draft container is not the calendar');
+		    expect(null, $kirby->site()->koyomiCalendar(), 'site()->koyomiCalendar() is null for it too');
+
+		    $kirby = KoyomiFixture::app($archiveRoot);
+		    $event = $kirby->page('_drafts/archive/events/buried') ?? $kirby->page('archive/events/buried');
+		    holds($event !== null && $event->intendedTemplate()->name() === 'koyomi-event', 'the event below the draft container resolves');
+		    expect(false, $event->isDraft(), 'the event itself is no draft in Kirby\'s eyes');
+		    throws(NotFoundException::class, fn () => Output::eventIcs($event), 'eventIcs() of an event below a draft container');
+		};
+
+		try {
+
+		    $partOne();
+		    $partTwo();
+
+		} finally {
+
+		    KoyomiFixture::remove($root);
+		    KoyomiFixture::remove($archiveRoot);
+
+		}	}
+}

@@ -3,7 +3,18 @@
     "description": "Event calendar for Kirby 5: venues, organizers, status, online events, ICS, RSS and JSON-LD.",
     "type": "kirby-plugin",
     "license": "MIT",
-    "keywords": ["kirby", "kirby-plugin", "kirby-5", "events", "calendar", "ics", "icalendar", "json-ld", "schema-org", "privacy"],
+    "keywords": [
+        "kirby",
+        "kirby-plugin",
+        "kirby-5",
+        "events",
+        "calendar",
+        "ics",
+        "icalendar",
+        "json-ld",
+        "schema-org",
+        "privacy"
+    ],
     "homepage": "https://github.com/sayamaapps/kirby-koyomi",
     "authors": [
         {
@@ -22,13 +33,14 @@
         "getkirby/composer-installer": "^1.2"
     },
     "require-dev": {
-        "getkirby/cms": "^5.0"
+        "getkirby/cms": "^5.0",
+        "phpunit/phpunit": "11.5.55"
     },
     "conflict": {
         "sayamaapps/kirby-fude": "<1.7"
     },
     "scripts": {
-        "test": "sh tests/run.sh"
+        "test": "vendor/bin/phpunit"
     },
     "config": {
         "optimize-autoloader": true,

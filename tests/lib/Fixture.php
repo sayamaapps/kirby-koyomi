@@ -3,14 +3,11 @@
  * A throwaway Kirby site with a calendar, venues, organizers and events —
  * the shared fixture of every Kirby-booting test. Not a test itself.
  *
- *   require __DIR__ . '/lib/expect.php';
- *   require __DIR__ . '/lib/Fixture.php';
  *   $root = KoyomiFixture::create();
- *   koyomi_test('Koyomi Kirby', function () use ($root) {
- *       $kirby = KoyomiFixture::app($root);                 // koyomi.active on, clock 2027-03-10 12:00
- *       $page = $kirby->page('events/retreat');
- *       $response = $kirby->render('events/retreat.ics');   // Kirby\Http\Response|null
- *   }, fn () => KoyomiFixture::remove($root));
+ *   $kirby = KoyomiFixture::app($root);                 // koyomi.active on, clock 2027-03-10 12:00
+ *   $page = $kirby->page('events/retreat');
+ *   $response = $kirby->render('events/retreat.ics');   // Kirby\Http\Response|null
+ *   KoyomiFixture::remove($root);                       // in a finally block
  *
  * Content (clock 2027-03-10 12:00 Europe/Berlin; full field values below):
  *   events/ (koyomi-calendar, listed)
