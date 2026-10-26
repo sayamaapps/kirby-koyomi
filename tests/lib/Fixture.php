@@ -225,8 +225,8 @@ final class KoyomiFixture
         Blueprint::$loaded = [];
         try {
             // Not loaded before the first App (Kirby loads the plugin then).
-            if (class_exists(\Koyomi\Repository::class, false)) {
-                \Koyomi\Repository::reset();
+            if (class_exists(\Sayamaapps\Koyomi\Repository::class, false)) {
+                \Sayamaapps\Koyomi\Repository::reset();
             }
         } catch (\LogicException) {
             // Repository not implemented yet (other task) — nothing cached then.

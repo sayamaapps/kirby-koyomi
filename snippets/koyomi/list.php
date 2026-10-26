@@ -12,7 +12,7 @@
  * event: the calendar is only looked up when no data was passed.
  *
  * @var array|null          $list   Repository::list() shape (SPEC §8.9)
- * @var iterable|null       $events list of Koyomi\Event or event pages
+ * @var iterable|null       $events list of Sayamaapps\Koyomi\Event or event pages
  * @var string|false|null   $title  heading text; false = no heading
  * @var int|null            $level  heading level, 2 by default; months use level + 1, cards level + 2
  * @var string|false|null   $group  'month' = timeline with month headings (default from
@@ -33,7 +33,7 @@ $view = ($list['view'] ?? 'upcoming') === 'past' ? 'past' : 'upcoming';
 $filtered = (bool) ($list['filtered'] ?? false);
 $title ??= koyomi_t($view === 'past' ? 'list.past' : 'list.upcoming');
 $level = min(6, max(1, (int) ($level ?? 2)));
-$group ??= \Koyomi\Options::groupBy(\Kirby\Cms\App::instance());
+$group ??= \Sayamaapps\Koyomi\Options::groupBy(\Kirby\Cms\App::instance());
 $group = $group === 'month' ? 'month' : false;
 
 $items = [];
@@ -66,12 +66,12 @@ if ($list !== null) {
   <?php endif ?>
   <?php if ($items !== [] && $group === 'month') : ?>
   <div class="koyomi-timeline">
-    <?php if ($view === 'upcoming') : $today = koyomi_now(); koyomi_expires_at(\Koyomi\Expiry::midnight($today)); ?>
-    <p class="koyomi-today"><time datetime="<?= esc($today->format('Y-m-d')) ?>"><?= esc(koyomi_t('list.today', ['date' => \Koyomi\Format::date($today)])) ?></time></p>
+    <?php if ($view === 'upcoming') : $today = koyomi_now(); koyomi_expires_at(\Sayamaapps\Koyomi\Expiry::midnight($today)); ?>
+    <p class="koyomi-today"><time datetime="<?= esc($today->format('Y-m-d')) ?>"><?= esc(koyomi_t('list.today', ['date' => \Sayamaapps\Koyomi\Format::date($today)])) ?></time></p>
     <?php endif ?>
-    <?php foreach (\Koyomi\Query::byMonth($items) as $month) : $monthLevel = min(6, $level + 1); ?>
+    <?php foreach (\Sayamaapps\Koyomi\Query::byMonth($items) as $month) : $monthLevel = min(6, $level + 1); ?>
     <section class="koyomi-month" aria-labelledby="koyomi-month-<?= esc($month['key'], 'attr') ?>">
-      <h<?= $monthLevel ?> class="koyomi-month-title" id="koyomi-month-<?= esc($month['key'], 'attr') ?>"><time datetime="<?= esc($month['key']) ?>"><?= esc(\Koyomi\Format::monthTitle($month['first'])) ?></time></h<?= $monthLevel ?>>
+      <h<?= $monthLevel ?> class="koyomi-month-title" id="koyomi-month-<?= esc($month['key'], 'attr') ?>"><time datetime="<?= esc($month['key']) ?>"><?= esc(\Sayamaapps\Koyomi\Format::monthTitle($month['first'])) ?></time></h<?= $monthLevel ?>>
       <ol class="koyomi-events">
         <?php foreach ($month['events'] as $event) : ?>
         <li class="koyomi-events-item"><?php snippet('koyomi/card', ['event' => $event, 'level' => min(6, $level + 2)]) ?></li>

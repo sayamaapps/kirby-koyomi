@@ -1,14 +1,14 @@
 <?php
 
-namespace Koyomi\Models;
+namespace Sayamaapps\Koyomi\Models;
 
 use InvalidArgumentException;
 use Kirby\Cms\Page;
-use Koyomi\Event;
-use Koyomi\Format;
-use Koyomi\GoogleLink;
-use Koyomi\Mapper;
-use Koyomi\Options;
+use Sayamaapps\Koyomi\Event;
+use Sayamaapps\Koyomi\Format;
+use Sayamaapps\Koyomi\GoogleLink;
+use Sayamaapps\Koyomi\Mapper;
+use Sayamaapps\Koyomi\Options;
 
 /**
  * Page model of template `koyomi-event`.           OWNER: task `kirby`

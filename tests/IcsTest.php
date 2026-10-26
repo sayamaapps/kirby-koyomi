@@ -2,9 +2,9 @@
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Koyomi\Event;
-use Koyomi\I18n;
-use Koyomi\Ics;
+use Sayamaapps\Koyomi\Event;
+use Sayamaapps\Koyomi\I18n;
+use Sayamaapps\Koyomi\Ics;
 
 /** The reference retreat of SPEC §8 (start 2027-03-12 18:00 Europe/Berlin). */
 function ics_test_retreat(array $override = []): Event
@@ -404,7 +404,7 @@ final class IcsTest extends TestCase
 		    expect($multibyte, str_replace(["\r\n "], '', Ics::fold($multibyte)), 'fold multibyte: unfolding gives the original line');
 
 		    // Organizer names cannot inject lines (review): control characters leave the quoted CN parameter.
-		    $injected = \Koyomi\Organizer::fromArray([
+		    $injected = \Sayamaapps\Koyomi\Organizer::fromArray([
 		        'id' => 'org-injected', 'name' => "Sayama\r\nATTENDEE:mailto:evil@example.com\nX-INJECT:1\"", 'kind' => 'organization',
 		        'email' => 'info@sayama.example',
 		    ]);

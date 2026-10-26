@@ -1,6 +1,6 @@
 <?php
 
-namespace Koyomi;
+namespace Sayamaapps\Koyomi;
 
 /**
  * Ticket availability (field `availability`).

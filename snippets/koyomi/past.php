@@ -6,7 +6,7 @@
  *
  *   <?php snippet('koyomi/past', ['event' => $event, 'calendarUrl' => $calendarUrl]) ?>
  *
- * @var \Koyomi\Event|\Koyomi\Models\EventPage|null $event       (required)
+ * @var \Sayamaapps\Koyomi\Event|\Sayamaapps\Koyomi\Models\EventPage|null $event       (required)
  * @var string|null                                  $calendarUrl link target; default: the site's calendar
  */
 if (!koyomi_active()) {

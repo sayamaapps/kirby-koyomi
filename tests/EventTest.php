@@ -2,13 +2,13 @@
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Koyomi\Attendance;
-use Koyomi\Event;
-use Koyomi\Normalize;
-use Koyomi\Organizer;
-use Koyomi\Status;
-use Koyomi\Time;
-use Koyomi\Venue;
+use Sayamaapps\Koyomi\Attendance;
+use Sayamaapps\Koyomi\Event;
+use Sayamaapps\Koyomi\Normalize;
+use Sayamaapps\Koyomi\Organizer;
+use Sayamaapps\Koyomi\Status;
+use Sayamaapps\Koyomi\Time;
+use Sayamaapps\Koyomi\Venue;
 
 /**
  * The shared core without Kirby: Normalize, Time (zones, DST), Venue,

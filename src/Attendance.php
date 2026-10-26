@@ -1,6 +1,6 @@
 <?php
 
-namespace Koyomi;
+namespace Sayamaapps\Koyomi;
 
 /**
  * How people attend. The Panel stores two toggles, `inPerson` and `online`

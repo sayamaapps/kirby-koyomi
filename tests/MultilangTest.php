@@ -4,7 +4,7 @@ use Kirby\Cms\App;
 use Kirby\Cms\Page;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
-use Koyomi\Mapper;
+use Sayamaapps\Koyomi\Mapper;
 
 /** A German (default) and Czech site with one event that has a saved Czech translation. */
 function multilang_site(): string

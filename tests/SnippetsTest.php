@@ -2,8 +2,8 @@
 
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
-use Koyomi\Event;
-use Koyomi\Venue;
+use Sayamaapps\Koyomi\Event;
+use Sayamaapps\Koyomi\Venue;
 
 /** Renders a snippet and returns its HTML as a string. */
 function koyomi_snippet_html($kirby, string $name, array $data = []): string

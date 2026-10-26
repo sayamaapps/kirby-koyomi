@@ -2,8 +2,8 @@
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Koyomi\Event;
-use Koyomi\Expiry;
+use Sayamaapps\Koyomi\Event;
+use Sayamaapps\Koyomi\Expiry;
 
 /**
  * Expiry::next(): the earliest future start or end decides when a cached

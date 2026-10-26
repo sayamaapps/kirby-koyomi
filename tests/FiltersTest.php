@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Koyomi\Filters;
+use Sayamaapps\Koyomi\Filters;
 
 /**
  * Filters: query string in and out, URL building, activity. Kirby-free.

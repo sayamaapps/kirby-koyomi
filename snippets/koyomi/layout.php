@@ -25,7 +25,7 @@ $title = $pageTitle !== '' && $pageTitle !== $siteTitle ? $pageTitle . ' – ' .
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= esc($title) ?></title>
-  <?php if ($page instanceof \Koyomi\Models\EventPage) : ?>
+  <?php if ($page instanceof \Sayamaapps\Koyomi\Models\EventPage) : ?>
   <?php snippet('koyomi/jsonld', ['page' => $page]) ?>
   <?php endif ?>
 </head>

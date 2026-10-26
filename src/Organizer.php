@@ -1,6 +1,6 @@
 <?php
 
-namespace Koyomi;
+namespace Sayamaapps\Koyomi;
 
 /**
  * Who runs an event, Kirby-free. Read-only.

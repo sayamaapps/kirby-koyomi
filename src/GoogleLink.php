@@ -1,6 +1,6 @@
 <?php
 
-namespace Koyomi;
+namespace Sayamaapps\Koyomi;
 
 /**
  * "Add to Google Calendar" — a plain link, no script, nothing loaded from

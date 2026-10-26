@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Koyomi\I18n;
+use Sayamaapps\Koyomi\I18n;
 
 /**
  * Translations: every language has the same keys and placeholders as
@@ -44,9 +44,9 @@ final class I18nTest extends TestCase
 		    require_once __DIR__ . '/../src/Status.php';
 		    require_once __DIR__ . '/../src/Attendance.php';
 		    require_once __DIR__ . '/../src/Availability.php';
-		    foreach (\Koyomi\Status::ALL as $v) { holds(I18n::has("status.$v"), "status.$v"); }
-		    foreach (\Koyomi\Attendance::ALL as $v) { holds(I18n::has("attendance.$v"), "attendance.$v"); }
-		    foreach (\Koyomi\Availability::ALL as $v) { holds(I18n::has("availability.$v"), "availability.$v"); }
+		    foreach (\Sayamaapps\Koyomi\Status::ALL as $v) { holds(I18n::has("status.$v"), "status.$v"); }
+		    foreach (\Sayamaapps\Koyomi\Attendance::ALL as $v) { holds(I18n::has("attendance.$v"), "attendance.$v"); }
+		    foreach (\Sayamaapps\Koyomi\Availability::ALL as $v) { holds(I18n::has("availability.$v"), "availability.$v"); }
 
 		    I18n::setLanguage('fr');
 		    expect('en', I18n::language(), 'unknown language falls back to English');

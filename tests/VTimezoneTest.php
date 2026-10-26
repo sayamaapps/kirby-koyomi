@@ -2,8 +2,8 @@
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Koyomi\Event;
-use Koyomi\VTimezone;
+use Sayamaapps\Koyomi\Event;
+use Sayamaapps\Koyomi\VTimezone;
 
 /**
  * The six-line sub-component whose DTSTART line equals $dtstart (its BEGIN

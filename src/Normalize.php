@@ -1,6 +1,6 @@
 <?php
 
-namespace Koyomi;
+namespace Sayamaapps\Koyomi;
 
 /**
  * Turns raw content values (Kirby stores everything as strings: toggles as

@@ -2,11 +2,11 @@
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Koyomi\Attendance;
-use Koyomi\Event;
-use Koyomi\Organizer;
-use Koyomi\Query;
-use Koyomi\Venue;
+use Sayamaapps\Koyomi\Attendance;
+use Sayamaapps\Koyomi\Event;
+use Sayamaapps\Koyomi\Organizer;
+use Sayamaapps\Koyomi\Query;
+use Sayamaapps\Koyomi\Venue;
 
 /**
  * Query: upcoming/past, filters, sort, paging, facets, venue and organizer

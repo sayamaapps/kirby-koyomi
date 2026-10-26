@@ -1,11 +1,11 @@
 <?php
 
-namespace Koyomi\Models;
+namespace Sayamaapps\Koyomi\Models;
 
 use Kirby\Cms\Page;
-use Koyomi\Mapper;
-use Koyomi\Repository;
-use Koyomi\Venue;
+use Sayamaapps\Koyomi\Mapper;
+use Sayamaapps\Koyomi\Repository;
+use Sayamaapps\Koyomi\Venue;
 
 /**
  * Page model of template `koyomi-venue`.           OWNER: task `kirby`
@@ -20,7 +20,7 @@ class VenuePage extends Page
         return $this->koyomiVenueValue ??= Mapper::venue($this);
     }
 
-    /** Repository::forVenue($this->kirby(), $this). @return list<\Koyomi\Event> */
+    /** Repository::forVenue($this->kirby(), $this). @return list<\Sayamaapps\Koyomi\Event> */
     public function upcomingEvents(): array
     {
         return Repository::forVenue($this->kirby(), $this);

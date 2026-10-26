@@ -1,8 +1,9 @@
 <?php
 
-namespace Koyomi;
+namespace Sayamaapps\Koyomi;
 
 use DateTimeImmutable;
+use DateTimeZone;
 
 /**
  * iCalendar (RFC 5545) writer, Kirby-free.        OWNER: task `ics`
@@ -220,7 +221,7 @@ final class Ics
     public static function isAmbiguous(\DateTimeImmutable $time): bool
     {
         $zone = $time->getTimezone();
-        $localAsUtc = (new \DateTimeImmutable($time->format('Y-m-d H:i:s'), new \DateTimeZone('UTC')))->getTimestamp();
+        $localAsUtc = (new \DateTimeImmutable($time->format('Y-m-d H:i:s'), new DateTimeZone('UTC')))->getTimestamp();
         $instants = [];
         foreach ([$time->modify('-1 day')->getOffset(), $time->modify('+1 day')->getOffset()] as $offset) {
             $candidate = $localAsUtc - $offset;

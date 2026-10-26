@@ -10,7 +10,7 @@
  * Calls koyomi_expires() with this event alone, so the page is not cached
  * past its start or end. Prints nothing when Koyomi is inactive.
  *
- * @var \Koyomi\Event|\Koyomi\Models\EventPage|null $event       (or $page)
+ * @var \Sayamaapps\Koyomi\Event|\Sayamaapps\Koyomi\Models\EventPage|null $event       (or $page)
  * @var \Kirby\Cms\Page|null                         $page        (used when $event is not given)
  * @var string|null                                  $calendarUrl link back to the calendar; default: the page's calendar
  */
@@ -52,18 +52,18 @@ if ($ongoing) {
     $classes[] = 'koyomi-event--ongoing';
 }
 
-$datetime = $e->allDay ? \Koyomi\Time::date($e->start) : \Koyomi\Time::iso($e->start);
-$status = \Koyomi\Format::status($e);
-$previous = \Koyomi\Format::previousStart($e);
+$datetime = $e->allDay ? \Sayamaapps\Koyomi\Time::date($e->start) : \Sayamaapps\Koyomi\Time::iso($e->start);
+$status = \Sayamaapps\Koyomi\Format::status($e);
+$previous = \Sayamaapps\Koyomi\Format::previousStart($e);
 $venue = $e->physicalVenue();
-$price = \Koyomi\Format::price($e);
-$availability = \Koyomi\Format::availability($e);
-$languages = \Koyomi\Format::languages($e, \Koyomi\Options::languages($kirby));
-$organizers = array_values(array_filter($e->organizers, fn (\Koyomi\Organizer $o) => $o->name !== ''));
+$price = \Sayamaapps\Koyomi\Format::price($e);
+$availability = \Sayamaapps\Koyomi\Format::availability($e);
+$languages = \Sayamaapps\Koyomi\Format::languages($e, \Sayamaapps\Koyomi\Options::languages($kirby));
+$organizers = array_values(array_filter($e->organizers, fn (\Sayamaapps\Koyomi\Organizer $o) => $o->name !== ''));
 $categories = implode(', ', $e->categories);
 
-$icsLink = \Koyomi\Options::route($kirby, 'ics') && $e->icsUrl() !== '';
-$googleLink = \Koyomi\Options::google($kirby) ? \Koyomi\GoogleLink::url($e, $language) : '';
+$icsLink = \Sayamaapps\Koyomi\Options::route($kirby, 'ics') && $e->icsUrl() !== '';
+$googleLink = \Sayamaapps\Koyomi\Options::google($kirby) ? \Sayamaapps\Koyomi\GoogleLink::url($e, $language) : '';
 $showCalendarLinks = !$past && !$cancelled && ($icsLink || $googleLink !== '');
 
 $series = $e->series;
@@ -81,14 +81,14 @@ $seriesTotal = count($series);
 
   <dl class="koyomi-facts">
     <dt><?= esc(koyomi_t('event.when')) ?></dt>
-    <dd class="koyomi-when"><time datetime="<?= esc($datetime) ?>"><?= esc(\Koyomi\Format::when($e)) ?></time></dd>
+    <dd class="koyomi-when"><time datetime="<?= esc($datetime) ?>"><?= esc(\Sayamaapps\Koyomi\Format::when($e)) ?></time></dd>
 
     <dt><?= esc(koyomi_t('event.where')) ?></dt>
     <dd class="koyomi-where">
       <?php if ($venue !== null) : ?>
       <?php snippet('koyomi/venue', ['venue' => $venue, 'compact' => true]) ?>
       <?php endif ?>
-      <p class="koyomi-attendance"><?= esc(\Koyomi\Format::attendance($e)) ?></p>
+      <p class="koyomi-attendance"><?= esc(\Sayamaapps\Koyomi\Format::attendance($e)) ?></p>
     </dd>
 
     <?php if ($price !== '' || $e->priceNote !== '' || $availability !== '') : ?>
@@ -119,7 +119,7 @@ $seriesTotal = count($series);
   </dl>
 
   <?php if ($e->bookingUrl !== '' && !$past && !$cancelled) : ?>
-    <?php if ($e->availability === \Koyomi\Availability::SOLDOUT) : ?>
+    <?php if ($e->availability === \Sayamaapps\Koyomi\Availability::SOLDOUT) : ?>
     <p class="koyomi-booking koyomi-booking--soldout"><?= esc(koyomi_t('availability.soldout')) ?></p>
     <?php else : ?>
     <p class="koyomi-booking"><a class="koyomi-booking-link" href="<?= esc($e->bookingUrl) ?>" target="_blank" rel="noopener"><?= esc($e->bookingLabel !== '' ? $e->bookingLabel : koyomi_t('booking.default')) ?><span class="koyomi-sr-only"> <?= esc(koyomi_t('booking.opensNewTab')) ?></span></a></p>
@@ -132,7 +132,7 @@ $seriesTotal = count($series);
 
   <?php if ($seriesTotal > 0) : ?>
   <nav class="koyomi-series" aria-label="<?= esc(koyomi_t('series.title')) ?>">
-    <p><?= esc(\Koyomi\Format::series($e)) ?></p>
+    <p><?= esc(\Sayamaapps\Koyomi\Format::series($e)) ?></p>
     <ol>
       <?php foreach ($series as $item) : ?>
       <?php $itemTitle = $item['title'] !== '' ? $item['title'] : koyomi_t('series.part', ['part' => $item['part'], 'total' => $seriesTotal]); ?>
@@ -144,7 +144,7 @@ $seriesTotal = count($series);
         <?php else : ?>
         <?= esc($itemTitle) ?>
         <?php endif ?>
-        · <?= esc(\Koyomi\Format::date($item['start'])) ?>
+        · <?= esc(\Sayamaapps\Koyomi\Format::date($item['start'])) ?>
       </li>
       <?php endforeach ?>
     </ol>

@@ -2,48 +2,23 @@
 
 use Kirby\Cms\App;
 use Kirby\Cms\Page;
+use Kirby\Filesystem\F;
 
-require_once __DIR__ . '/src/I18n.php';
-require_once __DIR__ . '/src/Normalize.php';
-require_once __DIR__ . '/src/Time.php';
-require_once __DIR__ . '/src/Status.php';
-require_once __DIR__ . '/src/Attendance.php';
-require_once __DIR__ . '/src/Availability.php';
-require_once __DIR__ . '/src/Venue.php';
-require_once __DIR__ . '/src/Organizer.php';
-require_once __DIR__ . '/src/Event.php';
-require_once __DIR__ . '/src/Options.php';
-require_once __DIR__ . '/src/Query.php';
-require_once __DIR__ . '/src/Expiry.php';
-require_once __DIR__ . '/src/Filters.php';
-require_once __DIR__ . '/src/Format.php';
-require_once __DIR__ . '/src/GoogleLink.php';
-require_once __DIR__ . '/src/VTimezone.php';
-require_once __DIR__ . '/src/Ics.php';
-require_once __DIR__ . '/src/JsonLd.php';
-require_once __DIR__ . '/src/Rss.php';
-require_once __DIR__ . '/src/Mapper.php';
-require_once __DIR__ . '/src/Repository.php';
-require_once __DIR__ . '/src/Output.php';
-require_once __DIR__ . '/src/Blueprints.php';
-require_once __DIR__ . '/src/Hooks.php';
-require_once __DIR__ . '/src/Models/CalendarPage.php';
-require_once __DIR__ . '/src/Models/EventPage.php';
-require_once __DIR__ . '/src/Models/VenuePage.php';
-require_once __DIR__ . '/src/Models/OrganizerPage.php';
+F::loadClasses(require __DIR__ . '/autoload.php', __DIR__);
+require_once __DIR__ . '/legacy.php';
 
-use Koyomi\Blueprints;
-use Koyomi\Event;
-use Koyomi\Expiry;
-use Koyomi\Format;
-use Koyomi\Hooks;
-use Koyomi\I18n;
-use Koyomi\Models\CalendarPage;
-use Koyomi\Models\EventPage;
-use Koyomi\Models\OrganizerPage;
-use Koyomi\Models\VenuePage;
-use Koyomi\Options;
-use Koyomi\Repository;
+use Sayamaapps\Koyomi\Blueprints;
+use Sayamaapps\Koyomi\Event;
+use Sayamaapps\Koyomi\Expiry;
+use Sayamaapps\Koyomi\Format;
+use Sayamaapps\Koyomi\Hooks;
+use Sayamaapps\Koyomi\I18n;
+use Sayamaapps\Koyomi\Models\CalendarPage;
+use Sayamaapps\Koyomi\Models\EventPage;
+use Sayamaapps\Koyomi\Models\OrganizerPage;
+use Sayamaapps\Koyomi\Models\VenuePage;
+use Sayamaapps\Koyomi\Options;
+use Sayamaapps\Koyomi\Repository;
 
 /**
  * Koyomi (暦, "calendar, almanac") — events for Kirby 5 with reusable venues
@@ -60,7 +35,7 @@ use Koyomi\Repository;
  * 'options' block (Kirby would file them under sayamaapps.koyomi.*).
  *
  * Nothing here talks to a third party. The online meeting link (`onlineUrl`)
- * never leaves the Panel: Koyomi\Event has no such property.
+ * never leaves the Panel: Sayamaapps\Koyomi\Event has no such property.
  */
 
 /** Reads `koyomi.<key>`. Also meant for site snippets with their own markup. */

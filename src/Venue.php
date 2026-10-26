@@ -1,6 +1,6 @@
 <?php
 
-namespace Koyomi;
+namespace Sayamaapps\Koyomi;
 
 /**
  * A place, Kirby-free. Built by Mapper from a `koyomi-venue` page, or by

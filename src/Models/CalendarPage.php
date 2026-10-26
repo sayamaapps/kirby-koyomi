@@ -1,9 +1,9 @@
 <?php
 
-namespace Koyomi\Models;
+namespace Sayamaapps\Koyomi\Models;
 
 use Kirby\Cms\Page;
-use Koyomi\Repository;
+use Sayamaapps\Koyomi\Repository;
 
 /**
  * Page model of template `koyomi-calendar`.        OWNER: task `kirby`
@@ -11,13 +11,13 @@ use Koyomi\Repository;
  */
 class CalendarPage extends Page
 {
-    /** Repository::upcoming($this, $filters). @return list<\Koyomi\Event> */
+    /** Repository::upcoming($this, $filters). @return list<\Sayamaapps\Koyomi\Event> */
     public function koyomiUpcoming(array $filters = []): array
     {
         return Repository::upcoming($this, $filters);
     }
 
-    /** Repository::past($this, $filters). @return list<\Koyomi\Event> */
+    /** Repository::past($this, $filters). @return list<\Sayamaapps\Koyomi\Event> */
     public function koyomiPast(array $filters = []): array
     {
         return Repository::past($this, $filters);

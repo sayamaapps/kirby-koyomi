@@ -1,6 +1,6 @@
 <?php
 
-namespace Koyomi;
+namespace Sayamaapps\Koyomi;
 
 use Closure;
 use DateTimeImmutable;
@@ -210,7 +210,7 @@ final class Options
     }
 
     /**
-     * `koyomi.mapUrl`: a closure fn (Koyomi\Venue $venue): string replacing
+     * `koyomi.mapUrl`: a closure fn (Sayamaapps\Koyomi\Venue $venue): string replacing
      * the OpenStreetMap link, or null.
      */
     public static function mapUrl(App $kirby): ?Closure

@@ -2,11 +2,11 @@
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Koyomi\Attendance;
-use Koyomi\Availability;
-use Koyomi\Event;
-use Koyomi\JsonLd;
-use Koyomi\Status;
+use Sayamaapps\Koyomi\Attendance;
+use Sayamaapps\Koyomi\Availability;
+use Sayamaapps\Koyomi\Event;
+use Sayamaapps\Koyomi\JsonLd;
+use Sayamaapps\Koyomi\Status;
 
 /** The retreat of SPEC §8 (the reference object) as raw content. */
 function jsonld_retreat_fields(): array

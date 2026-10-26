@@ -36,14 +36,14 @@ $resetUrl = (string) ($view === 'past' ? ($list['pastUrl'] ?? '') : ($list['upco
 if ($resetUrl === '') {
     $resetUrl = $baseUrl;
 }
-$customLanguages = \Koyomi\Options::languages(\Kirby\Cms\App::instance());
+$customLanguages = \Sayamaapps\Koyomi\Options::languages(\Kirby\Cms\App::instance());
 
 $categories = $facets['categories'] ?? [];
 $languages = $facets['languages'] ?? [];
 $featuredCount = (int) ($facets['featured'] ?? 0);
 $attendance ??= true;
 $attendanceOptions = [];
-foreach ($attendance ? \Koyomi\Attendance::ALL : [] as $code) {
+foreach ($attendance ? \Sayamaapps\Koyomi\Attendance::ALL : [] as $code) {
     $count = (int) ($facets['attendance'][$code] ?? 0);
     if ($count > 0) {
         $attendanceOptions[$code] = $count;
@@ -97,7 +97,7 @@ $featuredChecked = !empty($filters['featured']);
     <select id="koyomi-filter-language" name="language">
       <option value=""><?= esc(koyomi_t('filters.all')) ?></option>
       <?php foreach ($languages as $code => $count) : ?>
-      <option value="<?= esc((string) $code) ?>"<?= $selectedLanguage === (string) $code ? ' selected' : '' ?>><?= esc(\Koyomi\Format::languageName((string) $code, (string) ($customLanguages[$code] ?? ''))) ?> (<?= (int) $count ?>)</option>
+      <option value="<?= esc((string) $code) ?>"<?= $selectedLanguage === (string) $code ? ' selected' : '' ?>><?= esc(\Sayamaapps\Koyomi\Format::languageName((string) $code, (string) ($customLanguages[$code] ?? ''))) ?> (<?= (int) $count ?>)</option>
       <?php endforeach ?>
     </select>
   </p>

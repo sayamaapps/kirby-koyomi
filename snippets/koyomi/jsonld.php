@@ -9,7 +9,7 @@
  * Prints nothing when Koyomi is inactive or when the data is not an event.
  * Never prints lists: one event, one script element.
  *
- * @var \Koyomi\Event|\Koyomi\Models\EventPage|null $event  or $page
+ * @var \Sayamaapps\Koyomi\Event|\Sayamaapps\Koyomi\Models\EventPage|null $event  or $page
  */
 if (!koyomi_active()) {
     return;
@@ -17,7 +17,7 @@ if (!koyomi_active()) {
 koyomi_i18n();
 
 $e = koyomi_event($event ?? $page ?? null);
-if (!$e instanceof \Koyomi\Event) {
+if (!$e instanceof \Sayamaapps\Koyomi\Event) {
     return;
 }
-echo \Koyomi\JsonLd::script(\Koyomi\JsonLd::event($e));
+echo \Sayamaapps\Koyomi\JsonLd::script(\Sayamaapps\Koyomi\JsonLd::event($e));

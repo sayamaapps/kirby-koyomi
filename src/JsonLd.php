@@ -1,6 +1,6 @@
 <?php
 
-namespace Koyomi;
+namespace Sayamaapps\Koyomi;
 
 /**
  * schema.org Event as JSON-LD, Kirby-free.        OWNER: task `seo`

@@ -2,10 +2,10 @@
 
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
-use Koyomi\Event;
-use Koyomi\Format;
-use Koyomi\I18n;
-use Koyomi\Query;
+use Sayamaapps\Koyomi\Event;
+use Sayamaapps\Koyomi\Format;
+use Sayamaapps\Koyomi\I18n;
+use Sayamaapps\Koyomi\Query;
 
 /**
  * The timeline: Query::byMonth(), Format::monthTitle/dayBlock/clock, the

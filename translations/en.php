@@ -2,7 +2,7 @@
 
 /**
  * English strings — the default and the fallback for missing keys.
- * `{name}` placeholders are filled in by Koyomi\I18n::t().
+ * `{name}` placeholders are filled in by Sayamaapps\Koyomi\I18n::t().
  * tests/I18nTest.php checks that every language file has the same keys and
  * placeholders as this one.
  *

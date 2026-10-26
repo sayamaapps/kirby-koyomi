@@ -3,9 +3,9 @@
 use Kirby\Exception\NotFoundException;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
-use Koyomi\Mapper;
-use Koyomi\Output;
-use Koyomi\Repository;
+use Sayamaapps\Koyomi\Mapper;
+use Sayamaapps\Koyomi\Output;
+use Sayamaapps\Koyomi\Repository;
 
 function ancestors_bare_root(): string
 {

@@ -68,10 +68,10 @@ final class PrivacyTest extends TestCase
 		            $event = $page->koyomi();
 		            if ($event !== null) {
 		                $check("$language: toArray " . $page->slug(), json_encode($event->toArray()));
-		                $check("$language: JsonLd " . $page->slug(), \Koyomi\JsonLd::encode(\Koyomi\JsonLd::event($event)));
-		                $check("$language: Ics " . $page->slug(), \Koyomi\Ics::event($event, ['host' => 'example.test']));
-		                $check("$language: Google " . $page->slug(), \Koyomi\GoogleLink::url($event, $language));
-		                $check("$language: Rss " . $page->slug(), \Koyomi\Rss::feed([$event], ['title' => 'T', 'link' => KoyomiFixture::URL, 'self' => KoyomiFixture::URL . '/events.rss']));
+		                $check("$language: JsonLd " . $page->slug(), \Sayamaapps\Koyomi\JsonLd::encode(\Sayamaapps\Koyomi\JsonLd::event($event)));
+		                $check("$language: Ics " . $page->slug(), \Sayamaapps\Koyomi\Ics::event($event, ['host' => 'example.test']));
+		                $check("$language: Google " . $page->slug(), \Sayamaapps\Koyomi\GoogleLink::url($event, $language));
+		                $check("$language: Rss " . $page->slug(), \Sayamaapps\Koyomi\Rss::feed([$event], ['title' => 'T', 'link' => KoyomiFixture::URL, 'self' => KoyomiFixture::URL . '/events.rss']));
 		            }
 		        }
 		        foreach (['koyomi/list', 'koyomi/filters', 'koyomi/pagination', 'koyomi/subscribe'] as $snippet) {

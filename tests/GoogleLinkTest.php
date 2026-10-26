@@ -2,9 +2,9 @@
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Koyomi\Event;
-use Koyomi\GoogleLink;
-use Koyomi\I18n;
+use Sayamaapps\Koyomi\Event;
+use Sayamaapps\Koyomi\GoogleLink;
+use Sayamaapps\Koyomi\I18n;
 
 /** The query of a Google link, decoded (parse_str undoes the RFC 3986 encoding). */
 function google_test_query(string $url): array

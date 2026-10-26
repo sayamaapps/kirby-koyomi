@@ -1,6 +1,6 @@
 <?php
 
-namespace Koyomi;
+namespace Sayamaapps\Koyomi;
 
 /**
  * Page blueprints as PHP arrays, Kirby-free.      OWNER: task `panel`

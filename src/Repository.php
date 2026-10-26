@@ -1,6 +1,6 @@
 <?php
 
-namespace Koyomi;
+namespace Sayamaapps\Koyomi;
 
 use InvalidArgumentException;
 use Kirby\Cms\App;

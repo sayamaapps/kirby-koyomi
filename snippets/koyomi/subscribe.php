@@ -17,8 +17,8 @@ if (!koyomi_active()) {
 koyomi_i18n();
 
 $kirby = \Kirby\Cms\App::instance();
-$feed = \Koyomi\Options::route($kirby, 'feed');
-$rss = \Koyomi\Options::route($kirby, 'rss');
+$feed = \Sayamaapps\Koyomi\Options::route($kirby, 'feed');
+$rss = \Sayamaapps\Koyomi\Options::route($kirby, 'rss');
 if (!$feed && !$rss) {
     return;
 }

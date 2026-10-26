@@ -2,8 +2,8 @@
 
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
-use Koyomi\Mapper;
-use Koyomi\Repository;
+use Sayamaapps\Koyomi\Mapper;
+use Sayamaapps\Koyomi\Repository;
 
 /**
  * An empty site with the plugin linked in (KoyomiFixture::create() would add

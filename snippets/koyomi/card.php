@@ -15,7 +15,7 @@
  * (.koyomi-card-time). Both are aria-hidden: .koyomi-card-when keeps the full
  * date and time for screen readers, a site may hide it visually.
  *
- * @var \Koyomi\Event|\Koyomi\Models\EventPage|null $event (required)
+ * @var \Sayamaapps\Koyomi\Event|\Sayamaapps\Koyomi\Models\EventPage|null $event (required)
  * @var int|null $level heading level of the title, 3 by default
  */
 if (!koyomi_active()) {
@@ -44,17 +44,17 @@ if ($ongoing) {
     $classes[] = 'koyomi-card--ongoing';
 }
 
-$datetime = $e->allDay ? \Koyomi\Time::date($e->start) : \Koyomi\Time::iso($e->start);
-$sheet = \Koyomi\Format::dayBlock($e);
-$status = \Koyomi\Format::status($e);
+$datetime = $e->allDay ? \Sayamaapps\Koyomi\Time::date($e->start) : \Sayamaapps\Koyomi\Time::iso($e->start);
+$sheet = \Sayamaapps\Koyomi\Format::dayBlock($e);
+$status = \Sayamaapps\Koyomi\Format::status($e);
 
 // Place: venue name and city (in person only), then the attendance label.
 $venue = $e->physicalVenue();
 $where = implode(', ', array_values(array_filter([$venue?->name ?? '', $venue?->city ?? ''], fn (string $part) => $part !== '')));
-$placeLine = implode(' · ', array_values(array_filter([$where, \Koyomi\Format::attendance($e)], fn (string $part) => $part !== '')));
+$placeLine = implode(' · ', array_values(array_filter([$where, \Sayamaapps\Koyomi\Format::attendance($e)], fn (string $part) => $part !== '')));
 
 $priceLine = implode(' · ', array_values(array_filter(
-    [\Koyomi\Format::price($e), \Koyomi\Format::availability($e)],
+    [\Sayamaapps\Koyomi\Format::price($e), \Sayamaapps\Koyomi\Format::availability($e)],
     fn (string $part) => $part !== ''
 )));
 ?>
@@ -64,8 +64,8 @@ $priceLine = implode(' · ', array_values(array_filter(
   <?php endif ?>
   <p class="koyomi-card-date" aria-hidden="true"><span class="koyomi-card-weekday"><?= esc($sheet['weekday']) ?></span> <span class="koyomi-card-day"><?= esc($sheet['day']) ?></span> <span class="koyomi-card-month"><?= esc($sheet['month']) ?></span><?php if ($sheet['until'] !== '') : ?> <span class="koyomi-card-until"><?= esc($sheet['until']) ?></span><?php endif ?></p>
   <h<?= $level ?> class="koyomi-card-title"><?php if ($e->url !== '') : ?><a href="<?= esc($e->url) ?>"><?= esc($e->title) ?></a><?php else : ?><?= esc($e->title) ?><?php endif ?></h<?= $level ?>>
-  <p class="koyomi-card-when"><time datetime="<?= esc($datetime) ?>"><?= esc(\Koyomi\Format::when($e)) ?></time></p>
-  <p class="koyomi-card-time" aria-hidden="true"><?= esc(\Koyomi\Format::clock($e)) ?></p>
+  <p class="koyomi-card-when"><time datetime="<?= esc($datetime) ?>"><?= esc(\Sayamaapps\Koyomi\Format::when($e)) ?></time></p>
+  <p class="koyomi-card-time" aria-hidden="true"><?= esc(\Sayamaapps\Koyomi\Format::clock($e)) ?></p>
   <?php if ($status !== '') : ?>
   <p class="koyomi-card-status"><strong><?= esc($status) ?></strong></p>
   <?php endif ?>

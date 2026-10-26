@@ -1,1 +1,1 @@
-<?php echo \Koyomi\Output::rss($page);
+<?php echo \Sayamaapps\Koyomi\Output::rss($page);

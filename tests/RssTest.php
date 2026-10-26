@@ -2,9 +2,9 @@
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Koyomi\Event;
-use Koyomi\I18n;
-use Koyomi\Rss;
+use Sayamaapps\Koyomi\Event;
+use Sayamaapps\Koyomi\I18n;
+use Sayamaapps\Koyomi\Rss;
 
 /** The retreat of SPEC §8 as raw content, with some fields replaced. */
 function rss_event(array $changes = []): Event

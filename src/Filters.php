@@ -1,6 +1,6 @@
 <?php
 
-namespace Koyomi;
+namespace Sayamaapps\Koyomi;
 
 /**
  * List filters from and to the URL query string, Kirby-free. No JavaScript:

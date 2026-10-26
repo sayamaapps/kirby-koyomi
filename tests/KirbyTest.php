@@ -4,16 +4,16 @@ use Kirby\Cms\App;
 use Kirby\Uuid\Uuids;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
-use Koyomi\Event;
-use Koyomi\Mapper;
-use Koyomi\Models\CalendarPage;
-use Koyomi\Models\EventPage;
-use Koyomi\Models\OrganizerPage;
-use Koyomi\Models\VenuePage;
-use Koyomi\Normalize;
-use Koyomi\Organizer;
-use Koyomi\Repository;
-use Koyomi\Venue;
+use Sayamaapps\Koyomi\Event;
+use Sayamaapps\Koyomi\Mapper;
+use Sayamaapps\Koyomi\Models\CalendarPage;
+use Sayamaapps\Koyomi\Models\EventPage;
+use Sayamaapps\Koyomi\Models\OrganizerPage;
+use Sayamaapps\Koyomi\Models\VenuePage;
+use Sayamaapps\Koyomi\Normalize;
+use Sayamaapps\Koyomi\Organizer;
+use Sayamaapps\Koyomi\Repository;
+use Sayamaapps\Koyomi\Venue;
 
 /** Runs $fn with error_log() going to $file; returns what was logged there. */
 function koyomi_logged(string $file, callable $fn): string

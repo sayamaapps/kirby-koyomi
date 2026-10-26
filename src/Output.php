@@ -1,6 +1,6 @@
 <?php
 
-namespace Koyomi;
+namespace Sayamaapps\Koyomi;
 
 use Kirby\Cms\App;
 use Kirby\Cms\Page;

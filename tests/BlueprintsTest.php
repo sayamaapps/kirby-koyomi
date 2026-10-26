@@ -3,10 +3,10 @@
 use Kirby\Cms\Blueprint;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Koyomi\Availability;
-use Koyomi\Blueprints;
-use Koyomi\I18n;
-use Koyomi\Status;
+use Sayamaapps\Koyomi\Availability;
+use Sayamaapps\Koyomi\Blueprints;
+use Sayamaapps\Koyomi\I18n;
+use Sayamaapps\Koyomi\Status;
 
 /**
  * Every field definition of a blueprint, keyed by field name. Walks the whole
@@ -67,7 +67,7 @@ function koyomi_assert_labels(mixed $label, string $what): void
 }
 
 /**
- * Panel blueprints (Koyomi\Blueprints). Two parts:
+ * Panel blueprints (Sayamaapps\Koyomi\Blueprints). Two parts:
  *   1. Kirby-free: every field of SPEC §5.1–5.3 with its type, when, default,
  *      required flag, options from settings, labels, no status/image field.
  *   2. Kirby: the blueprints load through Kirby for one page per template,
