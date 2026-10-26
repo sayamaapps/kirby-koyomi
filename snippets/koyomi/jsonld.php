@@ -12,12 +12,12 @@
  * @var \Sayamaapps\Koyomi\Event|\Sayamaapps\Koyomi\Models\EventPage|null $event  or $page
  */
 if (!koyomi_active()) {
-    return;
+	return;
 }
 koyomi_i18n();
 
 $e = koyomi_event($event ?? $page ?? null);
 if (!$e instanceof \Sayamaapps\Koyomi\Event) {
-    return;
+	return;
 }
 echo \Sayamaapps\Koyomi\JsonLd::script(\Sayamaapps\Koyomi\JsonLd::event($e));

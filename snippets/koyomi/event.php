@@ -11,29 +11,29 @@
  * past its start or end. Prints nothing when Koyomi is inactive.
  *
  * @var \Sayamaapps\Koyomi\Event|\Sayamaapps\Koyomi\Models\EventPage|null $event       (or $page)
- * @var \Kirby\Cms\Page|null                         $page        (used when $event is not given)
- * @var string|null                                  $calendarUrl link back to the calendar; default: the page's calendar
+ * @var \Kirby\Cms\Page|null $page        (used when $event is not given)
+ * @var string|null $calendarUrl link back to the calendar; default: the page's calendar
  */
 if (!koyomi_active()) {
-    return;
+	return;
 }
 $language = koyomi_i18n();
 
 $e = koyomi_event($event ?? ($page ?? null));
 if ($e === null) {
-    return;
+	return;
 }
 koyomi_expires([$e]);
 
 if (!isset($calendarUrl)) {
-    // The calendar is the parent of an event page; a plain Event has none.
-    $owner = $event ?? ($page ?? null);
-    $parent = $owner instanceof \Kirby\Cms\Page ? $owner->parent() : null;
-    $calendarUrl = $parent !== null && $parent->intendedTemplate()->name() === 'koyomi-calendar'
-        ? $parent->url()
-        : site()->koyomiCalendar()?->url();
+	// The calendar is the parent of an event page; a plain Event has none.
+	$owner = $event ?? ($page ?? null);
+	$parent = $owner instanceof \Kirby\Cms\Page ? $owner->parent() : null;
+	$calendarUrl = $parent !== null && $parent->intendedTemplate()->name() === 'koyomi-calendar'
+		? $parent->url()
+		: site()->koyomiCalendar()?->url();
 }
-$calendarUrl = (string) ($calendarUrl ?? '');
+$calendarUrl = (string)($calendarUrl ?? '');
 
 $kirby = \Kirby\Cms\App::instance();
 $now = koyomi_now();
@@ -43,13 +43,13 @@ $cancelled = $e->isCancelled();
 
 $classes = ['koyomi-event', 'koyomi-event--' . $e->status];
 if ($e->featured) {
-    $classes[] = 'koyomi-event--featured';
+	$classes[] = 'koyomi-event--featured';
 }
 if ($past) {
-    $classes[] = 'koyomi-event--past';
+	$classes[] = 'koyomi-event--past';
 }
 if ($ongoing) {
-    $classes[] = 'koyomi-event--ongoing';
+	$classes[] = 'koyomi-event--ongoing';
 }
 
 $datetime = $e->allDay ? \Sayamaapps\Koyomi\Time::date($e->start) : \Sayamaapps\Koyomi\Time::iso($e->start);

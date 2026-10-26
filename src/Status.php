@@ -16,17 +16,16 @@ namespace Sayamaapps\Koyomi;
  */
 final class Status
 {
-    public const SCHEDULED = 'scheduled';
-    public const CANCELLED = 'cancelled';
-    public const POSTPONED = 'postponed';
-    public const RESCHEDULED = 'rescheduled';
-    public const MOVED_ONLINE = 'movedOnline';
+	public const ALL = [self::SCHEDULED, self::CANCELLED, self::POSTPONED, self::RESCHEDULED, self::MOVED_ONLINE];
+	public const CANCELLED = 'cancelled';
+	public const MOVED_ONLINE = 'movedOnline';
+	public const POSTPONED = 'postponed';
+	public const RESCHEDULED = 'rescheduled';
+	public const SCHEDULED = 'scheduled';
 
-    public const ALL = [self::SCHEDULED, self::CANCELLED, self::POSTPONED, self::RESCHEDULED, self::MOVED_ONLINE];
-
-    /** Known value (exact, or case-insensitive) or `scheduled`. */
-    public static function normalize(mixed $value): string
-    {
-        return Normalize::choice($value, self::ALL, self::SCHEDULED);
-    }
+	/** Known value (exact, or case-insensitive) or `scheduled`. */
+	public static function normalize(mixed $value): string
+	{
+		return Normalize::choice($value, self::ALL, self::SCHEDULED);
+	}
 }

@@ -19,29 +19,29 @@
  * @var int|null $level heading level of the title, 3 by default
  */
 if (!koyomi_active()) {
-    return;
+	return;
 }
 koyomi_i18n();
 
 $e = koyomi_event($event ?? null);
 if ($e === null) {
-    return;
+	return;
 }
 
 $now = koyomi_now();
-$level = min(6, max(1, (int) ($level ?? 3)));
+$level = min(6, max(1, (int)($level ?? 3)));
 $past = $e->isPast($now);
 $ongoing = $e->isOngoing($now);
 
 $classes = ['koyomi-card', 'koyomi-card--' . $e->status];
 if ($e->featured) {
-    $classes[] = 'koyomi-card--featured';
+	$classes[] = 'koyomi-card--featured';
 }
 if ($past) {
-    $classes[] = 'koyomi-card--past';
+	$classes[] = 'koyomi-card--past';
 }
 if ($ongoing) {
-    $classes[] = 'koyomi-card--ongoing';
+	$classes[] = 'koyomi-card--ongoing';
 }
 
 $datetime = $e->allDay ? \Sayamaapps\Koyomi\Time::date($e->start) : \Sayamaapps\Koyomi\Time::iso($e->start);
@@ -54,8 +54,8 @@ $where = implode(', ', array_values(array_filter([$venue?->name ?? '', $venue?->
 $placeLine = implode(' · ', array_values(array_filter([$where, \Sayamaapps\Koyomi\Format::attendance($e)], fn (string $part) => $part !== '')));
 
 $priceLine = implode(' · ', array_values(array_filter(
-    [\Sayamaapps\Koyomi\Format::price($e), \Sayamaapps\Koyomi\Format::availability($e)],
-    fn (string $part) => $part !== ''
+	[\Sayamaapps\Koyomi\Format::price($e), \Sayamaapps\Koyomi\Format::availability($e)],
+	fn (string $part) => $part !== ''
 )));
 ?>
 <article class="<?= esc(implode(' ', $classes)) ?>">

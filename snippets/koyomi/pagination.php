@@ -7,26 +7,26 @@
  *   <?php snippet('koyomi/pagination', ['list' => $list]) ?>
  *   <?php snippet('koyomi/pagination', ['calendar' => $page]) ?>   (the list of that calendar)
  *
- * @var array|null           $list     Repository::list() shape (SPEC §8.9)
+ * @var array|null $list     Repository::list() shape (SPEC §8.9)
  * @var \Kirby\Cms\Page|null $calendar used when $list is not given
  */
 if (!koyomi_active()) {
-    return;
+	return;
 }
 koyomi_i18n();
 
 if (!isset($list)) {
-    $list = (isset($calendar) ? $calendar : site()->koyomiCalendar())?->koyomiList();
+	$list = ($calendar ?? site()->koyomiCalendar())?->koyomiList();
 }
 $pagination = is_array($list) ? ($list['pagination'] ?? null) : null;
-if (!is_array($pagination) || (int) ($pagination['pages'] ?? 1) <= 1) {
-    return;
+if (!is_array($pagination) || (int)($pagination['pages'] ?? 1) <= 1) {
+	return;
 }
 
-$page = (int) ($pagination['page'] ?? 1);
-$pages = (int) $pagination['pages'];
-$prevUrl = (string) ($pagination['prevUrl'] ?? '');
-$nextUrl = (string) ($pagination['nextUrl'] ?? '');
+$page = (int)($pagination['page'] ?? 1);
+$pages = (int)$pagination['pages'];
+$prevUrl = (string)($pagination['prevUrl'] ?? '');
+$nextUrl = (string)($pagination['nextUrl'] ?? '');
 ?>
 <nav class="koyomi-pagination" aria-label="<?= esc(koyomi_t('pagination.label')) ?>">
   <?php if ($prevUrl !== '') : ?>

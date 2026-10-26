@@ -12,14 +12,13 @@ namespace Sayamaapps\Koyomi;
  */
 final class Availability
 {
-    public const AVAILABLE = 'available';
-    public const LIMITED = 'limited';
-    public const SOLDOUT = 'soldout';
+	public const ALL = [self::AVAILABLE, self::LIMITED, self::SOLDOUT];
+	public const AVAILABLE = 'available';
+	public const LIMITED = 'limited';
+	public const SOLDOUT = 'soldout';
 
-    public const ALL = [self::AVAILABLE, self::LIMITED, self::SOLDOUT];
-
-    public static function normalize(mixed $value): string
-    {
-        return Normalize::choice($value, self::ALL, self::AVAILABLE);
-    }
+	public static function normalize(mixed $value): string
+	{
+		return Normalize::choice($value, self::ALL, self::AVAILABLE);
+	}
 }

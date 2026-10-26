@@ -12,42 +12,42 @@
  * false, or when the view has no in-person or no online event (nothing to
  * switch). The counts are those of the whole view, before other filters.
  *
- * @var array|null           $list     Repository::list() shape (SPEC §8.9)
+ * @var array|null $list     Repository::list() shape (SPEC §8.9)
  * @var \Kirby\Cms\Page|null $calendar used when $list is not given
  */
 if (!koyomi_active() || !\Sayamaapps\Koyomi\Options::attendanceSwitch(\Kirby\Cms\App::instance())) {
-    return;
+	return;
 }
 koyomi_i18n();
 
 if (!isset($list)) {
-    $list = (isset($calendar) ? $calendar : site()->koyomiCalendar())?->koyomiList();
+	$list = ($calendar ?? site()->koyomiCalendar())?->koyomiList();
 }
 if (!is_array($list)) {
-    return;
+	return;
 }
 
 $counts = $list['facets']['attendance'] ?? [];
-$offline = (int) ($counts[\Sayamaapps\Koyomi\Attendance::OFFLINE] ?? 0);
-$online = (int) ($counts[\Sayamaapps\Koyomi\Attendance::ONLINE] ?? 0);
-$mixed = (int) ($counts[\Sayamaapps\Koyomi\Attendance::MIXED] ?? 0);
+$offline = (int)($counts[\Sayamaapps\Koyomi\Attendance::OFFLINE] ?? 0);
+$online = (int)($counts[\Sayamaapps\Koyomi\Attendance::ONLINE] ?? 0);
+$mixed = (int)($counts[\Sayamaapps\Koyomi\Attendance::MIXED] ?? 0);
 if ($offline === 0 || $online === 0) {
-    return;
+	return;
 }
 
 $filters = ($list['filters'] ?? []) + \Sayamaapps\Koyomi\Filters::EMPTY;
-$baseUrl = (string) ($list['baseUrl'] ?? '');
+$baseUrl = (string)($list['baseUrl'] ?? '');
 $current = $filters['attendance'];
 $options = [
-    [null, koyomi_t('switch.all'), $offline + $online - $mixed],
-    [\Sayamaapps\Koyomi\Attendance::OFFLINE, koyomi_t('attendance.offline'), $offline],
-    [\Sayamaapps\Koyomi\Attendance::ONLINE, koyomi_t('attendance.online'), $online],
+	[null, koyomi_t('switch.all'), $offline + $online - $mixed],
+	[\Sayamaapps\Koyomi\Attendance::OFFLINE, koyomi_t('attendance.offline'), $offline],
+	[\Sayamaapps\Koyomi\Attendance::ONLINE, koyomi_t('attendance.online'), $online],
 ];
 ?>
 <nav class="koyomi-switch" aria-label="<?= esc(koyomi_t('switch.label')) ?>">
   <ul>
     <?php foreach ($options as [$code, $label, $count]) : ?>
-    <li><a class="koyomi-switch-option<?= $current === $code ? ' koyomi-switch-option--active' : '' ?>" href="<?= esc(\Sayamaapps\Koyomi\Filters::url($baseUrl, $filters, ['attendance' => $code])) ?>"<?= $current === $code ? ' aria-current="page"' : '' ?>><?= esc($label) ?> <span class="koyomi-switch-count" aria-label="<?= esc(koyomi_t('switch.count', ['count' => (string) $count])) ?>"><?= (int) $count ?></span></a></li>
+    <li><a class="koyomi-switch-option<?= $current === $code ? ' koyomi-switch-option--active' : '' ?>" href="<?= esc(\Sayamaapps\Koyomi\Filters::url($baseUrl, $filters, ['attendance' => $code])) ?>"<?= $current === $code ? ' aria-current="page"' : '' ?>><?= esc($label) ?> <span class="koyomi-switch-count" aria-label="<?= esc(koyomi_t('switch.count', ['count' => (string)$count])) ?>"><?= (int)$count ?></span></a></li>
     <?php endforeach ?>
   </ul>
 </nav>

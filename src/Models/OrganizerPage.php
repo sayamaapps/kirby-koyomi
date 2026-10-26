@@ -12,17 +12,17 @@ use Sayamaapps\Koyomi\Repository;
  */
 class OrganizerPage extends Page
 {
-    private ?Organizer $koyomiOrganizerValue = null;
+	private Organizer|null $koyomiOrganizerValue = null;
 
-    /** Mapper::organizer($this), memoized. */
-    public function koyomiOrganizer(): Organizer
-    {
-        return $this->koyomiOrganizerValue ??= Mapper::organizer($this);
-    }
+	/** Mapper::organizer($this), memoized. */
+	public function koyomiOrganizer(): Organizer
+	{
+		return $this->koyomiOrganizerValue ??= Mapper::organizer($this);
+	}
 
-    /** Repository::forOrganizer($this->kirby(), $this). @return list<\Sayamaapps\Koyomi\Event> */
-    public function upcomingEvents(): array
-    {
-        return Repository::forOrganizer($this->kirby(), $this);
-    }
+	/** Repository::forOrganizer($this->kirby(), $this). @return list<\Sayamaapps\Koyomi\Event> */
+	public function upcomingEvents(): array
+	{
+		return Repository::forOrganizer($this->kirby(), $this);
+	}
 }

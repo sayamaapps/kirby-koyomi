@@ -41,19 +41,19 @@ use Sayamaapps\Koyomi\Repository;
 /** Reads `koyomi.<key>`. Also meant for site snippets with their own markup. */
 function koyomi_option(string $key, mixed $default = null): mixed
 {
-    return Options::get(App::instance(), $key, $default);
+	return Options::get(App::instance(), $key, $default);
 }
 
 /** `koyomi.active` is a real true. Snippets and outputs check this first. */
 function koyomi_active(): bool
 {
-    return Options::active(App::instance());
+	return Options::active(App::instance());
 }
 
 /** The clock (`koyomi.now` pins it), in the configured zone. */
 function koyomi_now(): \DateTimeImmutable
 {
-    return Options::now(App::instance());
+	return Options::now(App::instance());
 }
 
 /**
@@ -63,17 +63,17 @@ function koyomi_now(): \DateTimeImmutable
  */
 function koyomi_i18n(): string
 {
-    $kirby = App::instance();
-    $language = Options::language($kirby);
-    I18n::setLanguage($language);
-    Format::configure(Options::formats($kirby), Options::timezone($kirby));
-    return $language;
+	$kirby = App::instance();
+	$language = Options::language($kirby);
+	I18n::setLanguage($language);
+	Format::configure(Options::formats($kirby), Options::timezone($kirby));
+	return $language;
 }
 
 /** Koyomi's own string in the current language (call koyomi_i18n() once first). */
 function koyomi_t(string $key, array $values = []): string
 {
-    return I18n::t($key, $values);
+	return I18n::t($key, $values);
 }
 
 /**
@@ -81,15 +81,15 @@ function koyomi_t(string $key, array $values = []): string
  * koyomi-event page gives its Event (or null when its date is invalid),
  * anything else null.
  */
-function koyomi_event(mixed $value): ?Event
+function koyomi_event(mixed $value): Event|null
 {
-    if ($value instanceof Event) {
-        return $value;
-    }
-    if ($value instanceof EventPage) {
-        return $value->koyomi();
-    }
-    return null;
+	if ($value instanceof Event) {
+		return $value;
+	}
+	if ($value instanceof EventPage) {
+		return $value->koyomi();
+	}
+	return null;
 }
 
 /**
@@ -100,108 +100,108 @@ function koyomi_event(mixed $value): ?Event
  */
 function koyomi_expires(array $events): void
 {
-    koyomi_expires_at(Expiry::next($events, Options::now(App::instance())));
+	koyomi_expires_at(Expiry::next($events, Options::now(App::instance())));
 }
 
 /** Lowers the page cache expiry to $timestamp; null changes nothing. */
-function koyomi_expires_at(?int $timestamp): void
+function koyomi_expires_at(int|null $timestamp): void
 {
-    if ($timestamp !== null) {
-        App::instance()->response()->expires($timestamp);
-    }
+	if ($timestamp !== null) {
+		App::instance()->response()->expires($timestamp);
+	}
 }
 
 $koyomiTranslations = [];
 foreach (I18n::LANGUAGES as $koyomiLanguage) {
-    foreach (I18n::table($koyomiLanguage) as $koyomiKey => $koyomiText) {
-        $koyomiTranslations[$koyomiLanguage]['koyomi.' . $koyomiKey] = $koyomiText;
-    }
+	foreach (I18n::table($koyomiLanguage) as $koyomiKey => $koyomiText) {
+		$koyomiTranslations[$koyomiLanguage]['koyomi.' . $koyomiKey] = $koyomiText;
+	}
 }
 unset($koyomiLanguage, $koyomiKey, $koyomiText);
 
 App::plugin('sayamaapps/koyomi', [
-    // All strings, also usable as t('koyomi.<key>').
-    'translations' => $koyomiTranslations,
+	// All strings, also usable as t('koyomi.<key>').
+	'translations' => $koyomiTranslations,
 
-    /**
-     * Prefixed names, so a site's own "event" or "venue" template never
-     * collides. Closures: the select options (zones, currencies, languages)
-     * follow the config. A site overrides one with
-     * site/blueprints/pages/koyomi-event.yml.
-     */
-    'blueprints' => [
-        'pages/koyomi-calendar' => fn () => Blueprints::calendar(Options::blueprintSettings(App::instance())),
-        'pages/koyomi-event' => fn () => Blueprints::event(Options::blueprintSettings(App::instance())),
-        'pages/koyomi-venues' => fn () => Blueprints::venues(Options::blueprintSettings(App::instance())),
-        'pages/koyomi-venue' => fn () => Blueprints::venue(Options::blueprintSettings(App::instance())),
-        'pages/koyomi-organizers' => fn () => Blueprints::organizers(Options::blueprintSettings(App::instance())),
-        'pages/koyomi-organizer' => fn () => Blueprints::organizer(Options::blueprintSettings(App::instance())),
-    ],
+	/**
+	 * Prefixed names, so a site's own "event" or "venue" template never
+	 * collides. Closures: the select options (zones, currencies, languages)
+	 * follow the config. A site overrides one with
+	 * site/blueprints/pages/koyomi-event.yml.
+	 */
+	'blueprints' => [
+		'pages/koyomi-calendar' => fn () => Blueprints::calendar(Options::blueprintSettings(App::instance())),
+		'pages/koyomi-event' => fn () => Blueprints::event(Options::blueprintSettings(App::instance())),
+		'pages/koyomi-venues' => fn () => Blueprints::venues(Options::blueprintSettings(App::instance())),
+		'pages/koyomi-venue' => fn () => Blueprints::venue(Options::blueprintSettings(App::instance())),
+		'pages/koyomi-organizers' => fn () => Blueprints::organizers(Options::blueprintSettings(App::instance())),
+		'pages/koyomi-organizer' => fn () => Blueprints::organizer(Options::blueprintSettings(App::instance())),
+	],
 
-    'pageModels' => [
-        'koyomi-calendar' => CalendarPage::class,
-        'koyomi-event' => EventPage::class,
-        'koyomi-venue' => VenuePage::class,
-        'koyomi-organizer' => OrganizerPage::class,
-    ],
+	'pageModels' => [
+		'koyomi-calendar' => CalendarPage::class,
+		'koyomi-event' => EventPage::class,
+		'koyomi-venue' => VenuePage::class,
+		'koyomi-organizer' => OrganizerPage::class,
+	],
 
-    /**
-     * HTML templates are plain defaults (wrapped in snippet koyomi/layout,
-     * which a site overrides to use its own layout). The .ics/.rss/.json
-     * templates are Kirby content representations: /events.ics,
-     * /events/retreat.ics, /events.rss, /events.json.
-     */
-    'templates' => [
-        'koyomi-calendar' => __DIR__ . '/templates/koyomi-calendar.php',
-        'koyomi-calendar.ics' => __DIR__ . '/templates/koyomi-calendar.ics.php',
-        'koyomi-calendar.rss' => __DIR__ . '/templates/koyomi-calendar.rss.php',
-        'koyomi-calendar.json' => __DIR__ . '/templates/koyomi-calendar.json.php',
-        'koyomi-event' => __DIR__ . '/templates/koyomi-event.php',
-        'koyomi-event.ics' => __DIR__ . '/templates/koyomi-event.ics.php',
-        'koyomi-venue' => __DIR__ . '/templates/koyomi-venue.php',
-        'koyomi-organizer' => __DIR__ . '/templates/koyomi-organizer.php',
-    ],
+	/**
+	 * HTML templates are plain defaults (wrapped in snippet koyomi/layout,
+	 * which a site overrides to use its own layout). The .ics/.rss/.json
+	 * templates are Kirby content representations: /events.ics,
+	 * /events/retreat.ics, /events.rss, /events.json.
+	 */
+	'templates' => [
+		'koyomi-calendar' => __DIR__ . '/templates/koyomi-calendar.php',
+		'koyomi-calendar.ics' => __DIR__ . '/templates/koyomi-calendar.ics.php',
+		'koyomi-calendar.rss' => __DIR__ . '/templates/koyomi-calendar.rss.php',
+		'koyomi-calendar.json' => __DIR__ . '/templates/koyomi-calendar.json.php',
+		'koyomi-event' => __DIR__ . '/templates/koyomi-event.php',
+		'koyomi-event.ics' => __DIR__ . '/templates/koyomi-event.ics.php',
+		'koyomi-venue' => __DIR__ . '/templates/koyomi-venue.php',
+		'koyomi-organizer' => __DIR__ . '/templates/koyomi-organizer.php',
+	],
 
-    /**
-     * Unstyled defaults with koyomi-* classes only. A site overrides any of
-     * them with site/snippets/koyomi/<name>.php (Kirby looks there first).
-     */
-    'snippets' => [
-        'koyomi/layout' => __DIR__ . '/snippets/koyomi/layout.php',
-        'koyomi/list' => __DIR__ . '/snippets/koyomi/list.php',
-        'koyomi/card' => __DIR__ . '/snippets/koyomi/card.php',
-        'koyomi/event' => __DIR__ . '/snippets/koyomi/event.php',
-        'koyomi/filters' => __DIR__ . '/snippets/koyomi/filters.php',
-        'koyomi/switch' => __DIR__ . '/snippets/koyomi/switch.php',
-        'koyomi/pagination' => __DIR__ . '/snippets/koyomi/pagination.php',
-        'koyomi/past' => __DIR__ . '/snippets/koyomi/past.php',
-        'koyomi/venue' => __DIR__ . '/snippets/koyomi/venue.php',
-        'koyomi/subscribe' => __DIR__ . '/snippets/koyomi/subscribe.php',
-        'koyomi/jsonld' => __DIR__ . '/snippets/koyomi/jsonld.php',
-    ],
+	/**
+	 * Unstyled defaults with koyomi-* classes only. A site overrides any of
+	 * them with site/snippets/koyomi/<name>.php (Kirby looks there first).
+	 */
+	'snippets' => [
+		'koyomi/layout' => __DIR__ . '/snippets/koyomi/layout.php',
+		'koyomi/list' => __DIR__ . '/snippets/koyomi/list.php',
+		'koyomi/card' => __DIR__ . '/snippets/koyomi/card.php',
+		'koyomi/event' => __DIR__ . '/snippets/koyomi/event.php',
+		'koyomi/filters' => __DIR__ . '/snippets/koyomi/filters.php',
+		'koyomi/switch' => __DIR__ . '/snippets/koyomi/switch.php',
+		'koyomi/pagination' => __DIR__ . '/snippets/koyomi/pagination.php',
+		'koyomi/past' => __DIR__ . '/snippets/koyomi/past.php',
+		'koyomi/venue' => __DIR__ . '/snippets/koyomi/venue.php',
+		'koyomi/subscribe' => __DIR__ . '/snippets/koyomi/subscribe.php',
+		'koyomi/jsonld' => __DIR__ . '/snippets/koyomi/jsonld.php',
+	],
 
-    // Queries for the Panel pages fields: kirby.collection("koyomi/venues") …
-    'collections' => [
-        'koyomi/events' => fn () => Repository::eventPages(Repository::calendar(App::instance())),
-        'koyomi/venues' => fn () => Repository::venuePages(App::instance()),
-        'koyomi/organizers' => fn () => Repository::organizerPages(App::instance()),
-    ],
+	// Queries for the Panel pages fields: kirby.collection("koyomi/venues") …
+	'collections' => [
+		'koyomi/events' => fn () => Repository::eventPages(Repository::calendar(App::instance())),
+		'koyomi/venues' => fn () => Repository::venuePages(App::instance()),
+		'koyomi/organizers' => fn () => Repository::organizerPages(App::instance()),
+	],
 
-    'siteMethods' => [
-        /** The calendar page (`koyomi.calendar`, else the first koyomi-calendar page), or null. */
-        'koyomiCalendar' => function (): ?Page {
-            return Repository::calendar($this->kirby());
-        },
-    ],
+	'siteMethods' => [
+		/** The calendar page (`koyomi.calendar`, else the first koyomi-calendar page), or null. */
+		'koyomiCalendar' => function (): Page|null {
+			return Repository::calendar($this->kirby());
+		},
+	],
 
-    'hooks' => [
-        /**
-         * A copy of an event keeps its dates (it is a draft anyway) but must
-         * not inherit "cancelled", "sold out" or a status note.
-         */
-        'page.duplicate:after' => function (Page $duplicatePage, Page $originalPage) {
-            return Hooks::duplicateAfter($duplicatePage, $originalPage);
-        },
-    ],
+	'hooks' => [
+		/**
+		 * A copy of an event keeps its dates (it is a draft anyway) but must
+		 * not inherit "cancelled", "sold out" or a status note.
+		 */
+		'page.duplicate:after' => function (Page $duplicatePage, Page $originalPage) {
+			return Hooks::duplicateAfter($duplicatePage, $originalPage);
+		},
+	],
 ]);
 unset($koyomiTranslations);

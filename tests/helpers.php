@@ -36,11 +36,11 @@ function throws(string $class, callable $fn, string $what): void
 /** Loads every Kirby-free class of the plugin (no Kirby, no index.php). */
 function koyomi_require_core(): void
 {
-    $src = dirname(__DIR__) . '/src/';
-    foreach (['I18n', 'Normalize', 'Time', 'Status', 'Attendance', 'Availability', 'Venue', 'Organizer', 'Event',
-        'Query', 'Expiry', 'Filters', 'Format', 'GoogleLink', 'VTimezone', 'Ics', 'JsonLd', 'Rss', 'Blueprints'] as $class) {
-        require_once $src . $class . '.php';
-    }
+	$src = dirname(__DIR__) . '/src/';
+	foreach (['I18n', 'Normalize', 'Time', 'Status', 'Attendance', 'Availability', 'Venue', 'Organizer', 'Event',
+		'Query', 'Expiry', 'Filters', 'Format', 'GoogleLink', 'VTimezone', 'Ics', 'JsonLd', 'Rss', 'Blueprints'] as $class) {
+		require_once $src . $class . '.php';
+	}
 }
 
 /**
@@ -49,35 +49,35 @@ function koyomi_require_core(): void
  */
 function koyomi_raw_event(array $override = []): array
 {
-    return $override + [
-        'id' => 'evt-test',
-        'title' => 'Test event',
-        'url' => 'https://example.test/events/test-event',
-        'startDate' => '2027-03-12',
-        'startTime' => '18:00',
-        'endDate' => '',
-        'endTime' => '20:00',
-        'allDay' => false,
-        'timezone' => 'Europe/Berlin',
-        'modified' => 1791000000,
-    ];
+	return $override + [
+		'id' => 'evt-test',
+		'title' => 'Test event',
+		'url' => 'https://example.test/events/test-event',
+		'startDate' => '2027-03-12',
+		'startTime' => '18:00',
+		'endDate' => '',
+		'endTime' => '20:00',
+		'allDay' => false,
+		'timezone' => 'Europe/Berlin',
+		'modified' => 1791000000,
+	];
 }
 
 /** The venue used across Kirby-free tests. */
 function koyomi_raw_venue(array $override = []): array
 {
-    return $override + [
-        'id' => 'venue-beispielhof',
-        'name' => 'Seminarhaus Beispielhof',
-        'street' => 'Musterstraße 1',
-        'postalCode' => '12345',
-        'city' => 'Musterstadt',
-        'region' => 'Musterland',
-        'country' => 'DE',
-        'lat' => '48.123',
-        'lng' => '11.456',
-        'url' => 'https://example.test/venues/beispielhof',
-        'website' => 'https://beispielhof.example',
-        'directions' => 'Ten minutes from the station.',
-    ];
+	return $override + [
+		'id' => 'venue-beispielhof',
+		'name' => 'Seminarhaus Beispielhof',
+		'street' => 'Musterstraße 1',
+		'postalCode' => '12345',
+		'city' => 'Musterstadt',
+		'region' => 'Musterland',
+		'country' => 'DE',
+		'lat' => '48.123',
+		'lng' => '11.456',
+		'url' => 'https://example.test/venues/beispielhof',
+		'website' => 'https://beispielhof.example',
+		'directions' => 'Ten minutes from the station.',
+	];
 }

@@ -18,24 +18,23 @@ namespace Sayamaapps\Koyomi;
  */
 final class Attendance
 {
-    public const OFFLINE = 'offline';
-    public const ONLINE = 'online';
-    public const MIXED = 'mixed';
+	public const ALL = [self::OFFLINE, self::ONLINE, self::MIXED];
+	public const MIXED = 'mixed';
+	public const OFFLINE = 'offline';
+	public const ONLINE = 'online';
 
-    public const ALL = [self::OFFLINE, self::ONLINE, self::MIXED];
+	/** From the two Panel toggles; both off counts as offline. */
+	public static function fromToggles(bool $inPerson, bool $online): string
+	{
+		return match (true) {
+			$inPerson && $online => self::MIXED,
+			$online => self::ONLINE,
+			default => self::OFFLINE,
+		};
+	}
 
-    public static function normalize(mixed $value): string
-    {
-        return Normalize::choice($value, self::ALL, self::OFFLINE);
-    }
-
-    /** From the two Panel toggles; both off counts as offline. */
-    public static function fromToggles(bool $inPerson, bool $online): string
-    {
-        return match (true) {
-            $inPerson && $online => self::MIXED,
-            $online => self::ONLINE,
-            default => self::OFFLINE,
-        };
-    }
+	public static function normalize(mixed $value): string
+	{
+		return Normalize::choice($value, self::ALL, self::OFFLINE);
+	}
 }

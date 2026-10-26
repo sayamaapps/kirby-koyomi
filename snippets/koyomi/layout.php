@@ -15,8 +15,8 @@
  */
 $page ??= null;
 $language = koyomi_i18n();
-$siteTitle = (string) site()->title();
-$pageTitle = (string) ($page?->title() ?? '');
+$siteTitle = (string)site()->title();
+$pageTitle = (string)($page?->title() ?? '');
 $title = $pageTitle !== '' && $pageTitle !== $siteTitle ? $pageTitle . ' – ' . $siteTitle : $siteTitle;
 ?>
 <!doctype html>

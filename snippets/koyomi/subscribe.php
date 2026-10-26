@@ -12,7 +12,7 @@
  * @var \Kirby\Cms\Page|null $calendar (default: the site's calendar)
  */
 if (!koyomi_active()) {
-    return;
+	return;
 }
 koyomi_i18n();
 
@@ -20,18 +20,18 @@ $kirby = \Kirby\Cms\App::instance();
 $feed = \Sayamaapps\Koyomi\Options::route($kirby, 'feed');
 $rss = \Sayamaapps\Koyomi\Options::route($kirby, 'rss');
 if (!$feed && !$rss) {
-    return;
+	return;
 }
 if (!isset($calendar)) {
-    $calendar = site()->koyomiCalendar();
+	$calendar = site()->koyomiCalendar();
 }
 if ($calendar === null) {
-    return;
+	return;
 }
 
-$base = (string) $calendar->url();
+$base = (string)$calendar->url();
 $ics = $base . '.ics';
-$webcal = (string) preg_replace('~^https?://~', 'webcal://', $ics);
+$webcal = (string)preg_replace('~^https?://~', 'webcal://', $ics);
 $rssUrl = $base . '.rss';
 ?>
 <div class="koyomi-subscribe">

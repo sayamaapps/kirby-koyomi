@@ -14,7 +14,7 @@ $upcoming = koyomi_active() ? $page->upcomingEvents() : [];
   <h1><?= esc($page->title()) ?></h1>
   <?php if ($photo) : ?>
   <figure class="koyomi-photo">
-    <img class="koyomi-photo-image" src="<?= esc($photo->url()) ?>" alt="<?= esc((string) $photo->alt()) ?>" loading="lazy">
+    <img class="koyomi-photo-image" src="<?= esc($photo->url()) ?>" alt="<?= esc((string)$photo->alt()) ?>" loading="lazy">
   </figure>
   <?php endif ?>
   <?php if ($organizer->website !== '') : ?>

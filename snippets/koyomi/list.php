@@ -11,53 +11,53 @@
  * Prints nothing when Koyomi is inactive. Never calls Repository for an
  * event: the calendar is only looked up when no data was passed.
  *
- * @var array|null          $list   Repository::list() shape (SPEC §8.9)
- * @var iterable|null       $events list of Sayamaapps\Koyomi\Event or event pages
- * @var string|false|null   $title  heading text; false = no heading
- * @var int|null            $level  heading level, 2 by default; months use level + 1, cards level + 2
- * @var string|false|null   $group  'month' = timeline with month headings (default from
- *                                  koyomi.groupBy), false = one flat list (cards use level + 1)
+ * @var array|null $list   Repository::list() shape (SPEC §8.9)
+ * @var iterable|null $events list of Sayamaapps\Koyomi\Event or event pages
+ * @var string|false|null $title  heading text; false = no heading
+ * @var int|null $level  heading level, 2 by default; months use level + 1, cards level + 2
+ * @var string|false|null $group  'month' = timeline with month headings (default from
+ *                        koyomi.groupBy), false = one flat list (cards use level + 1)
  */
 if (!koyomi_active()) {
-    return;
+	return;
 }
 koyomi_i18n();
 
 $list ??= null;
 $events ??= null;
 if ($list === null && $events === null) {
-    $list = site()->koyomiCalendar()?->koyomiList();
+	$list = site()->koyomiCalendar()?->koyomiList();
 }
 
 $view = ($list['view'] ?? 'upcoming') === 'past' ? 'past' : 'upcoming';
-$filtered = (bool) ($list['filtered'] ?? false);
+$filtered = (bool)($list['filtered'] ?? false);
 $title ??= koyomi_t($view === 'past' ? 'list.past' : 'list.upcoming');
-$level = min(6, max(1, (int) ($level ?? 2)));
+$level = min(6, max(1, (int)($level ?? 2)));
 $group ??= \Sayamaapps\Koyomi\Options::groupBy(\Kirby\Cms\App::instance());
 $group = $group === 'month' ? 'month' : false;
 
 $items = [];
 foreach ($events ?? ($list['events'] ?? []) as $item) {
-    $event = koyomi_event($item);
-    if ($event !== null) {
-        $items[] = $event;
-    }
+	$event = koyomi_event($item);
+	if ($event !== null) {
+		$items[] = $event;
+	}
 }
 koyomi_expires($items);
 
 if ($filtered) {
-    $emptyText = koyomi_t('list.emptyFiltered');
+	$emptyText = koyomi_t('list.emptyFiltered');
 } elseif ($view === 'past') {
-    $emptyText = koyomi_t('list.pastEmpty');
+	$emptyText = koyomi_t('list.pastEmpty');
 } else {
-    $emptyText = koyomi_t('list.empty');
+	$emptyText = koyomi_t('list.empty');
 }
 
 $switchUrl = null;
 $switchText = '';
 if ($list !== null) {
-    $switchUrl = $view === 'past' ? ($list['upcomingUrl'] ?? null) : ($list['pastUrl'] ?? null);
-    $switchText = koyomi_t($view === 'past' ? 'list.toUpcoming' : 'list.toPast');
+	$switchUrl = $view === 'past' ? ($list['upcomingUrl'] ?? null) : ($list['pastUrl'] ?? null);
+	$switchText = koyomi_t($view === 'past' ? 'list.toUpcoming' : 'list.toPast');
 }
 ?>
 <section class="koyomi-list koyomi-list--<?= esc($view) ?>">

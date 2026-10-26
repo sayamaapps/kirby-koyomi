@@ -20,104 +20,104 @@ use Sayamaapps\Koyomi\Options;
  */
 class EventPage extends Page
 {
-    /** Memoized by koyomi(); the flag also remembers a null result. */
-    private ?Event $koyomiEvent = null;
-    private bool $koyomiLoaded = false;
+	/** Memoized by koyomi(); the flag also remembers a null result. */
+	private Event|null $koyomiEvent = null;
+	private bool $koyomiLoaded = false;
 
-    /**
-     * The Event (Mapper::event($this, Options::eventDefaults()), memoized on
-     * this object. Null when the start date is invalid (error_log once).
-     */
-    public function koyomi(): ?Event
-    {
-        if (!$this->koyomiLoaded) {
-            $this->koyomiLoaded = true;
-            try {
-                $this->koyomiEvent = Mapper::event($this, Options::eventDefaults($this->kirby()));
-            } catch (InvalidArgumentException $e) {
-                error_log('Koyomi: skipped ' . $this->id() . ': ' . $e->getMessage());
-                $this->koyomiEvent = null;
-            }
-        }
-        return $this->koyomiEvent;
-    }
+	/** GoogleLink::url($event, koyomi_i18n()) or "" when `koyomi.google` is off or no Event. */
+	public function googleCalendarUrl(): string
+	{
+		$event = $this->koyomi();
+		if ($event === null || !Options::google($this->kirby())) {
+			return '';
+		}
+		return GoogleLink::url($event, koyomi_i18n());
+	}
 
-    /**
-     * Ended (end <= Options::now()). False without a valid Event. For sitemap/SEO plugins.
-     * Lowers the page cache expiry to the next start/end, like every time-dependent value here.
-     */
-    public function isPast(): bool
-    {
-        $event = $this->koyomi();
-        if ($event === null) {
-            return false;
-        }
-        koyomi_expires([$event]);
-        return $event->isPast(Options::now($this->kirby()));
-    }
+	/** $this->url() . '.ics' */
+	public function icsUrl(): string
+	{
+		return $this->url() . '.ics';
+	}
 
-    /** start <= now < end. Lowers the page cache expiry like isPast(). */
-    public function isOngoing(): bool
-    {
-        $event = $this->koyomi();
-        if ($event === null) {
-            return false;
-        }
-        koyomi_expires([$event]);
-        return $event->isOngoing(Options::now($this->kirby()));
-    }
+	/** start <= now < end. Lowers the page cache expiry like isPast(). */
+	public function isOngoing(): bool
+	{
+		$event = $this->koyomi();
+		if ($event === null) {
+			return false;
+		}
+		koyomi_expires([$event]);
+		return $event->isOngoing(Options::now($this->kirby()));
+	}
 
-    /** $this->url() . '.ics' */
-    public function icsUrl(): string
-    {
-        return $this->url() . '.ics';
-    }
+	/**
+	 * Ended (end <= Options::now()). False without a valid Event. For sitemap/SEO plugins.
+	 * Lowers the page cache expiry to the next start/end, like every time-dependent value here.
+	 */
+	public function isPast(): bool
+	{
+		$event = $this->koyomi();
+		if ($event === null) {
+			return false;
+		}
+		koyomi_expires([$event]);
+		return $event->isPast(Options::now($this->kirby()));
+	}
 
-    /** GoogleLink::url($event, koyomi_i18n()) or "" when `koyomi.google` is off or no Event. */
-    public function googleCalendarUrl(): string
-    {
-        $event = $this->koyomi();
-        if ($event === null || !Options::google($this->kirby())) {
-            return '';
-        }
-        return GoogleLink::url($event, koyomi_i18n());
-    }
+	/**
+	 * The Event (Mapper::event($this, Options::eventDefaults()), memoized on
+	 * this object. Null when the start date is invalid (error_log once).
+	 */
+	public function koyomi(): Event|null
+	{
+		if (!$this->koyomiLoaded) {
+			$this->koyomiLoaded = true;
+			try {
+				$this->koyomiEvent = Mapper::event($this, Options::eventDefaults($this->kirby()));
+			} catch (InvalidArgumentException $e) {
+				error_log('Koyomi: skipped ' . $this->id() . ': ' . $e->getMessage());
+				$this->koyomiEvent = null;
+			}
+		}
+		return $this->koyomiEvent;
+	}
 
-    /**
-     * Plain array for own markup (SPEC.md §8.11):
-     *   Event::toArray() + ['labels' => Format::labels($event, Options::languages()),
-     *                       'isPast' => bool, 'isOngoing' => bool,
-     *                       'googleCalendarUrl' => string]
-     * [] without a valid Event (checked BEFORE koyomi_i18n(), so an invalid
-     * page never touches Format). Then calls koyomi_i18n().
-     *
-     * Also lowers the page cache expiry to the next start/end: "Happening now"
-     * and the calendar links in the array stop being true at that moment.
-     * Own templates therefore need nothing more than this call.
-     */
-    public function koyomiData(): array
-    {
-        $event = $this->koyomi();
-        if ($event === null) {
-            return [];
-        }
+	/** The calendar this event belongs to (parent with template koyomi-calendar), else null. */
+	public function koyomiCalendar(): Page|null
+	{
+		$parent = $this->parent();
+		return $parent !== null && $parent->intendedTemplate()->name() === 'koyomi-calendar' ? $parent : null;
+	}
 
-        koyomi_expires([$event]);
-        koyomi_i18n();
-        $kirby = $this->kirby();
-        $now = Options::now($kirby);
-        return $event->toArray() + [
-            'labels' => Format::labels($event, Options::languages($kirby)),
-            'isPast' => $event->isPast($now),
-            'isOngoing' => $event->isOngoing($now),
-            'googleCalendarUrl' => $this->googleCalendarUrl(),
-        ];
-    }
+	/**
+	 * Plain array for own markup (SPEC.md §8.11):
+	 *   Event::toArray() + ['labels' => Format::labels($event, Options::languages()),
+	 *                       'isPast' => bool, 'isOngoing' => bool,
+	 *                       'googleCalendarUrl' => string]
+	 * [] without a valid Event (checked BEFORE koyomi_i18n(), so an invalid
+	 * page never touches Format). Then calls koyomi_i18n().
+	 *
+	 * Also lowers the page cache expiry to the next start/end: "Happening now"
+	 * and the calendar links in the array stop being true at that moment.
+	 * Own templates therefore need nothing more than this call.
+	 */
+	public function koyomiData(): array
+	{
+		$event = $this->koyomi();
+		if ($event === null) {
+			return [];
+		}
 
-    /** The calendar this event belongs to (parent with template koyomi-calendar), else null. */
-    public function koyomiCalendar(): ?Page
-    {
-        $parent = $this->parent();
-        return $parent !== null && $parent->intendedTemplate()->name() === 'koyomi-calendar' ? $parent : null;
-    }
+		koyomi_expires([$event]);
+		koyomi_i18n();
+		$kirby = $this->kirby();
+		$now = Options::now($kirby);
+		return $event->toArray() + [
+			'labels' => Format::labels($event, Options::languages($kirby)),
+			'isPast' => $event->isPast($now),
+			'isOngoing' => $event->isOngoing($now),
+			'googleCalendarUrl' => $this->googleCalendarUrl(),
+		];
+	}
 }

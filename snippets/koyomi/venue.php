@@ -11,21 +11,21 @@
  * Prints nothing when Koyomi is inactive or the data is not a venue.
  *
  * @var \Sayamaapps\Koyomi\Venue|\Sayamaapps\Koyomi\Models\VenuePage|null $venue   (required)
- * @var bool|null                                    $compact name and address only (used inside an event)
+ * @var bool|null $compact name and address only (used inside an event)
  */
 if (!koyomi_active()) {
-    return;
+	return;
 }
 koyomi_i18n();
 
 $v = $venue ?? null;
 if ($v instanceof \Sayamaapps\Koyomi\Models\VenuePage) {
-    $v = $v->koyomiVenue();
+	$v = $v->koyomiVenue();
 }
 if (!$v instanceof \Sayamaapps\Koyomi\Venue) {
-    return;
+	return;
 }
-$compact = (bool) ($compact ?? false);
+$compact = (bool)($compact ?? false);
 
 $addressLines = \Sayamaapps\Koyomi\Format::addressLines($v, \Sayamaapps\Koyomi\Options::country(\Kirby\Cms\App::instance()));
 $mapLink = $v->mapLink();
