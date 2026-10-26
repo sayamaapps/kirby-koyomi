@@ -6,7 +6,7 @@ use DateTimeImmutable;
 use DateTimeZone;
 
 /**
- * iCalendar (RFC 5545) writer, Kirby-free.        OWNER: task `ics`
+ * iCalendar (RFC 5545) writer, Kirby-free.
  *
  * Contract: SPEC.md §8.1. Summary:
  * - Content lines are joined with CRLF, the document ends with CRLF.
@@ -314,7 +314,7 @@ final class Ics
 
 		$lines = [];
 		foreach ($windows as $zone => [$from, $to]) {
-			foreach (VTimezone::lines((string)$zone, $from, $to) as $line) {
+			foreach (VTimezone::lines($zone, $from, $to) as $line) {
 				$lines[] = $line;
 			}
 		}

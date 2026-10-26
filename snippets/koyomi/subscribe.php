@@ -1,4 +1,7 @@
 <?php
+
+use Sayamaapps\Koyomi\Api;
+
 /**
  * Subscription links of a calendar: the feed as "webcal://" (subscribe in the
  * calendar app, new dates arrive by themselves) and the RSS feed. The URLs
@@ -11,10 +14,10 @@
  *
  * @var \Kirby\Cms\Page|null $calendar (default: the site's calendar)
  */
-if (!koyomi_active()) {
+if (!Api::active(kirby())) {
 	return;
 }
-koyomi_i18n();
+Api::i18n(kirby());
 
 $kirby = \Kirby\Cms\App::instance();
 $feed = \Sayamaapps\Koyomi\Options::route($kirby, 'feed');
@@ -36,10 +39,10 @@ $rssUrl = $base . '.rss';
 ?>
 <div class="koyomi-subscribe">
   <?php if ($feed) : ?>
-  <p class="koyomi-subscribe-link"><a href="<?= esc($webcal) ?>"><?= esc(koyomi_t('calendar.subscribe')) ?></a></p>
-  <p class="koyomi-subscribe-hint"><?= esc(koyomi_t('calendar.subscribeHint')) ?> <code><?= esc($ics) ?></code></p>
+  <p class="koyomi-subscribe-link"><a href="<?= esc($webcal) ?>"><?= esc(Api::t('calendar.subscribe')) ?></a></p>
+  <p class="koyomi-subscribe-hint"><?= esc(Api::t('calendar.subscribeHint')) ?> <code><?= esc($ics) ?></code></p>
   <?php endif ?>
   <?php if ($rss) : ?>
-  <p class="koyomi-subscribe-rss"><a href="<?= esc($rssUrl) ?>" type="application/rss+xml"><?= esc(koyomi_t('calendar.rss')) ?></a></p>
+  <p class="koyomi-subscribe-rss"><a href="<?= esc($rssUrl) ?>" type="application/rss+xml"><?= esc(Api::t('calendar.rss')) ?></a></p>
   <?php endif ?>
 </div>

@@ -1,18 +1,21 @@
 <?php
+
+use Sayamaapps\Koyomi\Api;
+
 /**
  * Venue page (template koyomi-venue, unlisted): the venue, then its upcoming
  * events as cards. The venues container and the events are read by the page
  * model; the snippets print nothing while `koyomi.active` is off.
  */
-koyomi_i18n();
-$upcoming = koyomi_active() ? $page->upcomingEvents() : [];
+Api::i18n(kirby());
+$upcoming = Api::active(kirby()) ? $page->upcomingEvents() : [];
 ?>
 <?php snippet('koyomi/layout', ['page' => $page], slots: true) ?>
 <h1><?= esc($page->title()) ?></h1>
 <?php snippet('koyomi/venue', ['venue' => $page]) ?>
-<?php if (koyomi_active()) : ?>
+<?php if (Api::active(kirby())) : ?>
 <section class="koyomi-list koyomi-list--upcoming">
-  <h2 class="koyomi-list-title"><?= esc(koyomi_t('venue.upcoming')) ?></h2>
+  <h2 class="koyomi-list-title"><?= esc(Api::t('venue.upcoming')) ?></h2>
   <?php if ($upcoming !== []) : ?>
   <ol class="koyomi-events">
     <?php foreach ($upcoming as $event) : ?>
@@ -20,7 +23,7 @@ $upcoming = koyomi_active() ? $page->upcomingEvents() : [];
     <?php endforeach ?>
   </ol>
   <?php else : ?>
-  <p class="koyomi-empty"><?= esc(koyomi_t('list.empty')) ?></p>
+  <p class="koyomi-empty"><?= esc(Api::t('list.empty')) ?></p>
   <?php endif ?>
 </section>
 <?php endif ?>

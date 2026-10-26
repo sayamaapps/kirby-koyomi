@@ -8,7 +8,7 @@ use Sayamaapps\Koyomi\Organizer;
 use Sayamaapps\Koyomi\Repository;
 
 /**
- * Page model of template `koyomi-organizer`.       OWNER: task `kirby`
+ * Page model of template `koyomi-organizer`.
  */
 class OrganizerPage extends Page
 {

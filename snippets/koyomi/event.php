@@ -1,4 +1,7 @@
 <?php
+
+use Sayamaapps\Koyomi\Api;
+
 /**
  * The facts of one event: status, when, where, price, languages, organizers,
  * booking, calendar links and the series. NOT the title, the cover or the
@@ -7,23 +10,23 @@
  *   <?php snippet('koyomi/event', ['event' => $page]) ?>
  *   <?php snippet('koyomi/event', ['event' => $event, 'calendarUrl' => 'https://example.test/events']) ?>
  *
- * Calls koyomi_expires() with this event alone, so the page is not cached
+ * Calls Api::expires(kirby(), ) with this event alone, so the page is not cached
  * past its start or end. Prints nothing when Koyomi is inactive.
  *
  * @var \Sayamaapps\Koyomi\Event|\Sayamaapps\Koyomi\Models\EventPage|null $event       (or $page)
  * @var \Kirby\Cms\Page|null $page        (used when $event is not given)
  * @var string|null $calendarUrl link back to the calendar; default: the page's calendar
  */
-if (!koyomi_active()) {
+if (!Api::active(kirby())) {
 	return;
 }
-$language = koyomi_i18n();
+$language = Api::i18n(kirby());
 
-$e = koyomi_event($event ?? ($page ?? null));
+$e = Api::event($event ?? ($page ?? null));
 if ($e === null) {
 	return;
 }
-koyomi_expires([$e]);
+Api::expires(kirby(), [$e]);
 
 if (!isset($calendarUrl)) {
 	// The calendar is the parent of an event page; a plain Event has none.
@@ -36,7 +39,7 @@ if (!isset($calendarUrl)) {
 $calendarUrl = (string)($calendarUrl ?? '');
 
 $kirby = \Kirby\Cms\App::instance();
-$now = koyomi_now();
+$now = Api::now(kirby());
 $past = $e->isPast($now);
 $ongoing = $e->isOngoing($now);
 $cancelled = $e->isCancelled();
@@ -80,10 +83,10 @@ $seriesTotal = count($series);
   <?php endif ?>
 
   <dl class="koyomi-facts">
-    <dt><?= esc(koyomi_t('event.when')) ?></dt>
+    <dt><?= esc(Api::t('event.when')) ?></dt>
     <dd class="koyomi-when"><time datetime="<?= esc($datetime) ?>"><?= esc(\Sayamaapps\Koyomi\Format::when($e)) ?></time></dd>
 
-    <dt><?= esc(koyomi_t('event.where')) ?></dt>
+    <dt><?= esc(Api::t('event.where')) ?></dt>
     <dd class="koyomi-where">
       <?php if ($venue !== null) : ?>
       <?php snippet('koyomi/venue', ['venue' => $venue, 'compact' => true]) ?>
@@ -92,17 +95,17 @@ $seriesTotal = count($series);
     </dd>
 
     <?php if ($price !== '' || $e->priceNote !== '' || $availability !== '') : ?>
-    <dt><?= esc(koyomi_t('price.label')) ?></dt>
+    <dt><?= esc(Api::t('price.label')) ?></dt>
     <dd class="koyomi-price"><?= esc($price) ?><?php if ($e->priceNote !== '') : ?> <span class="koyomi-price-note"><?= esc($e->priceNote) ?></span><?php endif ?><?php if ($availability !== '') : ?> <span class="koyomi-availability"><?= esc($availability) ?></span><?php endif ?></dd>
     <?php endif ?>
 
     <?php if ($languages !== '') : ?>
-    <dt><?= esc(koyomi_t('event.languages')) ?></dt>
+    <dt><?= esc(Api::t('event.languages')) ?></dt>
     <dd class="koyomi-languages"><?= esc($languages) ?></dd>
     <?php endif ?>
 
     <?php if ($organizers !== []) : ?>
-    <dt><?= esc(koyomi_t(count($organizers) > 1 ? 'event.organizers' : 'event.organizer')) ?></dt>
+    <dt><?= esc(Api::t(count($organizers) > 1 ? 'event.organizers' : 'event.organizer')) ?></dt>
     <dd class="koyomi-organizers">
       <ul>
         <?php foreach ($organizers as $organizer) : ?>
@@ -113,32 +116,32 @@ $seriesTotal = count($series);
     <?php endif ?>
 
     <?php if ($categories !== '') : ?>
-    <dt><?= esc(koyomi_t('event.categories')) ?></dt>
+    <dt><?= esc(Api::t('event.categories')) ?></dt>
     <dd class="koyomi-categories"><?= esc($categories) ?></dd>
     <?php endif ?>
   </dl>
 
   <?php if ($e->bookingUrl !== '' && !$past && !$cancelled) : ?>
     <?php if ($e->availability === \Sayamaapps\Koyomi\Availability::SOLDOUT) : ?>
-    <p class="koyomi-booking koyomi-booking--soldout"><?= esc(koyomi_t('availability.soldout')) ?></p>
+    <p class="koyomi-booking koyomi-booking--soldout"><?= esc(Api::t('availability.soldout')) ?></p>
     <?php else : ?>
-    <p class="koyomi-booking"><a class="koyomi-booking-link" href="<?= esc($e->bookingUrl) ?>" target="_blank" rel="noopener"><?= esc($e->bookingLabel !== '' ? $e->bookingLabel : koyomi_t('booking.default')) ?><span class="koyomi-sr-only"> <?= esc(koyomi_t('booking.opensNewTab')) ?></span></a></p>
+    <p class="koyomi-booking"><a class="koyomi-booking-link" href="<?= esc($e->bookingUrl) ?>" target="_blank" rel="noopener"><?= esc($e->bookingLabel !== '' ? $e->bookingLabel : Api::t('booking.default')) ?><span class="koyomi-sr-only"> <?= esc(Api::t('booking.opensNewTab')) ?></span></a></p>
     <?php endif ?>
   <?php endif ?>
 
   <?php if ($showCalendarLinks) : ?>
-  <p class="koyomi-calendar-links"><span class="koyomi-calendar-heading"><?= esc(koyomi_t('calendar.add')) ?></span><?php if ($icsLink) : ?> <a class="koyomi-calendar-ics" href="<?= esc($e->icsUrl()) ?>" download><?= esc(koyomi_t('calendar.ics')) ?></a><?php endif ?><?php if ($googleLink !== '') : ?> <a class="koyomi-calendar-google" href="<?= esc($googleLink) ?>" target="_blank" rel="noopener nofollow"><?= esc(koyomi_t('calendar.google')) ?></a><?php endif ?></p>
+  <p class="koyomi-calendar-links"><span class="koyomi-calendar-heading"><?= esc(Api::t('calendar.add')) ?></span><?php if ($icsLink) : ?> <a class="koyomi-calendar-ics" href="<?= esc($e->icsUrl()) ?>" download><?= esc(Api::t('calendar.ics')) ?></a><?php endif ?><?php if ($googleLink !== '') : ?> <a class="koyomi-calendar-google" href="<?= esc($googleLink) ?>" target="_blank" rel="noopener nofollow"><?= esc(Api::t('calendar.google')) ?></a><?php endif ?></p>
   <?php endif ?>
 
   <?php if ($seriesTotal > 0) : ?>
-  <nav class="koyomi-series" aria-label="<?= esc(koyomi_t('series.title')) ?>">
+  <nav class="koyomi-series" aria-label="<?= esc(Api::t('series.title')) ?>">
     <p><?= esc(\Sayamaapps\Koyomi\Format::series($e)) ?></p>
     <ol>
       <?php foreach ($series as $item) : ?>
-      <?php $itemTitle = $item['title'] !== '' ? $item['title'] : koyomi_t('series.part', ['part' => $item['part'], 'total' => $seriesTotal]); ?>
+      <?php $itemTitle = $item['title'] !== '' ? $item['title'] : Api::t('series.part', ['part' => $item['part'], 'total' => $seriesTotal]); ?>
       <li>
         <?php if ($item['current']) : ?>
-        <span aria-current="page"><?= esc($itemTitle) ?></span> <?= esc(koyomi_t('series.current')) ?>
+        <span aria-current="page"><?= esc($itemTitle) ?></span> <?= esc(Api::t('series.current')) ?>
         <?php elseif ($item['url'] !== '') : ?>
         <a href="<?= esc($item['url']) ?>"><?= esc($itemTitle) ?></a>
         <?php else : ?>

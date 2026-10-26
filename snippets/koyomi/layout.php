@@ -1,4 +1,7 @@
 <?php
+
+use Sayamaapps\Koyomi\Api;
+
 /**
  * The HTML document around Koyomi's pages, used by the four HTML templates.
  * It is the one snippet that is not silent when Koyomi is inactive: it is a
@@ -14,7 +17,7 @@
  * @var \Kirby\Template\Slot $slot   the captured content (Kirby slot)
  */
 $page ??= null;
-$language = koyomi_i18n();
+$language = Api::i18n(kirby());
 $siteTitle = (string)site()->title();
 $pageTitle = (string)($page?->title() ?? '');
 $title = $pageTitle !== '' && $pageTitle !== $siteTitle ? $pageTitle . ' – ' . $siteTitle : $siteTitle;

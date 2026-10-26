@@ -5,7 +5,7 @@ namespace Sayamaapps\Koyomi;
 use DateTimeZone;
 
 /**
- * VTIMEZONE components from PHP's tz database, Kirby-free.   OWNER: task `ics`
+ * VTIMEZONE components from PHP's tz database, Kirby-free.
  *
  * No RRULEs: every real transition in the window becomes its own STANDARD or
  * DAYLIGHT sub-component with an explicit DTSTART. That is valid RFC 5545,

@@ -8,7 +8,7 @@ use Sayamaapps\Koyomi\Repository;
 use Sayamaapps\Koyomi\Venue;
 
 /**
- * Page model of template `koyomi-venue`.           OWNER: task `kirby`
+ * Page model of template `koyomi-venue`.
  */
 class VenuePage extends Page
 {

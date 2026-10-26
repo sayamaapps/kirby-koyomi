@@ -84,7 +84,7 @@ final class DraftAncestorsTest extends TestCase
 
 		$archiveRoot = ancestors_bare_root();
 
-		$jsonOptions = ['koyomi.json' => true];
+		$jsonOptions = ['sayamaapps.koyomi.json' => true];
 
 
 		$body = fn (string $root, string $path, array $options = []): string => (string)KoyomiFixture::app($root, $options)->render($path)?->body();
@@ -154,7 +154,7 @@ final class DraftAncestorsTest extends TestCase
 			$w('_drafts/archive/events/koyomi-calendar.txt', ['Title' => 'Archived events', 'Uuid' => 'calendar-archive']);
 			$w('_drafts/archive/events/20270501_buried/koyomi-event.txt', ancestors_event('Buried Event', 'evt-buried', '2027-05-01'));
 
-			$kirby = KoyomiFixture::app($archiveRoot, ['koyomi.calendar' => '_drafts/archive/events']);
+			$kirby = KoyomiFixture::app($archiveRoot, ['sayamaapps.koyomi.calendar' => '_drafts/archive/events']);
 			$calendarPage = $kirby->page('_drafts/archive/events');
 			holds($calendarPage !== null && $calendarPage->intendedTemplate()->name() === 'koyomi-calendar', 'the configured calendar page resolves');
 			expect(false, $calendarPage->isDraft(), 'the calendar page itself is no draft in Kirby\'s eyes');

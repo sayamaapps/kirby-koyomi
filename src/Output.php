@@ -9,7 +9,7 @@ use Kirby\Exception\NotFoundException;
 /**
  * Bodies and headers of the content representations
  * (templates/koyomi-*.ics.php, .rss.php, .json.php call these).
- *                                               OWNER: task `kirby`
+ *
  * Contract: SPEC.md §8.10.
  *
  * Every method first checks Options::route() for its switch (which includes
@@ -30,12 +30,12 @@ final class Output
 			throw new NotFoundException();
 		}
 
-		$language = koyomi_i18n();
+		$language = Api::i18n($kirby);
 		$now = Options::now($kirby);
 		$cutoff = $now->modify('-' . Options::feedPastDays($kirby) . ' days');
 		$all = Repository::events($calendar);
-		koyomi_expires($all);
-		koyomi_expires_at(Expiry::leaving($all, $now, Options::feedPastDays($kirby)));
+		Api::expires($kirby, $all);
+		Api::expiresAt($kirby, Expiry::leaving($all, $now, Options::feedPastDays($kirby)));
 		$events = Query::sort(array_values(array_filter($all, fn (Event $e): bool => $e->end > $cutoff)), 'asc');
 
 		$response = $kirby->response();
@@ -63,11 +63,11 @@ final class Output
 			throw new NotFoundException();
 		}
 
-		$language = koyomi_i18n();
+		$language = Api::i18n($kirby);
 		$response = $kirby->response();
 		$response->type('text/calendar');
 		$response->header('Content-Disposition', 'attachment; filename="' . $event->slug() . '.ics"');
-		koyomi_expires([$item]);
+		Api::expires($kirby, [$item]);
 
 		return Ics::event($item, self::options($kirby, $language));
 	}
@@ -80,7 +80,7 @@ final class Output
 			throw new NotFoundException();
 		}
 
-		koyomi_i18n();
+		Api::i18n($kirby);
 		$now = Options::now($kirby);
 		$events = Repository::upcoming($calendar);
 		$response = $kirby->response();
@@ -111,7 +111,7 @@ final class Output
 			throw new NotFoundException();
 		}
 
-		$language = koyomi_i18n();
+		$language = Api::i18n($kirby);
 		$events = Repository::upcoming($calendar);
 		$response = $kirby->response();
 		$response->type('application/rss+xml');

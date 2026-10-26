@@ -7,7 +7,7 @@ use DateTimeImmutable;
 /**
  * Human-readable text for dates, prices, status … in the current I18n
  * language. Kirby-free. Returns PLAIN text — callers escape.
- *                                              OWNER: task `present`
+ *
  * Contract and expected outputs: SPEC.md §8.5.
  */
 final class Format
@@ -166,14 +166,10 @@ final class Format
 		return $text;
 	}
 
-	/*
-	 * configure(), reset(), pattern() and siteZone() are written by the
-	 * architect (SHARED, done): koyomi_i18n() calls configure() on every
-	 * request, so every task's Kirby tests depend on it. Keep them as they are.
-	 */
+	// configure() is called once per request by Api::i18n(); it sets the formats and the site zone.
 
 	/**
-	 * Per-request setup (koyomi_i18n() calls it). $formats is
+	 * Per-request setup (Api::i18n() calls it). $formats is
 	 * Options::formats(): ['de' => ['date' => '…'], …], merged key by key
 	 * over DEFAULTS (a language Koyomi does not ship is accepted, and falls
 	 * back to English per key). $siteZone: events in another zone get a zone
@@ -372,13 +368,6 @@ final class Format
 			return '';
 		}
 		return self::money($event->price, $event->currency);
-	}
-
-	/** Back to DEFAULTS and Europe/Berlin (tests). */
-	public static function reset(): void
-	{
-		self::$formats = self::DEFAULTS;
-		self::$siteZone = Time::DEFAULT_ZONE;
 	}
 
 	/** "Teil 2 von 3" when the event is part of a series, else "". */

@@ -10,7 +10,7 @@ use Kirby\Content\Field;
 use Kirby\Toolkit\Str;
 
 /**
- * Kirby pages → Koyomi value objects.        OWNER: task `kirby`
+ * Kirby pages → Koyomi value objects.
  *
  * Reads fields ONLY via $page->content()->get('<field>') — never via magic
  * methods: `status` and `image` are Page methods, and a site's own page
@@ -58,7 +58,11 @@ final class Mapper
 	/** The field $name from the shared content when it is shared, else from the page's own content. */
 	private static function field(Content $own, Content $shared, string $name): Field
 	{
-		return (in_array($name, Blueprints::SHARED_FIELDS, true) ? $shared : $own)->get($name);
+		$content = in_array($name, Blueprints::SHARED_FIELDS, true) ? $shared : $own;
+		/** @var Field $field */
+		$field = $content->get($name);
+
+		return $field;
 	}
 
 	/** @return array{0: string, 1: string} URL and alt text of a file, empty strings when there is none */

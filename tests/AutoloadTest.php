@@ -36,6 +36,10 @@ final class AutoloadTest extends TestCase
 		// 1.x names: every class keeps its old name as an alias.
 		foreach ($map as $path) {
 			$new = 'Sayamaapps\\Koyomi\\' . str_replace('/', '\\', substr($path, strlen('src/'), -strlen('.php')));
+			if ($new === 'Sayamaapps\\Koyomi\\Api') {
+				// New in 2.0: no 1.x name.
+				continue;
+			}
 			$old = 'Koyomi\\' . substr($new, strlen('Sayamaapps\\Koyomi\\'));
 			holds(class_exists($old), "1.x name $old resolves");
 			expect($new, (new ReflectionClass($old))->getName(), "1.x name $old points to the new class");

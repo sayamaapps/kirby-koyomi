@@ -5,7 +5,7 @@ namespace Sayamaapps\Koyomi;
 use DateTimeImmutable;
 
 /**
- * RSS 2.0 feed of events, Kirby-free.        OWNER: task `seo`
+ * RSS 2.0 feed of events, Kirby-free.
  *
  * Contract: SPEC.md §8.4 (full example document there).
  */

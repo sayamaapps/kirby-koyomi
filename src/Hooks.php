@@ -2,11 +2,10 @@
 
 namespace Sayamaapps\Koyomi;
 
-use Kirby\Cms\App;
 use Kirby\Cms\Page;
 
 /**
- * Kirby hooks.                                   OWNER: task `panel`
+ * Kirby hooks.
  * Contract: SPEC.md §8.13.
  */
 final class Hooks
@@ -28,7 +27,7 @@ final class Hooks
 	 */
 	public static function duplicateAfter(Page $duplicatePage, Page $originalPage): Page
 	{
-		$kirby = App::instance();
+		$kirby = $duplicatePage->kirby();
 		// Kirby replaces the duplicate with whatever this returns, so the page is always returned.
 		if (!Options::active($kirby) || !Options::duplicateReset($kirby)) {
 			return $duplicatePage;

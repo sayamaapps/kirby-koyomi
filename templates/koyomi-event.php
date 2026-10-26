@@ -1,11 +1,14 @@
 <?php
+
+use Sayamaapps\Koyomi\Api;
+
 /**
  * Event page (template koyomi-event): title, cover, short description, the
  * facts (koyomi/event snippet) and the text blocks. The snippet prints no
  * title and no text, so the template owns those. The .ics representation is
  * a separate template (koyomi-event.ics.php).
  */
-koyomi_i18n();
+Api::i18n(kirby());
 $cover = $page->content()->get('cover')->toFile();
 // The stored excerpt only: Event::description falls back to the text blocks
 // (for lists and feeds), and this page prints the full text right below.

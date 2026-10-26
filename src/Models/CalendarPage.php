@@ -6,7 +6,7 @@ use Kirby\Cms\Page;
 use Sayamaapps\Koyomi\Repository;
 
 /**
- * Page model of template `koyomi-calendar`.        OWNER: task `kirby`
+ * Page model of template `koyomi-calendar`.
  * Contract: SPEC.md §8.11.
  */
 class CalendarPage extends Page

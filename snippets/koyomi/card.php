@@ -1,4 +1,7 @@
 <?php
+
+use Sayamaapps\Koyomi\Api;
+
 /**
  * One event as a card: image, title, when, status, place, price, excerpt.
  * Used by koyomi/list and the venue and organizer templates. Unstyled; the
@@ -18,17 +21,17 @@
  * @var \Sayamaapps\Koyomi\Event|\Sayamaapps\Koyomi\Models\EventPage|null $event (required)
  * @var int|null $level heading level of the title, 3 by default
  */
-if (!koyomi_active()) {
+if (!Api::active(kirby())) {
 	return;
 }
-koyomi_i18n();
+Api::i18n(kirby());
 
-$e = koyomi_event($event ?? null);
+$e = Api::event($event ?? null);
 if ($e === null) {
 	return;
 }
 
-$now = koyomi_now();
+$now = Api::now(kirby());
 $level = min(6, max(1, (int)($level ?? 3)));
 $past = $e->isPast($now);
 $ongoing = $e->isOngoing($now);
@@ -70,9 +73,9 @@ $priceLine = implode(' · ', array_values(array_filter(
   <p class="koyomi-card-status"><strong><?= esc($status) ?></strong></p>
   <?php endif ?>
   <?php if ($ongoing) : ?>
-  <p class="koyomi-card-badge"><?= esc(koyomi_t('event.ongoing')) ?></p>
+  <p class="koyomi-card-badge"><?= esc(Api::t('event.ongoing')) ?></p>
   <?php elseif ($past) : ?>
-  <p class="koyomi-card-badge"><?= esc(koyomi_t('event.past')) ?></p>
+  <p class="koyomi-card-badge"><?= esc(Api::t('event.past')) ?></p>
   <?php endif ?>
   <p class="koyomi-card-place"><?= esc($placeLine) ?></p>
   <?php if ($priceLine !== '') : ?>

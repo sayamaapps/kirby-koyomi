@@ -5,7 +5,7 @@ namespace Sayamaapps\Koyomi;
 use DateTimeImmutable;
 
 /**
- * Filtering, sorting, paging of Event lists, Kirby-free.   OWNER: task `kirby`
+ * Filtering, sorting, paging of Event lists, Kirby-free.
  *
  * Contract: SPEC.md §8.8. All methods are pure: arrays in, arrays out, the
  * input is never modified.
@@ -241,7 +241,6 @@ final class Query
 	{
 		$sign = $direction === 'desc' ? -1 : 1;
 		$key = fn (Event $e): array => [$e->start->getTimestamp(), $e->end->getTimestamp(), self::lower($e->title), $e->id];
-		$events = array_values($events);
 		usort($events, fn (Event $a, Event $b): int => $sign * ($key($a) <=> $key($b)));
 		return $events;
 	}

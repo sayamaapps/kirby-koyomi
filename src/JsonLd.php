@@ -3,7 +3,7 @@
 namespace Sayamaapps\Koyomi;
 
 /**
- * schema.org Event as JSON-LD, Kirby-free.        OWNER: task `seo`
+ * schema.org Event as JSON-LD, Kirby-free.
  *
  * Contract: SPEC.md §8.3 (full example array there). Rules in short:
  * - Only for the single event page (snippet koyomi/jsonld), never for lists.
@@ -165,7 +165,7 @@ final class JsonLd
 			$offer['price'] = 0.0;
 			$offer['priceCurrency'] = $event->currency;
 		} elseif ($event->price !== null) {
-			$offer['price'] = (float)$event->price;
+			$offer['price'] = $event->price;
 			$offer['priceCurrency'] = $event->currency;
 		}
 		$offer['availability'] = self::availability($event->availability);

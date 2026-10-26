@@ -10,7 +10,7 @@ use WeakMap;
 
 /**
  * Finds calendar, events, venues and organizers in the content tree and
- * hands out Event lists.            OWNER: task `kirby`
+ * hands out Event lists.
  *
  * Contract: SPEC.md §8.9.
  * - Lists contain only LISTED event pages (template koyomi-event) that are
@@ -20,7 +20,7 @@ use WeakMap;
  * - The Event list per calendar is built once per App instance (WeakMap
  *   keyed by the App object), so several snippets on a page cost one scan.
  * - Every method that returns a list for rendering calls
- *   koyomi_expires($events) so the page cache expires when the list changes.
+ *   Api::expires($kirby, $events) so the page cache expires when the list changes.
  */
 final class Repository
 {
@@ -78,7 +78,10 @@ final class Repository
 			$byCalendar[$key] = self::load($calendar);
 			self::$cache[$kirby] = $byCalendar;
 		}
-		return $byCalendar[$key];
+		/** @var list<Event> $events */
+		$events = $byCalendar[$key] ?? [];
+
+		return $events;
 	}
 
 	/**
@@ -146,7 +149,7 @@ final class Repository
 		$now = Options::now($kirby);
 		$filters = Filters::fromQuery($query, array_keys(Options::languages($kirby)));
 		$events = self::events($calendar);
-		koyomi_expires($events);
+		Api::expires($kirby, $events);
 
 		// The view before filtering: facets count what the visitor could filter.
 		$view = $filters['view'] === 'past'
@@ -209,31 +212,28 @@ final class Repository
 		return self::findByTemplate($kirby, 'koyomi-organizers', Options::organizersId($kirby), true);
 	}
 
-	/** Query::past() over events(); calls koyomi_expires(). @return list<Event> */
+	/** Query::past() over events(); calls Api::expires(). @return list<Event> */
 	public static function past(Page $calendar, array $filters = []): array
 	{
 		$kirby = $calendar->kirby();
 		$events = self::events($calendar);
-		koyomi_expires($events);
+		Api::expires($kirby, $events);
 		return Query::past($events, Options::now($kirby), $filters);
 	}
 
-	/** Forget all cached lists (tests; content changes in the same process). */
-	public static function reset(): void
-	{
-		self::$cache = new WeakMap();
-	}
-
-	/** Query::upcoming() over events() with Options::now()/hideCancelled(); calls koyomi_expires(). @return list<Event> */
+	/** Query::upcoming() over events() with Options::now()/hideCancelled(); calls Api::expires(). @return list<Event> */
 	public static function upcoming(Page $calendar, array $filters = []): array
 	{
 		$kirby = $calendar->kirby();
 		$events = self::events($calendar);
-		koyomi_expires($events);
+		Api::expires($kirby, $events);
 		return Query::upcoming($events, Options::now($kirby), $filters, Options::hideCancelled($kirby));
 	}
 
-	/** Children (all statuses) of the venues container with template koyomi-venue — the Panel pages-field query `kirby.collection("koyomi/venues")`. Empty Pages when no container. */
+	/**
+	 * Children (all statuses) of the venues container with template koyomi-venue. This is the Panel
+	 * pages-field query `kirby.collection("koyomi/venues")`. Empty Pages when there is no container.
+	 */
 	public static function venuePages(App $kirby): Pages
 	{
 		return self::childrenWithTemplate(self::venuesPage($kirby), 'koyomi-venue');

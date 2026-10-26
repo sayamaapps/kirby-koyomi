@@ -3,7 +3,7 @@
 namespace Sayamaapps\Koyomi;
 
 /**
- * Page blueprints as PHP arrays, Kirby-free.      OWNER: task `panel`
+ * Page blueprints as PHP arrays, Kirby-free.
  *
  * index.php registers them as closures
  *   'pages/koyomi-event' => fn () => Blueprints::event(Options::blueprintSettings(App::instance()))
@@ -496,7 +496,7 @@ final class Blueprints
 	/** @param list<string> $values */
 	private static function plainOptions(array $values): array
 	{
-		return array_map(fn (string $value) => ['value' => $value, 'text' => $value], array_values($values));
+		return array_map(fn (string $value) => ['value' => $value, 'text' => $value], $values);
 	}
 
 	private static function setting(array $settings, string $key, string $fallback): string

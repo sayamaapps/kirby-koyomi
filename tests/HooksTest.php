@@ -49,7 +49,7 @@ final class HooksTest extends TestCase
 			$copy->delete(true);
 
 			// duplicateReset off: the copy keeps every status field.
-			$kirby = KoyomiFixture::app($root, ['koyomi.duplicateReset' => false]);
+			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.duplicateReset' => false]);
 			$kirby->impersonate('kirby');
 			$copy = $kirby->page('events/workshop-cancelled')->duplicate('workshop-copy-kept');
 			holds($copy instanceof Page, 'duplicateReset off still returns a Page');
@@ -58,7 +58,7 @@ final class HooksTest extends TestCase
 			$copy->delete(true);
 
 			// Master switch off: the hook does nothing, whatever duplicateReset says.
-			$kirby = KoyomiFixture::app($root, ['koyomi.active' => false]);
+			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.active' => false]);
 			$kirby->impersonate('kirby');
 			$copy = $kirby->page('events/workshop-cancelled')->duplicate('workshop-copy-inactive');
 			holds($copy instanceof Page, 'inactive still returns a Page');

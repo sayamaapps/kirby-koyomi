@@ -27,11 +27,12 @@ final class Event
 	public const DEFAULTS = ['timezone' => Time::DEFAULT_ZONE, 'currency' => 'EUR', 'defaultDuration' => 120];
 
 	/**
+	 * The series of the event, sorted by start; it includes this event (current = true) whenever it is not empty.
+	 *
 	 * @param list<Organizer> $organizers
 	 * @param list<string> $categories
 	 * @param list<string> $languages lower-case codes ("de", "cs")
 	 * @param list<array{id:string,title:string,url:string,start:DateTimeImmutable,allDay:bool,part:int,current:bool}> $series
-	 *                                                                                                                         sorted by start; includes this event (current = true) whenever not empty
 	 */
 	public function __construct(
 		public readonly string $id,

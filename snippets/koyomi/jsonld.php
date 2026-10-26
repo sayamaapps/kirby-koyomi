@@ -1,4 +1,7 @@
 <?php
+
+use Sayamaapps\Koyomi\Api;
+
 /**
  * schema.org JSON-LD of one event (SPEC §8.3, §8.14), for the <head> of an
  * event page. Koyomi's layout calls it for koyomi-event pages only; a site
@@ -11,12 +14,12 @@
  *
  * @var \Sayamaapps\Koyomi\Event|\Sayamaapps\Koyomi\Models\EventPage|null $event  or $page
  */
-if (!koyomi_active()) {
+if (!Api::active(kirby())) {
 	return;
 }
-koyomi_i18n();
+Api::i18n(kirby());
 
-$e = koyomi_event($event ?? $page ?? null);
+$e = Api::event($event ?? $page ?? null);
 if (!$e instanceof \Sayamaapps\Koyomi\Event) {
 	return;
 }

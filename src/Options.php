@@ -6,23 +6,30 @@ use Closure;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Kirby\Cms\App;
+use Kirby\Cms\Helpers;
 
 /**
- * Reads `koyomi.*` options. The defaults live HERE, at the call sites — not
- * in an `options` block of App::plugin(), which Kirby would file under
- * `sayamaapps.koyomi.*`.
+ * Reads the plugin's options: `sayamaapps.koyomi.<key>`, falling back to the 1.x
+ * name `koyomi.<key>` with a deprecation (README, Deprecations).
  *
- * `null` counts as "not set", like Kirby's own option(). Both spellings
- * work, flat (`'koyomi.active' => true`) and nested
- * (`'koyomi' => ['active' => true]`), because Kirby's option() finds both.
+ * `null` counts as "not set", like Kirby's own option(). Both spellings work,
+ * flat (`'sayamaapps.koyomi.active' => true`) and nested
+ * (`'sayamaapps' => ['koyomi' => ['active' => true]]`), because Kirby's option()
+ * finds both.
  *
- * The full option reference is SPEC.md §3 / README.md "Options".
+ * Defaults are given here, at the call sites. The `options` block of the plugin
+ * lists the keys with null, so a default there would hide the 1.x spelling.
  */
 final class Options
 {
 	public const DEFAULT_CURRENCIES = ['EUR', 'CZK', 'CHF'];
 	public const DEFAULT_LANGUAGES = ['de', 'en', 'cs'];
-	public const PREFIX = 'koyomi.';
+
+	/** Option prefix of 1.x, read as a fallback until the next major version. */
+	public const LEGACY_PREFIX = 'koyomi.';
+
+	/** Option prefix since 2.0 (the plugin id, Kirby's own naming). */
+	public const PREFIX = 'sayamaapps.koyomi.';
 
 	/** Output switches and their defaults (all need `active` as well). */
 	public const ROUTES = ['ics' => true, 'feed' => true, 'rss' => true, 'json' => false];
@@ -152,9 +159,23 @@ final class Options
 		return $out;
 	}
 
+	/** Reads an option: the current spelling first, then the 1.x spelling (deprecated), then $default. */
 	public static function get(App $kirby, string $key, mixed $default = null): mixed
 	{
-		return $kirby->option(self::PREFIX . $key) ?? $default;
+		$value = $kirby->option(self::PREFIX . $key);
+		if ($value !== null) {
+			return $value;
+		}
+
+		$legacy = $kirby->option(self::LEGACY_PREFIX . $key);
+		if ($legacy !== null) {
+			Helpers::deprecated(
+				'Koyomi: koyomi.' . $key . ' is deprecated, use ' . self::PREFIX . $key,
+				'option-prefix'
+			);
+		}
+
+		return $legacy ?? $default;
 	}
 
 	/** "Add to Google Calendar" link in the event snippet, default true. */
@@ -220,7 +241,7 @@ final class Options
 		$option = self::get($kirby, 'languages', self::DEFAULT_LANGUAGES);
 		$out = [];
 		foreach ((array)$option as $key => $value) {
-			[$code, $label] = is_int($key) ? [(string)$value, ''] : [(string)$key, (string)$value];
+			[$code, $label] = is_int($key) ? [(string)$value, ''] : [$key, $value];
 			$code = Normalize::languages($code)[0] ?? null;
 			if ($code !== null && !isset($out[$code])) {
 				$out[$code] = trim($label);

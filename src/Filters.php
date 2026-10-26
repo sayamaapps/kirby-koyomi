@@ -4,7 +4,7 @@ namespace Sayamaapps\Koyomi;
 
 /**
  * List filters from and to the URL query string, Kirby-free. No JavaScript:
- * filters are plain links and a GET form.       OWNER: task `kirby`
+ * filters are plain links and a GET form.
  *
  * The normalized filter array (used by Query::filter(), Repository::list()
  * and the koyomi/filters snippet) ALWAYS has exactly these keys:

@@ -156,7 +156,7 @@ final class KirbyTest extends TestCase
 			$stadthalle = Mapper::venue($kirby->page('venues/stadthalle'));
 			holds(!$stadthalle->hasCoordinates() && !$stadthalle->showMap && $stadthalle->mapImage === '', 'venue without coordinates, map or showMap');
 			expect('https://www.openstreetmap.org/search?query=' . rawurlencode('Musterstraße 1, 12345 Musterstadt, CZ'), $stadthalle->mapLink(), 'venue: address search link without coordinates');
-			$customMap = KoyomiFixture::app($root, ['koyomi.mapUrl' => fn (Venue $v): string => 'https://maps.example/' . $v->id]);
+			$customMap = KoyomiFixture::app($root, ['sayamaapps.koyomi.mapUrl' => fn (Venue $v): string => 'https://maps.example/' . $v->id]);
 			expect('https://maps.example/venue-beispielhof', Mapper::venue($customMap->page('venues/beispielhof'))->mapLink(), 'venue: koyomi.mapUrl closure');
 			// Page::kirby() is App::instance(), the most recently created App: re-create the main one before using its pages.
 			$kirby = KoyomiFixture::app($root);
@@ -168,12 +168,12 @@ final class KirbyTest extends TestCase
 
 			// 4. Repository: containers, collections, listed events only.
 			expect('events', Repository::calendar($kirby)?->id(), 'calendar found by template');
-			expect('events', KoyomiFixture::app($root, ['koyomi.calendar' => 'venues'])->site()->koyomiCalendar()?->id(), 'calendar option naming another template falls back');
-			expect('events', KoyomiFixture::app($root, ['koyomi.calendar' => 'nope'])->site()->koyomiCalendar()?->id(), 'calendar option naming a missing page falls back');
+			expect('events', KoyomiFixture::app($root, ['sayamaapps.koyomi.calendar' => 'venues'])->site()->koyomiCalendar()?->id(), 'calendar option naming another template falls back');
+			expect('events', KoyomiFixture::app($root, ['sayamaapps.koyomi.calendar' => 'nope'])->site()->koyomiCalendar()?->id(), 'calendar option naming a missing page falls back');
 			// Page::kirby() is App::instance(), the most recently created App: re-create the main one before using its pages.
 			$kirby = KoyomiFixture::app($root);
 			expect('venues', Repository::venuesPage($kirby)?->id(), 'venues container found');
-			expect('venues', Repository::venuesPage(KoyomiFixture::app($root, ['koyomi.venues' => 'events']))?->id(), 'venues option naming another template falls back');
+			expect('venues', Repository::venuesPage(KoyomiFixture::app($root, ['sayamaapps.koyomi.venues' => 'events']))?->id(), 'venues option naming another template falls back');
 			// Page::kirby() is App::instance(), the most recently created App: re-create the main one before using its pages.
 			$kirby = KoyomiFixture::app($root);
 			expect('organizers', Repository::organizersPage($kirby)?->id(), 'organizers container found');
@@ -197,7 +197,7 @@ final class KirbyTest extends TestCase
 			expect($upcomingTitles, koyomi_titles(Repository::upcoming($calendar)), 'upcoming: ongoing first, by start, cancelled listed');
 			expect(['Past Workshop'], koyomi_titles(Repository::past($calendar)), 'past');
 			expect(['Silent Retreat', 'Evening Concert'], koyomi_titles(Repository::upcoming($calendar, ['language' => 'cs'])), 'upcoming with a filter');
-			expect(array_values(array_diff($upcomingTitles, ['Breathing Workshop'])), koyomi_titles(Repository::upcoming(KoyomiFixture::app($root, ['koyomi.hideCancelled' => true])->page('events'))), 'hideCancelled removes the cancelled event from upcoming');
+			expect(array_values(array_diff($upcomingTitles, ['Breathing Workshop'])), koyomi_titles(Repository::upcoming(KoyomiFixture::app($root, ['sayamaapps.koyomi.hideCancelled' => true])->page('events'))), 'hideCancelled removes the cancelled event from upcoming');
 			// Page::kirby() is App::instance(), the most recently created App: re-create the main one before using its pages.
 			$kirby = KoyomiFixture::app($root);
 			expect(['Silent Retreat', 'Breathing Workshop', 'Mantra Course 1', 'Mantra Course 2'], koyomi_titles(Repository::forVenue($kirby, $kirby->page('venues/beispielhof'))), 'forVenue: upcoming in person at the venue; the moved-online retreat is left out');
@@ -225,13 +225,13 @@ final class KirbyTest extends TestCase
 			$beyond = Repository::list($calendar, ['category' => 'retreat', 'page' => '9']);
 			expect([1, 1], [$beyond['pagination']['page'], $beyond['pagination']['pages']], 'list: a page beyond the end shows the last page');
 
-			$perPageOne = KoyomiFixture::app($root, ['koyomi.perPage' => 1]);
+			$perPageOne = KoyomiFixture::app($root, ['sayamaapps.koyomi.perPage' => 1]);
 			$pagedOne = Repository::list($perPageOne->page('events'), ['category' => 'retreat', 'page' => '2']);
 			expect(['Silent Retreat'], koyomi_titles($pagedOne['events']), 'list: page 2 with one event per page');
 			expect([2, 2, 2], [$pagedOne['pagination']['page'], $pagedOne['pagination']['pages'], $pagedOne['pagination']['total']], 'list: pagination numbers of the filtered list');
 			expect('https://example.test/events?category=retreat', $pagedOne['pagination']['prevUrl'], 'list: previous URL keeps the filter and drops page 1');
 			expect(null, $pagedOne['pagination']['nextUrl'], 'list: no next URL on the last page');
-			$secondPage = KoyomiFixture::app($root, ['koyomi.perPage' => 3])->page('events');
+			$secondPage = KoyomiFixture::app($root, ['sayamaapps.koyomi.perPage' => 3])->page('events');
 			expect('https://example.test/events?page=3', Repository::list($secondPage, ['page' => '2'])['pagination']['nextUrl'], 'list: next URL of page 2 of three');
 			// Page::kirby() is App::instance(), the most recently created App: re-create the main one before using its pages.
 			$kirby = KoyomiFixture::app($root);
@@ -248,7 +248,7 @@ final class KirbyTest extends TestCase
 			holds($kirby->page('events/ongoing-retreat')->isOngoing() && !$page->isOngoing(), 'isOngoing()');
 			expect('https://example.test/events/retreat.ics', $page->icsUrl(), 'icsUrl()');
 			holds(str_starts_with($page->googleCalendarUrl(), 'https://calendar.google.com/calendar/render?action=TEMPLATE'), 'googleCalendarUrl() with the option on');
-			expect('', KoyomiFixture::app($root, ['koyomi.google' => false])->page('events/retreat')->googleCalendarUrl(), 'googleCalendarUrl() is empty when switched off');
+			expect('', KoyomiFixture::app($root, ['sayamaapps.koyomi.google' => false])->page('events/retreat')->googleCalendarUrl(), 'googleCalendarUrl() is empty when switched off');
 			// Page::kirby() is App::instance(), the most recently created App: re-create the main one before using its pages.
 			$kirby = KoyomiFixture::app($root);
 			$data = $page->koyomiData();
@@ -279,17 +279,17 @@ final class KirbyTest extends TestCase
 			// 7. Output gating: status codes. Kirby keeps the response of an App, so every render gets its own App.
 			$status = fn (array $options, string $path): int => KoyomiFixture::app($root, $options)->render($path)?->code() ?? 404;
 			foreach (['events.ics', 'events.rss', 'events.json', 'events/retreat.ics', 'events/unlisted-event.ics'] as $path) {
-				expect(404, $status(['koyomi.active' => false], $path), "inactive: $path is 404");
+				expect(404, $status(['sayamaapps.koyomi.active' => false], $path), "inactive: $path is 404");
 			}
 			expect(200, $status([], 'events.ics'), 'feed on by default');
 			expect(200, $status([], 'events/retreat.ics'), 'event ics on by default');
 			expect(200, $status([], 'events.rss'), 'rss on by default');
 			expect(404, $status([], 'events.json'), 'json off by default');
-			expect(200, $status(['koyomi.json' => true], 'events.json'), 'json switched on');
-			expect(404, $status(['koyomi.feed' => false], 'events.ics'), 'feed switch off');
-			expect(404, $status(['koyomi.rss' => false], 'events.rss'), 'rss switch off');
-			expect(200, $status(['koyomi.feed' => false, 'koyomi.rss' => false], 'events/retreat.ics'), 'event ics independent of the feed and rss switches');
-			expect(404, $status(['koyomi.ics' => false], 'events/retreat.ics'), 'event ics switch off');
+			expect(200, $status(['sayamaapps.koyomi.json' => true], 'events.json'), 'json switched on');
+			expect(404, $status(['sayamaapps.koyomi.feed' => false], 'events.ics'), 'feed switch off');
+			expect(404, $status(['sayamaapps.koyomi.rss' => false], 'events.rss'), 'rss switch off');
+			expect(200, $status(['sayamaapps.koyomi.feed' => false, 'sayamaapps.koyomi.rss' => false], 'events/retreat.ics'), 'event ics independent of the feed and rss switches');
+			expect(404, $status(['sayamaapps.koyomi.ics' => false], 'events/retreat.ics'), 'event ics switch off');
 			expect(404, $status([], 'events/draft-event.ics'), 'draft event .ics is 404');
 			holds(KoyomiFixture::app($root)->page('events/draft-event')?->isDraft() === true, 'the draft is really a draft');
 			expect(200, $status([], 'events/unlisted-event.ics'), 'unlisted event .ics works on its own URL');
@@ -313,7 +313,7 @@ final class KirbyTest extends TestCase
 			holds(str_starts_with((string)$rss->type(), 'application/rss+xml'), 'rss: application/rss+xml');
 			expect(koyomi_berlin('2027-03-11 19:00'), $rssApp->response()->expires(), 'rss: expires at the next start');
 
-			$json = KoyomiFixture::app($root, ['koyomi.json' => true])->render('events.json');
+			$json = KoyomiFixture::app($root, ['sayamaapps.koyomi.json' => true])->render('events.json');
 			holds(str_starts_with((string)$json->type(), 'application/json'), 'json: application/json');
 		};
 
@@ -365,7 +365,7 @@ final class KirbyTest extends TestCase
 					'Timezone' => 'Europe/Berlin', 'InPerson' => 'true', 'Online' => 'false',
 				]);
 				holds(Repository::events($cacheCalendar)[0] === $cached[0], 'cache: the same App returns the same objects');
-				Repository::reset();
+				(new ReflectionProperty(Repository::class, 'cache'))->setValue(null, null);
 				$rescanned = Repository::events($cacheCalendar);
 				holds($rescanned[0] !== $cached[0] && count($rescanned) === $before, 'cache: reset() scans again (new objects)');
 				expect($before + 1, count(Repository::events(KoyomiFixture::app($extra)->page('events'))), 'cache: a fresh App sees the new event');

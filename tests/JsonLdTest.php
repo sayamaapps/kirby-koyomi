@@ -298,7 +298,7 @@ final class JsonLdTest extends TestCase
 			holds(!array_key_exists('endDate', $noEnd) && $noEnd['startDate'] === '2027-03-12T23:00:00+01:00', 'JSON-LD: no endDate for a timed event without an end');
 			expect('2027-03-14T00:00:00+01:00', JsonLd::event(Event::fromArray(koyomi_raw_event(['startTime' => '23:00', 'endTime' => '', 'endDate' => '2027-03-13'])))['endDate'], 'JSON-LD: an end date given keeps endDate');
 
-			$inactive = KoyomiFixture::app($root, ['koyomi.active' => false]);
+			$inactive = KoyomiFixture::app($root, ['sayamaapps.koyomi.active' => false]);
 			expect('', (string)$inactive->snippet('koyomi/jsonld', ['event' => $retreat], true), 'inactive: the snippet prints nothing');
 
 		} finally {

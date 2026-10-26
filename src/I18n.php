@@ -11,7 +11,7 @@ namespace Sayamaapps\Koyomi;
  * tables: a missing Kirby translation must never silently turn a German
  * page English.
  *
- * The language is set per request (koyomi_i18n() in index.php, from
+ * The language is set per request (Api::i18n(), from
  * Options::language()) and defaults to English. Missing keys fall back to
  * English, then to the key itself.
  */

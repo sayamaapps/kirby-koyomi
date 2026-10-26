@@ -96,10 +96,10 @@ final class TimelineTest extends TestCase
 			holds(str_contains($page, 'class="koyomi-timeline"'), 'calendar page: timeline');
 
 			// Last: a new App replaces App::instance(), which the snippets read.
-			$off = KoyomiFixture::app($root, ['koyomi.attendanceSwitch' => false]);
+			$off = KoyomiFixture::app($root, ['sayamaapps.koyomi.attendanceSwitch' => false]);
 			expect('', trim((string)$off->snippet('koyomi/switch', ['list' => $list], true)), 'switch: off by option');
 			holds(str_contains((string)$off->page('events')->render(), 'id="koyomi-filter-attendance"'), 'switch off: the filter form shows the format select again');
-			$inactive = KoyomiFixture::app($root, ['koyomi.active' => false]);
+			$inactive = KoyomiFixture::app($root, ['sayamaapps.koyomi.active' => false]);
 			expect('', trim((string)$inactive->snippet('koyomi/switch', ['list' => $list], true)), 'switch: nothing while inactive');
 		} finally {
 			KoyomiFixture::remove($root);

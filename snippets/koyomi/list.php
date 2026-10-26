@@ -1,4 +1,7 @@
 <?php
+
+use Sayamaapps\Koyomi\Api;
+
 /**
  * One list of events: a heading, the cards and the switch to the other view
  * (upcoming ↔ past). Pass the array of Repository::list() (filters, pagination
@@ -18,10 +21,10 @@
  * @var string|false|null $group  'month' = timeline with month headings (default from
  *                        koyomi.groupBy), false = one flat list (cards use level + 1)
  */
-if (!koyomi_active()) {
+if (!Api::active(kirby())) {
 	return;
 }
-koyomi_i18n();
+Api::i18n(kirby());
 
 $list ??= null;
 $events ??= null;
@@ -31,33 +34,33 @@ if ($list === null && $events === null) {
 
 $view = ($list['view'] ?? 'upcoming') === 'past' ? 'past' : 'upcoming';
 $filtered = (bool)($list['filtered'] ?? false);
-$title ??= koyomi_t($view === 'past' ? 'list.past' : 'list.upcoming');
+$title ??= Api::t($view === 'past' ? 'list.past' : 'list.upcoming');
 $level = min(6, max(1, (int)($level ?? 2)));
 $group ??= \Sayamaapps\Koyomi\Options::groupBy(\Kirby\Cms\App::instance());
 $group = $group === 'month' ? 'month' : false;
 
 $items = [];
 foreach ($events ?? ($list['events'] ?? []) as $item) {
-	$event = koyomi_event($item);
+	$event = Api::event($item);
 	if ($event !== null) {
 		$items[] = $event;
 	}
 }
-koyomi_expires($items);
+Api::expires(kirby(), $items);
 
 if ($filtered) {
-	$emptyText = koyomi_t('list.emptyFiltered');
+	$emptyText = Api::t('list.emptyFiltered');
 } elseif ($view === 'past') {
-	$emptyText = koyomi_t('list.pastEmpty');
+	$emptyText = Api::t('list.pastEmpty');
 } else {
-	$emptyText = koyomi_t('list.empty');
+	$emptyText = Api::t('list.empty');
 }
 
 $switchUrl = null;
 $switchText = '';
 if ($list !== null) {
 	$switchUrl = $view === 'past' ? ($list['upcomingUrl'] ?? null) : ($list['pastUrl'] ?? null);
-	$switchText = koyomi_t($view === 'past' ? 'list.toUpcoming' : 'list.toPast');
+	$switchText = Api::t($view === 'past' ? 'list.toUpcoming' : 'list.toPast');
 }
 ?>
 <section class="koyomi-list koyomi-list--<?= esc($view) ?>">
@@ -66,8 +69,8 @@ if ($list !== null) {
   <?php endif ?>
   <?php if ($items !== [] && $group === 'month') : ?>
   <div class="koyomi-timeline">
-    <?php if ($view === 'upcoming') : $today = koyomi_now(); koyomi_expires_at(\Sayamaapps\Koyomi\Expiry::midnight($today)); ?>
-    <p class="koyomi-today"><time datetime="<?= esc($today->format('Y-m-d')) ?>"><?= esc(koyomi_t('list.today', ['date' => \Sayamaapps\Koyomi\Format::date($today)])) ?></time></p>
+    <?php if ($view === 'upcoming') : $today = Api::now(kirby()); Api::expiresAt(kirby(), \Sayamaapps\Koyomi\Expiry::midnight($today)); ?>
+    <p class="koyomi-today"><time datetime="<?= esc($today->format('Y-m-d')) ?>"><?= esc(Api::t('list.today', ['date' => \Sayamaapps\Koyomi\Format::date($today)])) ?></time></p>
     <?php endif ?>
     <?php foreach (\Sayamaapps\Koyomi\Query::byMonth($items) as $month) : $monthLevel = min(6, $level + 1); ?>
     <section class="koyomi-month" aria-labelledby="koyomi-month-<?= esc($month['key'], 'attr') ?>">

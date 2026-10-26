@@ -116,7 +116,7 @@ final class DraftsTest extends TestCase
 			holds(!str_contains($html, 'Secret') && !str_contains($html, 'Foreign Event') && !str_contains($html, 'evt-part-two'), 'HTML: no draft series part, no foreign event');
 			$planHtml = (string)KoyomiFixture::app($root)->render('events/planned-retreat')?->body();
 			holds(str_contains($planHtml, 'Public Host') && !str_contains($planHtml, 'Secret') && !str_contains($planHtml, 'Geheimweg') && !str_contains($planHtml, 'draft-org'), 'HTML: draft venue and organizer are not printed, the public organizer is');
-			$json = (string)KoyomiFixture::app($root, ['koyomi.json' => true])->render('events.json')?->body();
+			$json = (string)KoyomiFixture::app($root, ['sayamaapps.koyomi.json' => true])->render('events.json')?->body();
 			holds(str_contains($json, 'Planned Retreat') && !str_contains($json, 'Secret') && !str_contains($json, 'Geheimweg') && !str_contains($json, 'draft-org') && !str_contains($json, 'Foreign'), 'JSON feed: no draft and no foreign data');
 			$ics = (string)KoyomiFixture::app($root)->render('events/part-one.ics')?->body();
 			holds(!str_contains($ics, 'Secret') && !str_contains($ics, 'Foreign') && !str_contains($ics, 'Part Two'), 'ICS: no draft series part in the event file');
@@ -138,7 +138,7 @@ final class DraftsTest extends TestCase
 			$kirby = KoyomiFixture::app($foreignRoot);
 			expect(null, Repository::calendar($kirby), 'a draft calendar is not the calendar');
 			expect(null, $kirby->site()->koyomiCalendar(), 'site()->koyomiCalendar() is null for a draft calendar only');
-			expect(null, Repository::calendar(KoyomiFixture::app($foreignRoot, ['koyomi.calendar' => '_drafts/events'])), 'a configured draft calendar is not used either');
+			expect(null, Repository::calendar(KoyomiFixture::app($foreignRoot, ['sayamaapps.koyomi.calendar' => '_drafts/events'])), 'a configured draft calendar is not used either');
 			$home = (string)KoyomiFixture::app($foreignRoot)->render('')?->body();
 			holds(!str_contains($home, 'Draft Calendar Talk'), 'home page list: the draft calendar\'s events do not appear');
 			holds(str_contains($home, 'koyomi-empty'), 'home page list: the empty state is printed instead');

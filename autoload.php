@@ -7,6 +7,7 @@
  */
 
 return [
+	'sayamaapps\\koyomi\\api' => 'src/Api.php',
 	'sayamaapps\\koyomi\\attendance' => 'src/Attendance.php',
 	'sayamaapps\\koyomi\\availability' => 'src/Availability.php',
 	'sayamaapps\\koyomi\\blueprints' => 'src/Blueprints.php',

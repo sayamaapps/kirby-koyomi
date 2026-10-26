@@ -37,7 +37,7 @@ final class FormatTest extends TestCase
 
 		try {
 
-			Format::reset();
+			Format::configure();
 			$berlin = new DateTimeZone('Europe/Berlin');
 
 			// when(): every row of the SPEC §8.5 table.
@@ -98,7 +98,7 @@ final class FormatTest extends TestCase
 			I18n::setLanguage('en');
 			expect('Friday, 12 March 2027, 18:00–20:00 (Europe/Berlin)', Format::when(format_test_event()), 'site zone Prague: Berlin event gets the hint');
 			holds(Format::siteZone() === 'Europe/Prague', 'siteZone() reports the configured zone');
-			Format::reset();
+			Format::configure();
 			expect('Europe/Berlin', Format::siteZone(), 'reset() restores the site zone');
 			expect('Friday, 12 March 2027, 18:00–20:00', Format::when(format_test_event()), 'reset(): no hint for the site zone');
 
@@ -263,7 +263,7 @@ final class FormatTest extends TestCase
 			expect('18.00', Format::time($noon), 'configure: time pattern');
 			expect('Freitag, 12. März 2027, 18.00 Uhr', Format::when(format_test_event(['endTime' => ''])), 'configure: time pattern in when()');
 			I18n::setLanguage('en');
-			Format::reset();
+			Format::configure();
 			I18n::setLanguage('de');
 			expect('18:00', Format::time($noon), 'reset(): default time pattern again');
 			I18n::setLanguage('en');
@@ -271,7 +271,7 @@ final class FormatTest extends TestCase
 			// configure(): a range pair override.
 			Format::configure(['en' => ['rangeSameMonth' => ['j.', 'j. F Y']]]);
 			expect('8.–11. March 2027', Format::dateRange(format_test_event(['startDate' => '2027-03-08', 'endDate' => '2027-03-11', 'startTime' => '', 'allDay' => true])), 'configure: range pair override');
-			Format::reset();
+			Format::configure();
 			expect('8–11 March 2027', Format::dateRange(format_test_event(['startDate' => '2027-03-08', 'endDate' => '2027-03-11', 'startTime' => '', 'allDay' => true])), 'reset(): range pair default');
 
 			// apply(): tokens, escape and copied characters.
@@ -293,7 +293,7 @@ final class FormatTest extends TestCase
 			expect('en', I18n::language(), 'the language is restored to en');
 
 		} finally {
-			Format::reset();
+			Format::configure();
 		}
 	}
 }

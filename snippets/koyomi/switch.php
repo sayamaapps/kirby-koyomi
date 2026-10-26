@@ -1,4 +1,7 @@
 <?php
+
+use Sayamaapps\Koyomi\Api;
+
 /**
  * The attendance switch: "All · In person · Online" as plain links (no
  * JavaScript), each with its number of events. A hybrid event counts under
@@ -15,10 +18,10 @@
  * @var array|null $list     Repository::list() shape (SPEC §8.9)
  * @var \Kirby\Cms\Page|null $calendar used when $list is not given
  */
-if (!koyomi_active() || !\Sayamaapps\Koyomi\Options::attendanceSwitch(\Kirby\Cms\App::instance())) {
+if (!Api::active(kirby()) || !\Sayamaapps\Koyomi\Options::attendanceSwitch(\Kirby\Cms\App::instance())) {
 	return;
 }
-koyomi_i18n();
+Api::i18n(kirby());
 
 if (!isset($list)) {
 	$list = ($calendar ?? site()->koyomiCalendar())?->koyomiList();
@@ -39,15 +42,15 @@ $filters = ($list['filters'] ?? []) + \Sayamaapps\Koyomi\Filters::EMPTY;
 $baseUrl = (string)($list['baseUrl'] ?? '');
 $current = $filters['attendance'];
 $options = [
-	[null, koyomi_t('switch.all'), $offline + $online - $mixed],
-	[\Sayamaapps\Koyomi\Attendance::OFFLINE, koyomi_t('attendance.offline'), $offline],
-	[\Sayamaapps\Koyomi\Attendance::ONLINE, koyomi_t('attendance.online'), $online],
+	[null, Api::t('switch.all'), $offline + $online - $mixed],
+	[\Sayamaapps\Koyomi\Attendance::OFFLINE, Api::t('attendance.offline'), $offline],
+	[\Sayamaapps\Koyomi\Attendance::ONLINE, Api::t('attendance.online'), $online],
 ];
 ?>
-<nav class="koyomi-switch" aria-label="<?= esc(koyomi_t('switch.label')) ?>">
+<nav class="koyomi-switch" aria-label="<?= esc(Api::t('switch.label')) ?>">
   <ul>
     <?php foreach ($options as [$code, $label, $count]) : ?>
-    <li><a class="koyomi-switch-option<?= $current === $code ? ' koyomi-switch-option--active' : '' ?>" href="<?= esc(\Sayamaapps\Koyomi\Filters::url($baseUrl, $filters, ['attendance' => $code])) ?>"<?= $current === $code ? ' aria-current="page"' : '' ?>><?= esc($label) ?> <span class="koyomi-switch-count" aria-label="<?= esc(koyomi_t('switch.count', ['count' => (string)$count])) ?>"><?= (int)$count ?></span></a></li>
+    <li><a class="koyomi-switch-option<?= $current === $code ? ' koyomi-switch-option--active' : '' ?>" href="<?= esc(\Sayamaapps\Koyomi\Filters::url($baseUrl, $filters, ['attendance' => $code])) ?>"<?= $current === $code ? ' aria-current="page"' : '' ?>><?= esc($label) ?> <span class="koyomi-switch-count" aria-label="<?= esc(Api::t('switch.count', ['count' => (string)$count])) ?>"><?= (int)$count ?></span></a></li>
     <?php endforeach ?>
   </ul>
 </nav>
