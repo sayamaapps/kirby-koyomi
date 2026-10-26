@@ -15,25 +15,41 @@ Koyomi keeps venues and organizers as pages of their own, so an address changes 
 
 ## Requirements
 
-- PHP 8.2 to 8.4 with `mbstring`
-- Kirby 5
+| | Supported |
+|---|---|
+| Kirby | 5 (`getkirby/cms` ^5.0) |
+| PHP | 8.2 to 8.5, with `mbstring` |
 
 ## Installation
+
+Pick one of three ways. Koyomi works the same in each.
+
+**Composer** (recommended), from the site's root:
 
 ```sh
 composer require sayamaapps/kirby-koyomi
 ```
 
-Composer installs to `site/plugins/koyomi/`. Add that path to `.gitignore` and deploy it like `vendor/`. Copying the folder there by hand works too.
+Composer installs to `site/plugins/koyomi/`. Add that path to `.gitignore` and deploy it like `vendor/`.
+
+**Git submodule**, in the site's `site/plugins/` folder:
+
+```sh
+git submodule add https://github.com/sayamaapps/kirby-koyomi.git site/plugins/koyomi
+```
+
+**ZIP**: download the release archive from the [releases page](https://github.com/sayamaapps/kirby-koyomi/releases) and extract it to `site/plugins/koyomi/`.
+
+Use the release tags (for example `1.4.0`), not the `main` branch, on a live site.
 
 ## Setup
 
-Koyomi is off by default. In `site/config/config.php`:
+Koyomi is off by default. In `site/config/config.php`, switch it on and set the default zone (the 1.x names `koyomi.active` and `koyomi.timezone` still work, see [Deprecations](#deprecations)):
 
 ```php
 return [
-    'koyomi.active'   => true,
-    'koyomi.timezone' => 'Europe/Berlin', // default zone of new events
+    'sayamaapps.koyomi.active'   => true,
+    'sayamaapps.koyomi.timezone' => 'Europe/Berlin', // default zone of new events
 ];
 ```
 
@@ -90,11 +106,11 @@ Fields, snippets, page methods and helpers are listed in [docs/reference.md](doc
 | `/events.rss` | `rss` | RSS 2.0 with upcoming events. |
 | `/events.json` | `json` | Upcoming events as JSON. Off by default. |
 
-A switched-off output returns Kirby's 404 page, and `koyomi.active` switches all of them off. The `koyomi/subscribe` snippet shows the `webcal://` address.
+A switched-off output returns Kirby's 404 page, and `sayamaapps.koyomi.active` switches all of them off. The `koyomi/subscribe` snippet shows the `webcal://` address.
 
 ## Options
 
-Every option is `koyomi.<name>`, flat or nested. `null` means "not set".
+Every option is `sayamaapps.koyomi.<name>`, flat or nested. `null` means "not set". The 1.x spelling `koyomi.<name>` is read when the new name is not set, with a deprecation in debug mode (see [Deprecations](#deprecations)).
 
 | Option | Default | Description |
 |---|---|---|
@@ -119,11 +135,30 @@ Every option is `koyomi.<name>`, flat or nested. `null` means "not set".
 | `hideCancelled` | `false` | Leave cancelled events out of the upcoming list and the RSS feed. |
 | `duplicateReset` | `true` | A duplicate loses its status, previous date, status note and availability. |
 | `formats` | `[]` | Date and time patterns per language, for example `['de' => ['time' => 'G.i']]`. See [docs/reference.md](docs/reference.md#date-formats). |
-| `mapUrl` | `null` | Closure `fn (Koyomi\Venue $venue): string` that replaces the OpenStreetMap link. |
+| `mapUrl` | `null` | Closure `fn (Sayamaapps\Koyomi\Venue $venue): string` that replaces the OpenStreetMap link. |
 | `calendar` | first `koyomi-calendar` | Page ID of the calendar used by snippets and feeds. |
 | `venues` | first `koyomi-venues` | Page ID of the venues container. |
 | `organizers` | first `koyomi-organizers` | Page ID of the organizers container. |
 | `now` | real time | Pins the clock, for example `'2027-03-10 12:00'`, for tests and previews. |
+
+## Deprecations
+
+Koyomi 1.x names keep working until the next major version. Each one logs a deprecation when Kirby's debug mode is on. Move to the new name when you touch the site.
+
+| 1.x | Use instead |
+|---|---|
+| Option `koyomi.<name>` | `sayamaapps.koyomi.<name>`, same values. |
+| `koyomi_option($name, $default)` | `Sayamaapps\Koyomi\Api::option($kirby, $name, $default)` |
+| `koyomi_active()` | `Sayamaapps\Koyomi\Api::active($kirby)` |
+| `koyomi_now()` | `Sayamaapps\Koyomi\Api::now($kirby)` |
+| `koyomi_i18n()` | `Sayamaapps\Koyomi\Api::i18n($kirby)` |
+| `koyomi_t($key, $values)` | `Sayamaapps\Koyomi\Api::t($key, $values)` |
+| `koyomi_event($value)` | `Sayamaapps\Koyomi\Api::event($value)` |
+| `koyomi_expires($events)` | `Sayamaapps\Koyomi\Api::expires($kirby, $events)` |
+| `koyomi_expires_at($timestamp)` | `Sayamaapps\Koyomi\Api::expiresAt($kirby, $timestamp)` |
+| Classes `Koyomi\…`, for example `Koyomi\Event` | `Sayamaapps\Koyomi\…`, same names |
+
+The functions are wrappers: a site that defines a function of the same name keeps its own. Blueprint, snippet, template, page method and route names do not change, and neither do the feed URLs or the stored content.
 
 ## Privacy
 

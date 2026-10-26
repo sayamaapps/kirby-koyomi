@@ -140,14 +140,14 @@ The booking link carries a `koyomi-sr-only` span; the site's own CSS must hide i
 | `$page->icsUrl()`, `webcalUrl()`, `rssUrl()`, `jsonUrl()` | Calendar feed addresses. |
 | `$site->koyomiCalendar()` | The calendar page, or `null`. |
 
-| Helper | Returns |
+| Call | Returns |
 |---|---|
-| `koyomi_option($name, $default)` | The value of `koyomi.<name>`. |
-| `koyomi_active()` | Whether Koyomi is switched on. |
-| `koyomi_now()` | The clock in the configured zone (`koyomi.now` pins it). |
-| `koyomi_i18n()` | Sets language and date formats for the request; returns the language. Call it before printing texts yourself. |
-| `koyomi_t($key, $values)` | A Koyomi text in the current language. The texts are also Kirby translations, e.g. `t('koyomi.status.cancelled')`. |
-| `koyomi_event($value)` | The `Event` of an event page or an `Event`; otherwise `null`. |
-| `koyomi_expires($events)`, `koyomi_expires_at($timestamp)` | Lower the page cache expiry. Koyomi already does this for its own output. |
+| `Api::option($kirby, $name, $default)` | The value of `sayamaapps.koyomi.<name>`, else of the 1.x `koyomi.<name>`. |
+| `Api::active($kirby)` | Whether Koyomi is switched on. |
+| `Api::now($kirby)` | The clock in the configured zone (`sayamaapps.koyomi.now` pins it). |
+| `Api::i18n($kirby)` | Sets language and date formats for the request; returns the language. Call it before printing texts yourself. |
+| `Api::t($key, $values)` | A Koyomi text in the current language. The texts are also Kirby translations, e.g. `t('koyomi.status.cancelled')`. |
+| `Api::event($value)` | The `Event` of an event page or an `Event`; otherwise `null`. |
+| `Api::expires($kirby, $events)`, `Api::expiresAt($kirby, $timestamp)` | Lower the page cache expiry. Koyomi already does this for its own output. The 1.x global functions (`koyomi_active()` and so on) still exist and are deprecated; see the README, Deprecations. |
 
 For Panel fields, the queries are `kirby.collection("koyomi/events")`, `"koyomi/venues"` and `"koyomi/organizers"`.
