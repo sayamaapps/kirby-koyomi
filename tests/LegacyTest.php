@@ -33,18 +33,6 @@ final class LegacyTest extends TestCase
 		restore_error_handler();
 	}
 
-	public function testOneXSwitchStillSwitchesThePluginOnAndSaysSo(): void
-	{
-		$root = KoyomiFixture::create();
-		try {
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.active' => null, 'koyomi.active' => true]);
-			$this->assertSame(true, Api::active($kirby), '1.x koyomi.active switches the plugin on');
-			$this->assertSame(['Koyomi: koyomi.active is deprecated, use sayamaapps.koyomi.active'], array_slice($this->deprecations, -1), 'option: deprecation names the new key');
-		} finally {
-			KoyomiFixture::remove($root);
-		}
-	}
-
 	public function testCurrentOptionNameWinsOverOneXWithoutDeprecation(): void
 	{
 		$root = KoyomiFixture::create();
@@ -80,6 +68,18 @@ final class LegacyTest extends TestCase
 				count(array_filter($this->deprecations, fn (string $message): bool => str_contains($message, '() is deprecated, use Sayamaapps\Koyomi\Api::'))),
 				'each of the eight 1.x functions logs one deprecation'
 			);
+		} finally {
+			KoyomiFixture::remove($root);
+		}
+	}
+
+	public function testOneXSwitchStillSwitchesThePluginOnAndSaysSo(): void
+	{
+		$root = KoyomiFixture::create();
+		try {
+			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.active' => null, 'koyomi.active' => true]);
+			$this->assertSame(true, Api::active($kirby), '1.x koyomi.active switches the plugin on');
+			$this->assertSame(['Koyomi: koyomi.active is deprecated, use sayamaapps.koyomi.active'], array_slice($this->deprecations, -1), 'option: deprecation names the new key');
 		} finally {
 			KoyomiFixture::remove($root);
 		}

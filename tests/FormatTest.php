@@ -1,7 +1,7 @@
 <?php
 
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Sayamaapps\Koyomi\Event;
 use Sayamaapps\Koyomi\Format;
@@ -44,7 +44,7 @@ final class FormatTest extends TestCase
 			// when(): every row of the when() table.
 			format_test_both([], 'Friday, 12 March 2027, 18:00–20:00', 'Freitag, 12. März 2027, 18:00–20:00 Uhr', 'timed, one day, with end');
 			format_test_both(['endTime' => ''], 'Friday, 12 March 2027, 18:00', 'Freitag, 12. März 2027, 18:00 Uhr', 'timed, no end time');
-						format_test_both(
+			format_test_both(
 				['startTime' => '23:00', 'endTime' => ''],
 				'Friday, 12 March 2027, 23:00',
 				'Freitag, 12. März 2027, 23:00 Uhr',
@@ -232,7 +232,7 @@ final class FormatTest extends TestCase
 			$this->assertSame('Czechia', Format::countryName('CZ'), 'countryName CZ en');
 			$this->assertSame('Czechia', Format::countryName('cz'), 'countryName: lower case accepted');
 			$this->assertSame('MT', Format::countryName('MT'), 'countryName: unknown code as is');
-						$prague = \Sayamaapps\Koyomi\Venue::fromArray([
+			$prague = \Sayamaapps\Koyomi\Venue::fromArray([
 				'name' => 'Stadthalle',
 				'street' => 'Musterstraße 1',
 				'postalCode' => '12345',

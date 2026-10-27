@@ -11,7 +11,6 @@ use DateTimeZone;
  * DAYLIGHT sub-component with an explicit DTSTART. That is valid RFC 5545,
  * exact for any zone PHP knows, and needs no guessing of rules.
  *
- * @package   Sayamaapps\Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder
@@ -61,7 +60,6 @@ final class VTimezone
 		$base = array_shift($transitions);
 		// The list starts with the state at the window begin, so the base is never null.
 		/** @var array{abbr: string, isdst: bool, offset: int, time: string, ts: int} $base */
-
 		$lines = ['BEGIN:VTIMEZONE', 'TZID:' . $zone];
 		// The base observance is written with a fixed DTSTART and FROM = TO:
 		// it only defines the offset in force before the first real change.

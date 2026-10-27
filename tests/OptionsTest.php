@@ -12,32 +12,6 @@ use Sayamaapps\Koyomi\Options;
 #[CoversClass(Options::class)]
 final class OptionsTest extends TestCase
 {
-	public function testLanguagesReadsListAndMap(): void
-	{
-		$root = KoyomiFixture::create();
-		try {
-			$kirby = KoyomiFixture::app($root, [
-				'sayamaapps.koyomi.languages' => ['de', 'cs' => 'Čeština'],
-			]);
-			$this->assertSame(['de' => '', 'cs' => 'Čeština'], Options::languages($kirby));
-		} finally {
-			KoyomiFixture::remove($root);
-		}
-	}
-
-	public function testLanguagesCastsNullLabelToEmptyString(): void
-	{
-		$root = KoyomiFixture::create();
-		try {
-			$kirby = KoyomiFixture::app($root, [
-				'sayamaapps.koyomi.languages' => ['de' => null],
-			]);
-			$this->assertSame(['de' => ''], Options::languages($kirby));
-		} finally {
-			KoyomiFixture::remove($root);
-		}
-	}
-
 	public function testLanguagesCastsArrayLabelWithoutTypeError(): void
 	{
 		// The cast turns the array into "Array" with a warning, as before. It must not throw a TypeError.
@@ -58,6 +32,32 @@ final class OptionsTest extends TestCase
 			}
 			$this->assertSame(['de' => 'Array'], $languages);
 			$this->assertSame(['Array to string conversion'], $warnings);
+		} finally {
+			KoyomiFixture::remove($root);
+		}
+	}
+
+	public function testLanguagesCastsNullLabelToEmptyString(): void
+	{
+		$root = KoyomiFixture::create();
+		try {
+			$kirby = KoyomiFixture::app($root, [
+				'sayamaapps.koyomi.languages' => ['de' => null],
+			]);
+			$this->assertSame(['de' => ''], Options::languages($kirby));
+		} finally {
+			KoyomiFixture::remove($root);
+		}
+	}
+
+	public function testLanguagesReadsListAndMap(): void
+	{
+		$root = KoyomiFixture::create();
+		try {
+			$kirby = KoyomiFixture::app($root, [
+				'sayamaapps.koyomi.languages' => ['de', 'cs' => 'Čeština'],
+			]);
+			$this->assertSame(['de' => '', 'cs' => 'Čeština'], Options::languages($kirby));
 		} finally {
 			KoyomiFixture::remove($root);
 		}

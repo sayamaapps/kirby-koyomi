@@ -21,7 +21,6 @@ use WeakMap;
  * - Every method that returns a list for rendering calls
  *   Api::expires($kirby, $events) so the page cache expires when the list changes.
  *
- * @package   Sayamaapps\Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

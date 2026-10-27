@@ -35,7 +35,7 @@ final class PrivacyTest extends TestCase
 
 				// Content representations.
 				$paths = ['events.ics', 'events.rss', 'events.json'];
-								foreach ([
+				foreach ([
 					'retreat',
 					'zoom-session',
 					'concert',
@@ -81,7 +81,7 @@ final class PrivacyTest extends TestCase
 						$check("$language: JsonLd " . $page->slug(), \Sayamaapps\Koyomi\JsonLd::encode(\Sayamaapps\Koyomi\JsonLd::event($event)));
 						$check("$language: Ics " . $page->slug(), \Sayamaapps\Koyomi\Ics::event($event, ['host' => 'example.test']));
 						$check("$language: Google " . $page->slug(), \Sayamaapps\Koyomi\GoogleLink::url($event, $language));
-												$check(
+						$check(
 							"$language: Rss " . $page->slug(),
 							\Sayamaapps\Koyomi\Rss::feed([$event], ['title' => 'T', 'link' => KoyomiFixture::URL, 'self' => KoyomiFixture::URL . '/events.rss'])
 						);

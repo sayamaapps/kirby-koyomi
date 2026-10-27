@@ -138,7 +138,7 @@ final class DraftsTest extends TestCase
 			);
 			$json = (string)KoyomiFixture::app($root, ['sayamaapps.koyomi.json' => true])->render('events.json')?->body();
 			$this->assertTrue(
-								str_contains(
+				str_contains(
 					$json,
 					'Planned Retreat'
 				) && !str_contains($json, 'Secret') && !str_contains($json, 'Geheimweg') && !str_contains($json, 'draft-org') && !str_contains($json, 'Foreign'),

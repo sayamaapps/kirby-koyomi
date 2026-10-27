@@ -8,7 +8,6 @@ use DateTimeImmutable;
  * Human-readable text for dates, prices, status … in the current I18n
  * language. Kirby-free. Returns PLAIN text — callers escape.
  *
- * @package   Sayamaapps\Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

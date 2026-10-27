@@ -3,12 +3,12 @@
 namespace Sayamaapps\Koyomi\Models;
 
 use Kirby\Cms\Page;
+use Sayamaapps\Koyomi\Event;
 use Sayamaapps\Koyomi\Repository;
 
 /**
  * Page model of template `koyomi-calendar`.
  *
- * @package   Sayamaapps\Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder
@@ -41,7 +41,7 @@ class CalendarPage extends Page
 	/**
 	 * Repository::past($this, $filters).
 	 *
-	 * @return list<\Sayamaapps\Koyomi\Event>
+	 * @return list<Event>
 	 */
 	public function koyomiPast(array $filters = []): array
 	{
@@ -51,7 +51,7 @@ class CalendarPage extends Page
 	/**
 	 * Repository::upcoming($this, $filters).
 	 *
-	 * @return list<\Sayamaapps\Koyomi\Event>
+	 * @return list<Event>
 	 */
 	public function koyomiUpcoming(array $filters = []): array
 	{

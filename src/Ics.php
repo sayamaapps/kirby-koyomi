@@ -21,7 +21,6 @@ use DateTimeZone;
  * - UID "<event id>@<host>", SEQUENCE from Event::$modified, DTSTAMP = now (UTC).
  * - Never prints anything that is not in Event (so never an onlineUrl).
  *
- * @package   Sayamaapps\Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

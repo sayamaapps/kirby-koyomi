@@ -1,8 +1,8 @@
 <?php
 
 use Kirby\Cms\Blueprint;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Sayamaapps\Koyomi\Availability;
 use Sayamaapps\Koyomi\Blueprints;

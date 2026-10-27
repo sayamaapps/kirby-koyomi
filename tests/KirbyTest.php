@@ -210,7 +210,7 @@ final class KirbyTest extends TestCase
 			$eventIds = array_map(fn ($p) => $p->id(), iterator_to_array(Repository::eventPages($kirby->page('events'))));
 			sort($eventIds);
 			$this->assertSame(
-								[
+				[
 					'events/concert',
 					'events/ongoing-retreat',
 					'events/past-workshop',
@@ -260,7 +260,7 @@ final class KirbyTest extends TestCase
 			$this->assertSame($upcomingTitles, koyomi_titles($list['events']), 'list: default view is upcoming, one page');
 			$this->assertSame(
 				[1, 1, 7, 12, null, null],
-								[
+				[
 					$list['pagination']['page'],
 					$list['pagination']['pages'],
 					$list['pagination']['total'],

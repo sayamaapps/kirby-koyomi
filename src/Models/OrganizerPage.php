@@ -3,6 +3,7 @@
 namespace Sayamaapps\Koyomi\Models;
 
 use Kirby\Cms\Page;
+use Sayamaapps\Koyomi\Event;
 use Sayamaapps\Koyomi\Mapper;
 use Sayamaapps\Koyomi\Organizer;
 use Sayamaapps\Koyomi\Repository;
@@ -10,7 +11,6 @@ use Sayamaapps\Koyomi\Repository;
 /**
  * Page model of template `koyomi-organizer`.
  *
- * @package   Sayamaapps\Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder
@@ -29,7 +29,7 @@ class OrganizerPage extends Page
 	/**
 	 * Repository::forOrganizer($this->kirby(), $this).
 	 *
-	 * @return list<\Sayamaapps\Koyomi\Event>
+	 * @return list<Event>
 	 */
 	public function upcomingEvents(): array
 	{

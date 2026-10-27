@@ -146,7 +146,7 @@ final class SnippetsTest extends TestCase
 			$this->assertTrue(str_contains($html, '<p class="koyomi-attendance">Hybrid: in person and online via Zoom</p>'), 'event: attendance label');
 			$this->assertTrue(!str_contains($html, 'koyomi-venue-directions') && !str_contains($html, 'koyomi-venue-map'), 'event: venue compact (no directions, no map)');
 			$this->assertTrue(
-								str_contains(
+				str_contains(
 					$html,
 					'<dd class="koyomi-price">€380 <span class="koyomi-price-note">Frühbucher bis 1. Februar</span> <span'
 						. ' class="koyomi-availability">Only a few places left</span></dd>'
@@ -156,7 +156,7 @@ final class SnippetsTest extends TestCase
 			$this->assertTrue(str_contains($html, '<dd class="koyomi-languages">German, Czech</dd>'), 'event: languages');
 			$this->assertTrue(str_contains($html, '<dd class="koyomi-categories">Retreat, Meditation</dd>'), 'event: categories');
 			$this->assertTrue(
-								str_contains(
+				str_contains(
 					$html,
 					'<a class="koyomi-booking-link" href="https://booking.example/retreat"'
 						. ' target="_blank" rel="noopener">Register<span class="koyomi-sr-only"> (opens in a new tab)</span></a>'
@@ -235,7 +235,7 @@ final class SnippetsTest extends TestCase
 			$series = koyomi_snippet_event([
 				'id' => 'evt-series-1', 'title' => 'Mantra Course 1', 'url' => 'https://example.test/events/series-part-1',
 				'startDate' => '2027-04-01', 'startTime' => '10:00', 'endTime' => '12:00', 'isFree' => true, 'seriesPart' => '1',
-								'series' => [[
+				'series' => [[
 					'id' => 'evt-series-2',
 					'title' => 'Mantra Course 2',
 					'url' => 'https://example.test/events/series-part-2',
@@ -265,7 +265,7 @@ final class SnippetsTest extends TestCase
 			);
 			$this->assertTrue(str_contains($html, '<dd class="koyomi-languages">Deutsch, Tschechisch</dd>'), 'de event: languages');
 			$this->assertTrue(
-								str_contains(
+				str_contains(
 					$html,
 					'<dd class="koyomi-price">380 € <span class="koyomi-price-note">Frühbucher bis 1. Februar</span>'
 						. ' <span class="koyomi-availability">Nur noch wenige Plätze</span></dd>'
@@ -404,7 +404,7 @@ final class SnippetsTest extends TestCase
 
 			$list = [
 				'view' => 'upcoming', 'filters' => ['category' => null, 'attendance' => null, 'language' => null, 'featured' => false, 'view' => 'upcoming', 'page' => 1],
-								'events' => [$retreat], 'pagination' => [
+				'events' => [$retreat], 'pagination' => [
 					'page' => 1,
 					'pages' => 1,
 					'total' => 1,
@@ -488,7 +488,7 @@ final class SnippetsTest extends TestCase
 			$this->assertTrue(!str_contains($html, 'koyomi-filters-reset'), 'filters: no reset link when nothing is filtered');
 			$this->assertTrue(str_contains($html, '<option value="Retreat">Retreat (1)</option>'), 'filters: no category selected');
 
-						$nothing = [
+			$nothing = [
 				'view' => 'upcoming',
 				'filters' => [],
 				'facets' => ['categories' => [], 'languages' => [], 'attendance' => [], 'featured' => 0],
@@ -503,7 +503,7 @@ final class SnippetsTest extends TestCase
 
 			// ---- pagination -------------------------------------------------------------
 			$kirby = KoyomiFixture::app($root);
-						$pager = [
+			$pager = [
 				'page' => 2,
 				'pages' => 3,
 				'total' => 7,
@@ -532,7 +532,7 @@ final class SnippetsTest extends TestCase
 			$this->assertTrue(str_contains($html, '<div class="koyomi-subscribe">'), 'subscribe: wrapper');
 			$this->assertTrue(str_contains($html, '<a href="webcal://example.test/events.ics">Subscribe to calendar</a>'), 'subscribe: webcal link');
 			$this->assertTrue(
-								str_contains(
+				str_contains(
 					$html,
 					'<p class="koyomi-subscribe-hint">Paste this address into your calendar app to see new dates automatically. <code>https://example.test/events.ics</code></p>'
 				),

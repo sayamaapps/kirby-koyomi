@@ -21,7 +21,6 @@ use InvalidArgumentException;
  * - Past = end <= now. An ongoing retreat (start <= now < end) is still
  *   listed as upcoming.
  *
- * @package   Sayamaapps\Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder
@@ -229,68 +228,6 @@ final class Event
 		);
 	}
 
-	/**
-	 * End of an event and the flags for its end date and end time. An all-day
-	 * event ends at 00:00 of the day after its last day; a timed event without an
-	 * end, or with an end that is not after its start, lasts $defaultDuration minutes.
-	 *
-	 * @return array{0: DateTimeImmutable, 1: bool, 2: bool, 3: bool} end, hasEndTime, hasEndDate, endDateGiven
-	 */
-	private static function span(
-		DateTimeImmutable $start,
-		bool $allDay,
-		string $startDate,
-		string $endDateRaw,
-		string $endTime,
-		\DateTimeZone $zone,
-		int $defaultDuration,
-	): array {
-		// Elapsed minutes: modify() adds wall-clock minutes, an hour off across a DST change.
-		$length = new DateInterval('PT' . max(0, $defaultDuration) . 'M');
-
-		$endDateGiven = Time::wall($endDateRaw, '', $zone) !== null;
-		$endDate = $endDateGiven ? substr($endDateRaw, 0, 10) : substr($startDate, 0, 10);
-
-		$hasEndTime = false;
-		$hasEndDate = false;
-		if ($allDay) {
-			/** @psalm-suppress PossiblyNullReference The date was checked before (see the start and end date checks). */
-			$end = Time::wall($endDate, '', $zone)->modify('+1 day');
-			if ($end <= $start) {
-				$end = $start->modify('+1 day');
-			}
-		} else {
-			$end = $endTime !== '' ? Time::wall($endDate, $endTime, $zone) : null;
-			if ($end !== null) {
-				$hasEndTime = true;
-				$hasEndDate = true;
-				if (!$endDateGiven && $end < $start) {
-					// Overnight: the next day's wall time, not modify(), which
-					// would take the other offset inside the autumn DST overlap.
-					/** @psalm-suppress PossiblyNullReference The date was checked before (see the start and end date checks). */
-					$nextDay = Time::wall($endDate, '', $zone)->modify('+1 day')->format('Y-m-d');
-					$end = Time::wall($nextDay, $endTime, $zone);
-				}
-			} elseif ($endDateGiven && $endDate > substr($startDate, 0, 10)) {
-				/** @psalm-suppress PossiblyNullReference The date was checked before (see the start and end date checks). */
-				$end = Time::wall($endDate, '', $zone)->modify('+1 day');
-				$hasEndDate = true;
-			} else {
-				$end = $start->add($length);
-			}
-			if ($hasEndTime && $end <= $start) {
-				$end = $start->add($length);
-				$hasEndTime = false;
-				$hasEndDate = false;
-			}
-		}
-
-
-		// Every branch above sets the end, so it is never null here.
-		/** @var DateTimeImmutable $end */
-		return [$end, $hasEndTime, $hasEndDate, $endDateGiven];
-	}
-
 	/** url + ".ics" (Kirby content representation of the event page), or "" without url. */
 	public function icsUrl(): string
 	{
@@ -419,6 +356,68 @@ final class Event
 	public function seriesTotal(): int
 	{
 		return count($this->series);
+	}
+
+	/**
+	 * End of an event and the flags for its end date and end time. An all-day
+	 * event ends at 00:00 of the day after its last day; a timed event without an
+	 * end, or with an end that is not after its start, lasts $defaultDuration minutes.
+	 *
+	 * @return array{0: DateTimeImmutable, 1: bool, 2: bool, 3: bool} end, hasEndTime, hasEndDate, endDateGiven
+	 */
+	private static function span(
+		DateTimeImmutable $start,
+		bool $allDay,
+		string $startDate,
+		string $endDateRaw,
+		string $endTime,
+		\DateTimeZone $zone,
+		int $defaultDuration,
+	): array {
+		// Elapsed minutes: modify() adds wall-clock minutes, an hour off across a DST change.
+		$length = new DateInterval('PT' . max(0, $defaultDuration) . 'M');
+
+		$endDateGiven = Time::wall($endDateRaw, '', $zone) !== null;
+		$endDate = $endDateGiven ? substr($endDateRaw, 0, 10) : substr($startDate, 0, 10);
+
+		$hasEndTime = false;
+		$hasEndDate = false;
+		if ($allDay) {
+			/** @psalm-suppress PossiblyNullReference The date was checked before (see the start and end date checks). */
+			$end = Time::wall($endDate, '', $zone)->modify('+1 day');
+			if ($end <= $start) {
+				$end = $start->modify('+1 day');
+			}
+		} else {
+			$end = $endTime !== '' ? Time::wall($endDate, $endTime, $zone) : null;
+			if ($end !== null) {
+				$hasEndTime = true;
+				$hasEndDate = true;
+				if (!$endDateGiven && $end < $start) {
+					// Overnight: the next day's wall time, not modify(), which
+					// would take the other offset inside the autumn DST overlap.
+					/** @psalm-suppress PossiblyNullReference The date was checked before (see the start and end date checks). */
+					$nextDay = Time::wall($endDate, '', $zone)->modify('+1 day')->format('Y-m-d');
+					$end = Time::wall($nextDay, $endTime, $zone);
+				}
+			} elseif ($endDateGiven && $endDate > substr($startDate, 0, 10)) {
+				/** @psalm-suppress PossiblyNullReference The date was checked before (see the start and end date checks). */
+				$end = Time::wall($endDate, '', $zone)->modify('+1 day');
+				$hasEndDate = true;
+			} else {
+				$end = $start->add($length);
+			}
+			if ($hasEndTime && $end <= $start) {
+				$end = $start->add($length);
+				$hasEndTime = false;
+				$hasEndDate = false;
+			}
+		}
+
+
+		// Every branch above sets the end, so it is never null here.
+		/** @var DateTimeImmutable $end */
+		return [$end, $hasEndTime, $hasEndDate, $endDateGiven];
 	}
 
 	/**

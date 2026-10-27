@@ -3,6 +3,7 @@
 namespace Sayamaapps\Koyomi\Models;
 
 use Kirby\Cms\Page;
+use Sayamaapps\Koyomi\Event;
 use Sayamaapps\Koyomi\Mapper;
 use Sayamaapps\Koyomi\Repository;
 use Sayamaapps\Koyomi\Venue;
@@ -10,7 +11,6 @@ use Sayamaapps\Koyomi\Venue;
 /**
  * Page model of template `koyomi-venue`.
  *
- * @package   Sayamaapps\Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder
@@ -29,7 +29,7 @@ class VenuePage extends Page
 	/**
 	 * Repository::forVenue($this->kirby(), $this).
 	 *
-	 * @return list<\Sayamaapps\Koyomi\Event>
+	 * @return list<Event>
 	 */
 	public function upcomingEvents(): array
 	{

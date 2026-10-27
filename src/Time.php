@@ -18,7 +18,6 @@ use DateTimeZone;
  * in the autumn overlap takes the later, standard-time instant
  * (2027-10-31 02:30 → 02:30+01:00).
  *
- * @package   Sayamaapps\Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

@@ -18,7 +18,6 @@ use Sayamaapps\Koyomi\Options;
  * ($page->eventStatus(), $page->price() …): none of the names below is a
  * field name.
  *
- * @package   Sayamaapps\Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

@@ -10,7 +10,6 @@ namespace Sayamaapps\Koyomi;
  *   limited    availability.limited    https://schema.org/LimitedAvailability
  *   soldout    availability.soldout    https://schema.org/SoldOut
  *
- * @package   Sayamaapps\Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

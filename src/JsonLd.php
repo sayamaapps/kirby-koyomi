@@ -11,7 +11,6 @@ namespace Sayamaapps\Koyomi;
  * - VirtualLocation.url is the EVENT PAGE URL — never a meeting link (Event
  *   has none).
  *
- * @package   Sayamaapps\Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

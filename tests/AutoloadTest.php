@@ -16,6 +16,12 @@ final class AutoloadTest extends TestCase
 		return require dirname(__DIR__) . '/autoload.php';
 	}
 
+	/** The namespaced class name of a file of src/. */
+	private function classOf(string $path): string
+	{
+		return 'Sayamaapps\\Koyomi\\' . str_replace('/', '\\', substr($path, strlen('src/'), -strlen('.php')));
+	}
+
 	/** @return list<string> every PHP file of src/, relative to the plugin root, sorted */
 	private function sourceFiles(): array
 	{
@@ -30,10 +36,19 @@ final class AutoloadTest extends TestCase
 		return $files;
 	}
 
-	/** The namespaced class name of a file of src/. */
-	private function classOf(string $path): string
+	public function testEveryMappedClassLoads(): void
 	{
-		return 'Sayamaapps\\Koyomi\\' . str_replace('/', '\\', substr($path, strlen('src/'), -strlen('.php')));
+		foreach ($this->classMap() as $path) {
+			$name = $this->classOf($path);
+			$this->assertTrue(class_exists($name) || interface_exists($name), "class map: $name loads");
+		}
+	}
+
+	public function testMapKeysAreLowerCaseClassNames(): void
+	{
+		foreach ($this->classMap() as $class => $path) {
+			$this->assertSame(strtolower($this->classOf($path)), $class, "class map: key of $path is the lower-case class name");
+		}
 	}
 
 	public function testMapListsEveryFileOfSrcOnce(): void
@@ -48,21 +63,6 @@ final class AutoloadTest extends TestCase
 		foreach ($this->classMap() as $path) {
 			$this->assertTrue(is_file($root . '/' . $path), "class map: $path exists");
 			$this->assertTrue(in_array($path, $files, true), "class map: $path is in src/");
-		}
-	}
-
-	public function testMapKeysAreLowerCaseClassNames(): void
-	{
-		foreach ($this->classMap() as $class => $path) {
-			$this->assertSame(strtolower($this->classOf($path)), $class, "class map: key of $path is the lower-case class name");
-		}
-	}
-
-	public function testEveryMappedClassLoads(): void
-	{
-		foreach ($this->classMap() as $path) {
-			$name = $this->classOf($path);
-			$this->assertTrue(class_exists($name) || interface_exists($name), "class map: $name loads");
 		}
 	}
 
