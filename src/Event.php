@@ -234,6 +234,7 @@ class Event
 		return $this->url === '' ? '' : $this->url . '.ics';
 	}
 
+	/** Status is cancelled. */
 	public function isCancelled(): bool
 	{
 		return $this->status === Status::CANCELLED;
@@ -245,11 +246,13 @@ class Event
 		return in_array($this->effectiveAttendance(), [Attendance::OFFLINE, Attendance::MIXED], true);
 	}
 
+	/** The event spans more than one calendar day. */
 	public function isMultiDay(): bool
 	{
 		return $this->firstDay()->format('Y-m-d') !== $this->lastDay()->format('Y-m-d');
 	}
 
+	/** Started and not yet ended at $now. */
 	public function isOngoing(DateTimeImmutable $now): bool
 	{
 		return $this->start <= $now && $now < $this->end;
@@ -261,11 +264,13 @@ class Event
 		return in_array($this->effectiveAttendance(), [Attendance::ONLINE, Attendance::MIXED], true);
 	}
 
+	/** Ended at or before $now. */
 	public function isPast(DateTimeImmutable $now): bool
 	{
 		return $this->end <= $now;
 	}
 
+	/** Starts after $now. */
 	public function isUpcoming(DateTimeImmutable $now): bool
 	{
 		return $this->start > $now;
@@ -353,6 +358,7 @@ class Event
 		return [$list, $ownPart ?? $position];
 	}
 
+	/** Number of entries in the series. */
 	public function seriesTotal(): int
 	{
 		return count($this->series);

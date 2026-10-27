@@ -19,6 +19,7 @@ class Organizer
 	public const ORGANIZATION = 'organization';
 	public const PERSON = 'person';
 
+	/** All fields of an organizer; `kind` is `organization` or `person`. */
 	public function __construct(
 		public readonly string $id,
 		public readonly string $name,

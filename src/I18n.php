@@ -52,11 +52,13 @@ class I18n
 		return array_key_exists($key, self::table('en'));
 	}
 
+	/** The current language, `en` or `de`. */
 	public static function language(): string
 	{
 		return self::$language;
 	}
 
+	/** Sets the language; a code Koyomi does not ship falls back to English. */
 	public static function setLanguage(string $language): void
 	{
 		$language = strtolower($language);

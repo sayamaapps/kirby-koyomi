@@ -38,6 +38,7 @@ class Attendance
 		};
 	}
 
+	/** The value when it is one of ALL, otherwise offline. */
 	public static function normalize(mixed $value): string
 	{
 		return Normalize::choice($value, self::ALL, self::OFFLINE);

@@ -22,6 +22,7 @@ class Availability
 	public const LIMITED = 'limited';
 	public const SOLDOUT = 'soldout';
 
+	/** The value when it is one of ALL, otherwise available. */
 	public static function normalize(mixed $value): string
 	{
 		return Normalize::choice($value, self::ALL, self::AVAILABLE);

@@ -70,6 +70,7 @@ class Blueprints
 		'kind', 'email', 'showEmail', 'photo',
 	];
 
+	/** Blueprint of the koyomi-calendar page. */
 	public static function calendar(array $settings): array
 	{
 		return [
@@ -122,6 +123,7 @@ class Blueprints
 		];
 	}
 
+	/** Blueprint of the koyomi-event page. */
 	public static function event(array $settings): array
 	{
 		return self::fude(self::shared([
@@ -454,6 +456,7 @@ class Blueprints
 		return $options;
 	}
 
+	/** Blueprint of the koyomi-organizer page. */
 	public static function organizer(array $settings): array
 	{
 		return self::shared([
@@ -507,6 +510,7 @@ class Blueprints
 		]);
 	}
 
+	/** Blueprint of the organizers container page. */
 	public static function organizers(array $settings): array
 	{
 		return [
@@ -566,6 +570,7 @@ class Blueprints
 		return $walk($blueprint);
 	}
 
+	/** Blueprint of the koyomi-venue page. */
 	public static function venue(array $settings): array
 	{
 		return self::shared([
@@ -666,6 +671,7 @@ class Blueprints
 		]);
 	}
 
+	/** Blueprint of the venues container page. */
 	public static function venues(array $settings): array
 	{
 		return [

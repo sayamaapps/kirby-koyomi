@@ -110,11 +110,13 @@ class Venue
 		return $venue;
 	}
 
+	/** A street or a city is set. */
 	public function hasAddress(): bool
 	{
 		return $this->street !== '' || $this->city !== '';
 	}
 
+	/** Latitude and longitude are both set. */
 	public function hasCoordinates(): bool
 	{
 		return $this->lat !== null && $this->lng !== null;
