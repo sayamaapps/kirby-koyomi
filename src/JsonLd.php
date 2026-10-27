@@ -10,6 +10,12 @@ namespace Sayamaapps\Koyomi;
  * - Keys with empty values are left out.
  * - VirtualLocation.url is the EVENT PAGE URL — never a meeting link (Event
  *   has none).
+ *
+ * @package   Sayamaapps\Koyomi
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 final class JsonLd
 {

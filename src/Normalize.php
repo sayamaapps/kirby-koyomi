@@ -6,6 +6,12 @@ namespace Sayamaapps\Koyomi;
  * Turns raw content values (Kirby stores everything as strings: toggles as
  * "true"/"false", tags as "a, b", numbers as "120,50") into typed values.
  * Kirby-free. Used by Event/Venue/Organizer::fromArray() and Filters.
+ *
+ * @package   Sayamaapps\Koyomi
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 final class Normalize
 {

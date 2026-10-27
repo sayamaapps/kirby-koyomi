@@ -9,6 +9,12 @@ use DateTimeImmutable;
  *
  * All methods are pure: arrays in, arrays out, the
  * input is never modified.
+ *
+ * @package   Sayamaapps\Koyomi
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 final class Query
 {

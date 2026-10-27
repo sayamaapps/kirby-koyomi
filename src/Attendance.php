@@ -15,6 +15,12 @@ namespace Sayamaapps\Koyomi;
  *
  * Status `movedOnline` makes the EFFECTIVE attendance `online`
  * (Event::effectiveAttendance()).
+ *
+ * @package   Sayamaapps\Koyomi
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 final class Attendance
 {

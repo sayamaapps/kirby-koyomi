@@ -19,6 +19,12 @@ use Kirby\Cms\Helpers;
  *
  * Defaults are given here, at the call sites. The `options` block of the plugin
  * lists the keys with null, so a default there would hide the 1.x spelling.
+ *
+ * @package   Sayamaapps\Koyomi
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 final class Options
 {

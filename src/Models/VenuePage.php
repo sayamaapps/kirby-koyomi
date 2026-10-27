@@ -9,6 +9,12 @@ use Sayamaapps\Koyomi\Venue;
 
 /**
  * Page model of template `koyomi-venue`.
+ *
+ * @package   Sayamaapps\Koyomi
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 class VenuePage extends Page
 {

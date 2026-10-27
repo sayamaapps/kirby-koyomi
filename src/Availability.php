@@ -9,6 +9,12 @@ namespace Sayamaapps\Koyomi;
  *   available  availability.available  https://schema.org/InStock
  *   limited    availability.limited    https://schema.org/LimitedAvailability
  *   soldout    availability.soldout    https://schema.org/SoldOut
+ *
+ * @package   Sayamaapps\Koyomi
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 final class Availability
 {

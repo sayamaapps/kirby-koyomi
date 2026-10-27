@@ -14,6 +14,12 @@ namespace Sayamaapps\Koyomi;
  * The language is set per request (Api::i18n(), from
  * Options::language()) and defaults to English. Missing keys fall back to
  * English, then to the key itself.
+ *
+ * @package   Sayamaapps\Koyomi
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 final class I18n
 {

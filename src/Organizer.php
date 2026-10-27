@@ -8,6 +8,12 @@ namespace Sayamaapps\Koyomi;
  * `email` is the PUBLIC address only: Mapper passes the email field only when
  * the organizer's `showEmail` toggle is on, so a hidden address never enters
  * this object and therefore can never reach any output.
+ *
+ * @package   Sayamaapps\Koyomi
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 final class Organizer
 {

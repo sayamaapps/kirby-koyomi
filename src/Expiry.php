@@ -15,6 +15,12 @@ use DateTimeImmutable;
  * several lists on one page combine correctly). The subscription feed also
  * changes when an event leaves its window (leaving()), and a timeline's
  * "Today" line at local midnight (midnight()); Api::expiresAt() passes those.
+ *
+ * @package   Sayamaapps\Koyomi
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 final class Expiry
 {

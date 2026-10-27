@@ -10,6 +10,12 @@ namespace Sayamaapps\Koyomi;
  * `mapImage` is a self-hosted static image the editor uploaded; `mapLink` is
  * a plain link (OpenStreetMap by default, `koyomi.mapUrl` to change) that
  * only opens on click.
+ *
+ * @package   Sayamaapps\Koyomi
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 final class Venue
 {

@@ -20,6 +20,12 @@ use InvalidArgumentException;
  *   last day (a retreat on 12.–14. ends at 15. 00:00), like ICS DTEND.
  * - Past = end <= now. An ongoing retreat (start <= now < end) is still
  *   listed as upcoming.
+ *
+ * @package   Sayamaapps\Koyomi
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 final class Event
 {

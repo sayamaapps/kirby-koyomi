@@ -17,6 +17,12 @@ use Sayamaapps\Koyomi\Options;
  * Method names must not shadow content fields a template might call
  * ($page->eventStatus(), $page->price() …): none of the names below is a
  * field name.
+ *
+ * @package   Sayamaapps\Koyomi
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 class EventPage extends Page
 {

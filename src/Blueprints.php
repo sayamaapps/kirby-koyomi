@@ -22,6 +22,12 @@ namespace Sayamaapps\Koyomi;
  * closure per blueprint is the only way Kirby re-reads them at Panel time.
  * Missing settings keys fall back to the defaults below, so a hand-made
  * array (tests) works too.
+ *
+ * @package   Sayamaapps\Koyomi
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 final class Blueprints
 {

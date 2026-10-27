@@ -24,6 +24,12 @@ use Kirby\Toolkit\Str;
  *
  * PRIVACY: never reads `onlineUrl`; reads organizer `email` only when
  * `showEmail` is on.
+ *
+ * @package   Sayamaapps\Koyomi
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 final class Mapper
 {

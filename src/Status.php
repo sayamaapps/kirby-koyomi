@@ -13,6 +13,12 @@ namespace Sayamaapps\Koyomi;
  *   postponed    status.postponed     https://schema.org/EventPostponed   TENTATIVE
  *   rescheduled  status.rescheduled   https://schema.org/EventRescheduled CONFIRMED
  *   movedOnline  status.movedOnline   https://schema.org/EventMovedOnline CONFIRMED
+ *
+ * @package   Sayamaapps\Koyomi
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 final class Status
 {

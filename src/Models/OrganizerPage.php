@@ -9,6 +9,12 @@ use Sayamaapps\Koyomi\Repository;
 
 /**
  * Page model of template `koyomi-organizer`.
+ *
+ * @package   Sayamaapps\Koyomi
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 class OrganizerPage extends Page
 {

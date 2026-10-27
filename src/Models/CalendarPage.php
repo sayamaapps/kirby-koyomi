@@ -7,6 +7,12 @@ use Sayamaapps\Koyomi\Repository;
 
 /**
  * Page model of template `koyomi-calendar`.
+ *
+ * @package   Sayamaapps\Koyomi
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 class CalendarPage extends Page
 {
