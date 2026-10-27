@@ -43,11 +43,11 @@ final class QueryTest extends TestCase
 			$cancelled = $make(['id' => 'cancelled', 'startDate' => '2027-03-13', 'startTime' => '18:00', 'status' => 'cancelled']);
 			$all = [$future, $cancelled, $ended, $boundary, $ongoing];
 
-			expect(['ongoing', 'future', 'cancelled'], $ids(Query::upcoming($all, $now)), 'upcoming: end == now is past, ongoing kept, sorted by start');
-			expect(['ongoing', 'future'], $ids(Query::upcoming($all, $now, [], true)), 'upcoming: hideCancelled removes cancelled');
-			expect(['boundary', 'ended'], $ids(Query::past($all, $now)), 'past: end <= now, newest first');
-			expect(['ended', 'boundary'], $ids(array_reverse(Query::past($all, $now))), 'past: reversed, oldest first');
-			holds($boundary->isPast($now) && $ended->isPast($now) && !$ongoing->isPast($now), 'isPast(): end == now counts as past');
+			$this->assertSame(['ongoing', 'future', 'cancelled'], $ids(Query::upcoming($all, $now)), 'upcoming: end == now is past, ongoing kept, sorted by start');
+			$this->assertSame(['ongoing', 'future'], $ids(Query::upcoming($all, $now, [], true)), 'upcoming: hideCancelled removes cancelled');
+			$this->assertSame(['boundary', 'ended'], $ids(Query::past($all, $now)), 'past: end <= now, newest first');
+			$this->assertSame(['ended', 'boundary'], $ids(array_reverse(Query::past($all, $now))), 'past: reversed, oldest first');
+			$this->assertTrue($boundary->isPast($now) && $ended->isPast($now) && !$ongoing->isPast($now), 'isPast(): end == now counts as past');
 
 			// 2. Sort: start, end, lower-case title, id; desc reverses the whole comparison.
 			$a = $make(['id' => 'x', 'title' => 'beta', 'startDate' => '2027-03-12', 'startTime' => '18:00', 'endTime' => '20:00']);
@@ -55,17 +55,17 @@ final class QueryTest extends TestCase
 			$c = $make(['id' => 'a', 'title' => 'alpha', 'startDate' => '2027-03-12', 'startTime' => '18:00', 'endTime' => '20:00']);
 			$d = $make(['id' => 'd', 'title' => 'zz', 'startDate' => '2027-03-12', 'startTime' => '18:00', 'endTime' => '19:00']);
 			$earlier = $make(['id' => 'early', 'startDate' => '2027-03-12', 'startTime' => '09:00', 'endTime' => '10:00']);
-			expect(['d', 'a', 'z', 'x'], $ids(Query::sort([$a, $b, $c, $d])), 'sort: end first, then title case-insensitively, then id');
-			expect(['d', 'a', 'z', 'x'], $ids(Query::sort([$d, $c, $b, $a])), 'sort does not depend on the input order');
-			expect(['x', 'z', 'a', 'd'], $ids(Query::sort([$a, $b, $c, $d], 'desc')), 'sort desc reverses the whole comparison');
-			expect(['early', 'd', 'a', 'z', 'x'], $ids(Query::sort([$a, $b, $c, $d, $earlier])), 'sort: start beats end and title');
+			$this->assertSame(['d', 'a', 'z', 'x'], $ids(Query::sort([$a, $b, $c, $d])), 'sort: end first, then title case-insensitively, then id');
+			$this->assertSame(['d', 'a', 'z', 'x'], $ids(Query::sort([$d, $c, $b, $a])), 'sort does not depend on the input order');
+			$this->assertSame(['x', 'z', 'a', 'd'], $ids(Query::sort([$a, $b, $c, $d], 'desc')), 'sort desc reverses the whole comparison');
+			$this->assertSame(['early', 'd', 'a', 'z', 'x'], $ids(Query::sort([$a, $b, $c, $d, $earlier])), 'sort: start beats end and title');
 
 			// 3. Input arrays are never modified.
 			$before = $ids($all);
 			Query::upcoming($all, $now, ['category' => 'x'], true);
 			Query::sort($all, 'desc');
 			Query::filter($all, ['featured' => true]);
-			expect($before, $ids($all), 'input list unchanged by upcoming/sort/filter');
+			$this->assertSame($before, $ids($all), 'input list unchanged by upcoming/sort/filter');
 
 			// 4. Filters: category, attendance, language, featured, combined.
 			$retreat = $make(['id' => 'retreat', 'categories' => 'Retreat, Meditation', 'languages' => 'de, cs', 'attendance' => 'mixed', 'featured' => 'true', 'venue' => $venue]);
@@ -74,19 +74,31 @@ final class QueryTest extends TestCase
 			$moved = $make(['id' => 'moved', 'categories' => 'Retreat', 'languages' => 'de', 'attendance' => 'offline', 'status' => 'movedOnline', 'venue' => $venue]);
 			$catalog = [$retreat, $online, $offline, $moved];
 
-			expect(['retreat', 'moved'], $ids(Query::filter($catalog, ['category' => 'retreat'])), 'category: case-insensitive equality');
-			expect(['retreat', 'online'], $ids(Query::filter($catalog, ['category' => 'MEDITATION'])), 'category: Meditation matches both');
-			expect([], $ids(Query::filter($catalog, ['category' => 'Retreats'])), 'category: no substring match');
-			expect(['retreat', 'online', 'moved'], $ids(Query::filter($catalog, ['attendance' => 'online'])), 'attendance online: online, mixed and movedOnline');
-			expect(['retreat', 'offline'], $ids(Query::filter($catalog, ['attendance' => 'offline'])), 'attendance offline: in person (a mixed event counts, movedOnline does not)');
-			expect(['retreat'], $ids(Query::filter($catalog, ['attendance' => 'mixed'])), 'attendance mixed: effective mixed only');
-			expect(['retreat'], $ids(Query::filter($catalog, ['language' => 'cs'])), 'language: must be one of the languages');
-			expect(['retreat', 'offline', 'moved'], $ids(Query::filter($catalog, ['language' => 'de'])), 'language de');
-			expect(['retreat'], $ids(Query::filter($catalog, ['featured' => true])), 'featured true: featured events only');
-			expect(['retreat'], $ids(Query::filter($catalog, ['category' => 'Meditation', 'language' => 'cs', 'attendance' => 'mixed', 'featured' => true])), 'all set filters must match');
-			expect(['retreat', 'online', 'offline', 'moved'], $ids(Query::filter($catalog, [])), 'no filter keeps everything');
-			expect(['retreat', 'online', 'offline', 'moved'], $ids(Query::filter($catalog, ['category' => ''])), 'empty category is no filter');
-			expect(['retreat', 'moved'], $ids(Query::filter($catalog, ['category' => 'Retreat', 'view' => 'past', 'page' => 4])), 'view and page are ignored by filter()');
+			$this->assertSame(['retreat', 'moved'], $ids(Query::filter($catalog, ['category' => 'retreat'])), 'category: case-insensitive equality');
+			$this->assertSame(['retreat', 'online'], $ids(Query::filter($catalog, ['category' => 'MEDITATION'])), 'category: Meditation matches both');
+			$this->assertSame([], $ids(Query::filter($catalog, ['category' => 'Retreats'])), 'category: no substring match');
+			$this->assertSame(['retreat', 'online', 'moved'], $ids(Query::filter($catalog, ['attendance' => 'online'])), 'attendance online: online, mixed and movedOnline');
+			$this->assertSame(
+				['retreat', 'offline'],
+				$ids(Query::filter($catalog, ['attendance' => 'offline'])),
+				'attendance offline: in person (a mixed event counts, movedOnline does not)'
+			);
+			$this->assertSame(['retreat'], $ids(Query::filter($catalog, ['attendance' => 'mixed'])), 'attendance mixed: effective mixed only');
+			$this->assertSame(['retreat'], $ids(Query::filter($catalog, ['language' => 'cs'])), 'language: must be one of the languages');
+			$this->assertSame(['retreat', 'offline', 'moved'], $ids(Query::filter($catalog, ['language' => 'de'])), 'language de');
+			$this->assertSame(['retreat'], $ids(Query::filter($catalog, ['featured' => true])), 'featured true: featured events only');
+			$this->assertSame(
+				['retreat'],
+				$ids(Query::filter($catalog, ['category' => 'Meditation', 'language' => 'cs', 'attendance' => 'mixed', 'featured' => true])),
+				'all set filters must match'
+			);
+			$this->assertSame(['retreat', 'online', 'offline', 'moved'], $ids(Query::filter($catalog, [])), 'no filter keeps everything');
+			$this->assertSame(['retreat', 'online', 'offline', 'moved'], $ids(Query::filter($catalog, ['category' => ''])), 'empty category is no filter');
+			$this->assertSame(
+				['retreat', 'moved'],
+				$ids(Query::filter($catalog, ['category' => 'Retreat', 'view' => 'past', 'page' => 4])),
+				'view and page are ignored by filter()'
+			);
 
 			// 5. Facets over unfiltered events.
 			$facetEvents = [
@@ -95,13 +107,13 @@ final class QueryTest extends TestCase
 				$make(['id' => 'f3', 'categories' => 'Meditation', 'languages' => 'de', 'attendance' => 'online']),
 				$make(['id' => 'f4', 'categories' => 'Retreat', 'languages' => 'de', 'attendance' => 'offline', 'status' => 'movedOnline']),
 			];
-			expect([
+			$this->assertSame([
 				'categories' => ['Meditation' => 3, 'Retreat' => 2],
 				'languages' => ['cs' => 1, 'de' => 4],
 				'attendance' => ['offline' => 2, 'online' => 3, 'mixed' => 1],
 				'featured' => 1,
 			], Query::facets($facetEvents), 'facets: counts, first spelling wins, attendance per filter semantics');
-			expect([
+			$this->assertSame([
 				'categories' => [],
 				'languages' => [],
 				'attendance' => ['offline' => 0, 'online' => 0, 'mixed' => 0],
@@ -112,21 +124,25 @@ final class QueryTest extends TestCase
 				$make(['id' => 'n2', 'categories' => 'Retreat 2']),
 				$make(['id' => 'n3', 'categories' => 'alpha']),
 			];
-			expect(['alpha', 'Retreat 2', 'Retreat 10'], array_keys(Query::facets($naturalSort)['categories']), 'facets: categories sorted with strnatcasecmp');
+			$this->assertSame(['alpha', 'Retreat 2', 'Retreat 10'], array_keys(Query::facets($naturalSort)['categories']), 'facets: categories sorted with strnatcasecmp');
 			$languageSort = [$make(['id' => 'l1', 'languages' => 'de']), $make(['id' => 'l2', 'languages' => 'cs'])];
-			expect(['cs', 'de'], array_keys(Query::facets($languageSort)['languages']), 'facets: languages sorted by code');
+			$this->assertSame(['cs', 'de'], array_keys(Query::facets($languageSort)['languages']), 'facets: languages sorted by code');
 
 			// 6. Paging.
 			$items = [1, 2, 3, 4, 5, 6, 7];
 			$p = Query::paginate($items, 2, 3);
-			expect([4, 5, 6], $p['items'], 'paginate: page 2 of 3 per page');
-			expect([2, 3, 7, 3, true, true], [$p['page'], $p['pages'], $p['total'], $p['perPage'], $p['hasPrev'], $p['hasNext']], 'paginate: numbers and flags');
+			$this->assertSame([4, 5, 6], $p['items'], 'paginate: page 2 of 3 per page');
+			$this->assertSame([2, 3, 7, 3, true, true], [$p['page'], $p['pages'], $p['total'], $p['perPage'], $p['hasPrev'], $p['hasNext']], 'paginate: numbers and flags');
 			$last = Query::paginate($items, 9, 3);
-			expect([7], $last['items'], 'paginate: page 9 clamped to the last page');
-			expect([3, 3, true, false], [$last['page'], $last['pages'], $last['hasPrev'], $last['hasNext']], 'paginate: clamped numbers and flags');
+			$this->assertSame([7], $last['items'], 'paginate: page 9 clamped to the last page');
+			$this->assertSame([3, 3, true, false], [$last['page'], $last['pages'], $last['hasPrev'], $last['hasNext']], 'paginate: clamped numbers and flags');
 			$none = Query::paginate([], 1, 12);
-			expect([1, 1, 0, [], false, false], [$none['page'], $none['pages'], $none['total'], $none['items'], $none['hasPrev'], $none['hasNext']], 'paginate: nothing gives one empty page');
-			expect([1, 2], [Query::paginate([1, 2], 0, 12)['page'], Query::paginate([1, 2], 1, 1)['pages']], 'paginate: page below 1 is 1');
+			$this->assertSame(
+				[1, 1, 0, [], false, false],
+				[$none['page'], $none['pages'], $none['total'], $none['items'], $none['hasPrev'], $none['hasNext']],
+				'paginate: nothing gives one empty page'
+			);
+			$this->assertSame([1, 2], [Query::paginate([1, 2], 0, 12)['page'], Query::paginate([1, 2], 1, 1)['pages']], 'paginate: page below 1 is 1');
 
 			// 7. Venue and organizer lists.
 			$beispielhof = $make(['id' => 'at-venue', 'venue' => $venue]);
@@ -134,16 +150,16 @@ final class QueryTest extends TestCase
 			$movedAway = $make(['id' => 'moved-away', 'venue' => $venue, 'status' => 'movedOnline']);
 			$noVenue = $make(['id' => 'no-venue']);
 			$venueList = [$beispielhof, $stadthalle, $movedAway, $noVenue];
-			expect(['at-venue'], $ids(Query::atVenue($venueList, 'venue-beispielhof')), 'atVenue: physical venue only, moved online excluded');
-			expect([], $ids(Query::atVenue($venueList, 'venue-unknown')), 'atVenue: unknown id gives nothing');
+			$this->assertSame(['at-venue'], $ids(Query::atVenue($venueList, 'venue-beispielhof')), 'atVenue: physical venue only, moved online excluded');
+			$this->assertSame([], $ids(Query::atVenue($venueList, 'venue-unknown')), 'atVenue: unknown id gives nothing');
 
 			$withOrganizer = $make(['id' => 'with-org', 'organizers' => [$organizer]]);
 			$withoutOrganizer = $make(['id' => 'without-org']);
-			expect(['with-org'], $ids(Query::byOrganizer([$withOrganizer, $withoutOrganizer], 'org-anna')), 'byOrganizer: matched by id');
-			expect([], $ids(Query::byOrganizer([$withOrganizer, $withoutOrganizer], 'org-sayama')), 'byOrganizer: other id gives nothing');
-			holds(Organizer::fromArray($organizer)->id === 'org-anna', 'organizer value object accepted by the list fixture');
-			holds(Venue::fromArray($venue)->id === 'venue-beispielhof', 'venue value object accepted by the list fixture');
-			holds(Attendance::fromToggles(false, false) === Attendance::OFFLINE, 'both toggles off counts as offline');
+			$this->assertSame(['with-org'], $ids(Query::byOrganizer([$withOrganizer, $withoutOrganizer], 'org-anna')), 'byOrganizer: matched by id');
+			$this->assertSame([], $ids(Query::byOrganizer([$withOrganizer, $withoutOrganizer], 'org-sayama')), 'byOrganizer: other id gives nothing');
+			$this->assertTrue(Organizer::fromArray($organizer)->id === 'org-anna', 'organizer value object accepted by the list fixture');
+			$this->assertTrue(Venue::fromArray($venue)->id === 'venue-beispielhof', 'venue value object accepted by the list fixture');
+			$this->assertTrue(Attendance::fromToggles(false, false) === Attendance::OFFLINE, 'both toggles off counts as offline');
 
 		} finally {
 

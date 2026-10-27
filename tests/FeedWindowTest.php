@@ -53,35 +53,47 @@ final class FeedWindowTest extends TestCase
 
 			// Finding 7: the window keeps what ended within feedPastDays, drops what ended before it.
 			$default = $feed();
-			holds(str_contains($default, 'UID:evt-recent@example.test'), 'default 30 days: an event that ended 11 days ago is in events.ics');
-			holds(!str_contains($default, 'UID:evt-old@example.test'), 'default 30 days: an event that ended 37 days ago is not');
-			holds(str_contains($default, 'UID:evt-running@example.test') && str_contains($default, 'UID:evt-plan@example.test'), 'running and upcoming events are in the feed');
+			$this->assertTrue(str_contains($default, 'UID:evt-recent@example.test'), 'default 30 days: an event that ended 11 days ago is in events.ics');
+			$this->assertTrue(!str_contains($default, 'UID:evt-old@example.test'), 'default 30 days: an event that ended 37 days ago is not');
+			$this->assertTrue(
+				str_contains($default, 'UID:evt-running@example.test') && str_contains($default, 'UID:evt-plan@example.test'),
+				'running and upcoming events are in the feed'
+			);
 
 			$wider = $feed(['sayamaapps.koyomi.feedPastDays' => 60]);
-			holds(str_contains($wider, 'UID:evt-old@example.test') && str_contains($wider, 'UID:evt-recent@example.test'), 'feedPastDays 60: both past events are in the feed');
+			$this->assertTrue(
+				str_contains($wider, 'UID:evt-old@example.test') && str_contains($wider, 'UID:evt-recent@example.test'),
+				'feedPastDays 60: both past events are in the feed'
+			);
 
 			$none = $feed(['sayamaapps.koyomi.feedPastDays' => 0]);
-			holds(!str_contains($none, 'UID:evt-recent@example.test') && !str_contains($none, 'UID:evt-old@example.test'), 'feedPastDays 0: nothing that has ended is in the feed');
-			holds(str_contains($none, 'UID:evt-running@example.test') && str_contains($none, 'UID:evt-plan@example.test'), 'feedPastDays 0: running and upcoming events stay');
+			$this->assertTrue(
+				!str_contains($none, 'UID:evt-recent@example.test') && !str_contains($none, 'UID:evt-old@example.test'),
+				'feedPastDays 0: nothing that has ended is in the feed'
+			);
+			$this->assertTrue(
+				str_contains($none, 'UID:evt-running@example.test') && str_contains($none, 'UID:evt-plan@example.test'),
+				'feedPastDays 0: running and upcoming events stay'
+			);
 
 			// Findings 10 and 18: own markup through koyomiData() lowers the expiry like the event snippet.
 			$app = KoyomiFixture::app($root);
-			expect(null, $app->response()->expires(), 'precondition: no expiry before the page is read');
+			$this->assertSame(null, $app->response()->expires(), 'precondition: no expiry before the page is read');
 			$data = $app->page('events/running-today')->koyomiData();
-			expect([true, false], [$data['isOngoing'], $data['isPast']], 'koyomiData: running now, not past');
-			expect(feed_window_berlin('2027-03-10 18:00'), $app->response()->expires(), 'koyomiData: the page cache expires at the end of the running event');
+			$this->assertSame([true, false], [$data['isOngoing'], $data['isPast']], 'koyomiData: running now, not past');
+			$this->assertSame(feed_window_berlin('2027-03-10 18:00'), $app->response()->expires(), 'koyomiData: the page cache expires at the end of the running event');
 
 			$app = KoyomiFixture::app($root);
 			$app->page('events/plan')->koyomiData();
-			expect(feed_window_berlin('2027-03-12 18:00'), $app->response()->expires(), 'koyomiData: an upcoming event expires at its start');
+			$this->assertSame(feed_window_berlin('2027-03-12 18:00'), $app->response()->expires(), 'koyomiData: an upcoming event expires at its start');
 
 			$app = KoyomiFixture::app($root);
-			holds($app->page('events/plan')->isOngoing() === false, 'isOngoing() is false before the start');
-			expect(feed_window_berlin('2027-03-12 18:00'), $app->response()->expires(), 'isOngoing() lowers the expiry too');
+			$this->assertTrue($app->page('events/plan')->isOngoing() === false, 'isOngoing() is false before the start');
+			$this->assertSame(feed_window_berlin('2027-03-12 18:00'), $app->response()->expires(), 'isOngoing() lowers the expiry too');
 
 			$app = KoyomiFixture::app($root);
-			holds($app->page('events/ended-recently')->isPast(), 'isPast() true for the event that ended');
-			holds($app->response()->expires() === null, 'isPast() of a past event with no later start: no expiry from this event alone');
+			$this->assertTrue($app->page('events/ended-recently')->isPast(), 'isPast() true for the event that ended');
+			$this->assertTrue($app->response()->expires() === null, 'isPast() of a past event with no later start: no expiry from this event alone');
 
 			// The page cache also goes stale when an event leaves the feed window and, for a
 			// timeline with its "Today" line, at local midnight — not only at starts and ends.
@@ -98,19 +110,26 @@ final class FeedWindowTest extends TestCase
 					'AllDay' => 'false', 'Timezone' => 'Europe/Berlin', 'InPerson' => 'true', 'Online' => 'false',
 				]);
 				$app = KoyomiFixture::app($sparse);
-				holds(str_contains((string)$app->render('events.ics')?->body(), 'UID:evt-recent@example.test'), 'sparse site: the event that ended 11 days ago is in the feed');
-				expect(feed_window_berlin('2027-03-29 11:00'), $app->response()->expires(), 'feed: expires when that event leaves the 30-day window, not at the next start in May');
+				$this->assertTrue(
+					str_contains((string)$app->render('events.ics')?->body(), 'UID:evt-recent@example.test'),
+					'sparse site: the event that ended 11 days ago is in the feed'
+				);
+				$this->assertSame(
+					feed_window_berlin('2027-03-29 11:00'),
+					$app->response()->expires(),
+					'feed: expires when that event leaves the 30-day window, not at the next start in May'
+				);
 				$app = KoyomiFixture::app($sparse, ['sayamaapps.koyomi.feedPastDays' => 0]);
 				$app->render('events.ics');
-				expect(feed_window_berlin('2027-05-01 18:00'), $app->response()->expires(), 'feedPastDays 0: nothing to leave, the next start');
+				$this->assertSame(feed_window_berlin('2027-05-01 18:00'), $app->response()->expires(), 'feedPastDays 0: nothing to leave, the next start');
 
 				$app = KoyomiFixture::app($sparse, ['sayamaapps.koyomi.groupBy' => 'month']);
 				$html = (string)$app->render('events')?->body();
-				holds(str_contains($html, 'class="koyomi-today"'), 'calendar page: the timeline shows its Today line');
-				expect(feed_window_berlin('2027-03-11 00:00'), $app->response()->expires(), 'calendar page with a Today line: expires at local midnight');
+				$this->assertTrue(str_contains($html, 'class="koyomi-today"'), 'calendar page: the timeline shows its Today line');
+				$this->assertSame(feed_window_berlin('2027-03-11 00:00'), $app->response()->expires(), 'calendar page with a Today line: expires at local midnight');
 				$app = KoyomiFixture::app($sparse, ['sayamaapps.koyomi.groupBy' => false]);
 				$app->render('events');
-				expect(feed_window_berlin('2027-05-01 18:00'), $app->response()->expires(), 'flat list without a Today line: the next start');
+				$this->assertSame(feed_window_berlin('2027-05-01 18:00'), $app->response()->expires(), 'flat list without a Today line: the next start');
 			} finally {
 				KoyomiFixture::remove($sparse);
 			}

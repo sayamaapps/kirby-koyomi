@@ -89,22 +89,36 @@ final class DraftsTest extends TestCase
 
 			// Finding 9 and 16: a draft venue and a draft organizer are not published with the event.
 			$planned = $raw('events/planned-retreat');
-			expect(null, $planned['venue'], 'draft venue: the event shows no venue');
-			expect(['Public Host'], array_map(fn ($o) => $o->name, Mapper::event($kirby->page('events/planned-retreat'))->organizers), 'draft organizer left out, public one kept');
-			holds(!str_contains(json_encode($planned, JSON_THROW_ON_ERROR), 'Secret') && !str_contains(json_encode($planned, JSON_THROW_ON_ERROR), 'draft-org'), 'draft venue and organizer leave no trace in the mapped data');
+			$this->assertSame(null, $planned['venue'], 'draft venue: the event shows no venue');
+			$this->assertSame(
+				['Public Host'],
+				array_map(fn ($o) => $o->name, Mapper::event($kirby->page('events/planned-retreat'))->organizers),
+				'draft organizer left out, public one kept'
+			);
+			$this->assertTrue(
+				!str_contains(json_encode($planned, JSON_THROW_ON_ERROR), 'Secret') && !str_contains(json_encode($planned, JSON_THROW_ON_ERROR), 'draft-org'),
+				'draft venue and organizer leave no trace in the mapped data'
+			);
 
 			// Finding 1 and 16: a draft series part (title, date, URL) is not in the series navigation.
 			// Raw: the sibling fields only (the event itself is added by Event::fromArray).
 			$partOneData = $raw('events/part-one');
-			expect(['Part Three'], array_map(fn ($s) => $s['title'], $partOneData['series']), 'series: the draft part and the foreign event are left out');
-			expect(['Part One', 'Part Three'], array_map(fn ($s) => $s['title'], Mapper::event($kirby->page('events/part-one'))->series), 'Event series: the published parts, the event itself included');
+			$this->assertSame(['Part Three'], array_map(fn ($s) => $s['title'], $partOneData['series']), 'series: the draft part and the foreign event are left out');
+			$this->assertSame(
+				['Part One', 'Part Three'],
+				array_map(fn ($s) => $s['title'], Mapper::event($kirby->page('events/part-one'))->series),
+				'Event series: the published parts, the event itself included'
+			);
 			$event = Mapper::event($kirby->page('events/part-one'));
-			expect(2, $event->seriesTotal(), 'series: total counts only the published parts');
-			expect([1, 3], [$event->seriesPart, $event->series[1]['part']], 'series: own part kept, the sibling keeps its own number');
-			holds(!str_contains(json_encode($partOneData, JSON_THROW_ON_ERROR), 'Secret') && !str_contains(json_encode($partOneData, JSON_THROW_ON_ERROR), 'Foreign'), 'series: no draft or foreign title in the data');
+			$this->assertSame(2, $event->seriesTotal(), 'series: total counts only the published parts');
+			$this->assertSame([1, 3], [$event->seriesPart, $event->series[1]['part']], 'series: own part kept, the sibling keeps its own number');
+			$this->assertTrue(
+				!str_contains(json_encode($partOneData, JSON_THROW_ON_ERROR), 'Secret') && !str_contains(json_encode($partOneData, JSON_THROW_ON_ERROR), 'Foreign'),
+				'series: no draft or foreign title in the data'
+			);
 
 			// Finding 9: the draft venue's page is not in the Panel-independent public lists either, and the event lists stay listed-only.
-			expect(['events/part-one', 'events/part-three', 'events/planned-retreat'], (function () use ($kirby) {
+			$this->assertSame(['events/part-one', 'events/part-three', 'events/planned-retreat'], (function () use ($kirby) {
 				$ids = array_map(fn ($p) => $p->id(), iterator_to_array(Repository::eventPages($kirby->page('events'))));
 				sort($ids);
 				return $ids;
@@ -112,16 +126,28 @@ final class DraftsTest extends TestCase
 
 			// The public HTML of the event page, the JSON feed and the ICS file show none of the drafts.
 			$html = (string)$kirby->render('events/part-one')?->body();
-			holds(str_contains($html, 'Part Three') && str_contains($html, 'Part One'), 'HTML: the published series parts are shown');
-			holds(!str_contains($html, 'Secret') && !str_contains($html, 'Foreign Event') && !str_contains($html, 'evt-part-two'), 'HTML: no draft series part, no foreign event');
+			$this->assertTrue(str_contains($html, 'Part Three') && str_contains($html, 'Part One'), 'HTML: the published series parts are shown');
+			$this->assertTrue(
+				!str_contains($html, 'Secret') && !str_contains($html, 'Foreign Event') && !str_contains($html, 'evt-part-two'),
+				'HTML: no draft series part, no foreign event'
+			);
 			$planHtml = (string)KoyomiFixture::app($root)->render('events/planned-retreat')?->body();
-			holds(str_contains($planHtml, 'Public Host') && !str_contains($planHtml, 'Secret') && !str_contains($planHtml, 'Geheimweg') && !str_contains($planHtml, 'draft-org'), 'HTML: draft venue and organizer are not printed, the public organizer is');
+			$this->assertTrue(
+				str_contains($planHtml, 'Public Host') && !str_contains($planHtml, 'Secret') && !str_contains($planHtml, 'Geheimweg') && !str_contains($planHtml, 'draft-org'),
+				'HTML: draft venue and organizer are not printed, the public organizer is'
+			);
 			$json = (string)KoyomiFixture::app($root, ['sayamaapps.koyomi.json' => true])->render('events.json')?->body();
-			holds(str_contains($json, 'Planned Retreat') && !str_contains($json, 'Secret') && !str_contains($json, 'Geheimweg') && !str_contains($json, 'draft-org') && !str_contains($json, 'Foreign'), 'JSON feed: no draft and no foreign data');
+			$this->assertTrue(
+								str_contains(
+					$json,
+					'Planned Retreat'
+				) && !str_contains($json, 'Secret') && !str_contains($json, 'Geheimweg') && !str_contains($json, 'draft-org') && !str_contains($json, 'Foreign'),
+				'JSON feed: no draft and no foreign data'
+			);
 			$ics = (string)KoyomiFixture::app($root)->render('events/part-one.ics')?->body();
-			holds(!str_contains($ics, 'Secret') && !str_contains($ics, 'Foreign') && !str_contains($ics, 'Part Two'), 'ICS: no draft series part in the event file');
+			$this->assertTrue(!str_contains($ics, 'Secret') && !str_contains($ics, 'Foreign') && !str_contains($ics, 'Part Two'), 'ICS: no draft series part in the event file');
 			$feed = (string)KoyomiFixture::app($root)->render('events.ics')?->body();
-			holds(!str_contains($feed, 'Secret') && !str_contains($feed, 'Geheimweg') && !str_contains($feed, 'draft-org'), 'ICS feed: no draft data');
+			$this->assertTrue(!str_contains($feed, 'Secret') && !str_contains($feed, 'Geheimweg') && !str_contains($feed, 'draft-org'), 'ICS feed: no draft data');
 		};
 
 
@@ -136,18 +162,22 @@ final class DraftsTest extends TestCase
 			file_put_contents($foreignRoot . '/site/templates/home.php', '<?php snippet("koyomi/list") ?>');
 
 			$kirby = KoyomiFixture::app($foreignRoot);
-			expect(null, Repository::calendar($kirby), 'a draft calendar is not the calendar');
-			expect(null, $kirby->site()->koyomiCalendar(), 'site()->koyomiCalendar() is null for a draft calendar only');
-			expect(null, Repository::calendar(KoyomiFixture::app($foreignRoot, ['sayamaapps.koyomi.calendar' => '_drafts/events'])), 'a configured draft calendar is not used either');
+			$this->assertSame(null, Repository::calendar($kirby), 'a draft calendar is not the calendar');
+			$this->assertSame(null, $kirby->site()->koyomiCalendar(), 'site()->koyomiCalendar() is null for a draft calendar only');
+			$this->assertSame(
+				null,
+				Repository::calendar(KoyomiFixture::app($foreignRoot, ['sayamaapps.koyomi.calendar' => '_drafts/events'])),
+				'a configured draft calendar is not used either'
+			);
 			$home = (string)KoyomiFixture::app($foreignRoot)->render('')?->body();
-			holds(!str_contains($home, 'Draft Calendar Talk'), 'home page list: the draft calendar\'s events do not appear');
-			holds(str_contains($home, 'koyomi-empty'), 'home page list: the empty state is printed instead');
+			$this->assertTrue(!str_contains($home, 'Draft Calendar Talk'), 'home page list: the draft calendar\'s events do not appear');
+			$this->assertTrue(str_contains($home, 'koyomi-empty'), 'home page list: the empty state is printed instead');
 
 			// Draft venues and organizers remain pickable in the Panel (collections are not changed).
 			$picker = KoyomiFixture::app($root);
 			$pickerSlugs = array_map(fn ($p) => $p->slug(), iterator_to_array(Repository::organizerPages($picker)));
 			sort($pickerSlugs);
-			expect(['public', 'secret'], $pickerSlugs, 'Panel picker still offers draft organizers');
+			$this->assertSame(['public', 'secret'], $pickerSlugs, 'Panel picker still offers draft organizers');
 		};
 
 		try {

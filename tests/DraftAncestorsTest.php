@@ -96,22 +96,22 @@ final class DraftAncestorsTest extends TestCase
 			// What the test guards against: Kirby's own isDraft() is false for the children.
 			foreach ([['venues/hidden', 'venues'], ['organizers/hidden', 'organizers'], ['region/venues/far', 'region']] as [$childId, $topId]) {
 				$child = $kirby->page('_drafts/' . $childId);
-				holds($child !== null, $childId . ': the page below the draft resolves');
-				expect(false, $child->isDraft(), $childId . ': Kirby says the page itself is no draft');
-				expect(true, $kirby->page('_drafts/' . $topId)->isDraft(), $topId . ': the container is a draft');
-				expect(true, Mapper::isDraft($child), $childId . ': Mapper::isDraft() sees the draft above');
-				expect(null, $kirby->site()->find($childId), $childId . ': Kirby\'s Site::find() does not reach it');
+				$this->assertTrue($child !== null, $childId . ': the page below the draft resolves');
+				$this->assertSame(false, $child->isDraft(), $childId . ': Kirby says the page itself is no draft');
+				$this->assertSame(true, $kirby->page('_drafts/' . $topId)->isDraft(), $topId . ': the container is a draft');
+				$this->assertSame(true, Mapper::isDraft($child), $childId . ': Mapper::isDraft() sees the draft above');
+				$this->assertSame(null, $kirby->site()->find($childId), $childId . ': Kirby\'s Site::find() does not reach it');
 			}
-			expect(false, Mapper::isDraft($kirby->page('places/open')), 'a venue below a published container is no draft');
-			expect(false, Mapper::isDraft($kirby->page('events/open-places')), 'a published event is no draft');
+			$this->assertSame(false, Mapper::isDraft($kirby->page('places/open')), 'a venue below a published container is no draft');
+			$this->assertSame(false, Mapper::isDraft($kirby->page('events/open-places')), 'a published event is no draft');
 
 			// The mapped data.
 			$hidden = Mapper::raw($kirby->page('events/hidden-places'));
-			expect(null, $hidden['venue'], 'venue below a draft container: not in the event data');
-			expect([], $hidden['organizers'], 'organizer below a draft container: not in the event data');
-			expect(null, Mapper::raw($kirby->page('events/far-place'))['venue'], 'venue two levels below a draft: not in the event data');
+			$this->assertSame(null, $hidden['venue'], 'venue below a draft container: not in the event data');
+			$this->assertSame([], $hidden['organizers'], 'organizer below a draft container: not in the event data');
+			$this->assertSame(null, Mapper::raw($kirby->page('events/far-place'))['venue'], 'venue two levels below a draft: not in the event data');
 			$open = Mapper::raw($kirby->page('events/open-places'));
-			holds($open['venue'] !== null && count($open['organizers']) === 1, 'counter-check: venue and organizer below published containers are kept');
+			$this->assertTrue($open['venue'] !== null && count($open['organizers']) === 1, 'counter-check: venue and organizer below published containers are kept');
 
 			// Every output of the hidden event and the far event, and the feeds.
 			$secrets = ['Hidden Hall', 'Verstecktgasse', 'Hidden Host', 'hidden-host@example.org', 'Faraway Hall', 'Fernweg'];
@@ -125,23 +125,26 @@ final class DraftAncestorsTest extends TestCase
 				'calendar RSS' => $body($root, 'events.rss'),
 			];
 			foreach ($outputs as $name => $text) {
-				holds(str_contains($text, 'Event') || str_contains($text, 'BEGIN:VCALENDAR'), $name . ': rendered something');
+				$this->assertTrue(str_contains($text, 'Event') || str_contains($text, 'BEGIN:VCALENDAR'), $name . ': rendered something');
 				foreach ($secrets as $secret) {
-					holds(!str_contains($text, $secret), $name . ': does not contain "' . $secret . '"');
+					$this->assertTrue(!str_contains($text, $secret), $name . ': does not contain "' . $secret . '"');
 				}
 			}
 
 			// Counter-check: the same kind of pages below a published container are shown.
 			$openHtml = $body($root, 'events/open-places');
-			holds(str_contains($openHtml, 'Open Hall') && str_contains($openHtml, 'Open Host'), 'counter-check HTML: venue and organizer below published containers are shown');
+			$this->assertTrue(
+				str_contains($openHtml, 'Open Hall') && str_contains($openHtml, 'Open Host'),
+				'counter-check HTML: venue and organizer below published containers are shown'
+			);
 			$openIcs = $body($root, 'events/open-places.ics');
-			holds(str_contains($openIcs, 'Open Hall'), 'counter-check ICS: the venue below a published container is shown');
-			holds(str_contains($body($root, 'events.json', $jsonOptions), 'Open Hall'), 'counter-check JSON: the venue below a published container is shown');
+			$this->assertTrue(str_contains($openIcs, 'Open Hall'), 'counter-check ICS: the venue below a published container is shown');
+			$this->assertTrue(str_contains($body($root, 'events.json', $jsonOptions), 'Open Hall'), 'counter-check JSON: the venue below a published container is shown');
 
 			// The direct URLs are 404.
 			foreach (['venues/hidden', 'organizers/hidden', 'region/venues/far'] as $path) {
 				$response = KoyomiFixture::app($root)->render($path);
-				expect(404, $response?->code(), $path . ': the page\'s own URL answers 404');
+				$this->assertSame(404, $response?->code(), $path . ': the page\'s own URL answers 404');
 			}
 		};
 
@@ -156,16 +159,21 @@ final class DraftAncestorsTest extends TestCase
 
 			$kirby = KoyomiFixture::app($archiveRoot, ['sayamaapps.koyomi.calendar' => '_drafts/archive/events']);
 			$calendarPage = $kirby->page('_drafts/archive/events');
-			holds($calendarPage !== null && $calendarPage->intendedTemplate()->name() === 'koyomi-calendar', 'the configured calendar page resolves');
-			expect(false, $calendarPage->isDraft(), 'the calendar page itself is no draft in Kirby\'s eyes');
-			expect(null, Repository::calendar($kirby), 'a calendar below a draft container is not the calendar');
-			expect(null, $kirby->site()->koyomiCalendar(), 'site()->koyomiCalendar() is null for it too');
+			$this->assertTrue($calendarPage !== null && $calendarPage->intendedTemplate()->name() === 'koyomi-calendar', 'the configured calendar page resolves');
+			$this->assertSame(false, $calendarPage->isDraft(), 'the calendar page itself is no draft in Kirby\'s eyes');
+			$this->assertSame(null, Repository::calendar($kirby), 'a calendar below a draft container is not the calendar');
+			$this->assertSame(null, $kirby->site()->koyomiCalendar(), 'site()->koyomiCalendar() is null for it too');
 
 			$kirby = KoyomiFixture::app($archiveRoot);
 			$event = $kirby->page('_drafts/archive/events/buried') ?? $kirby->page('archive/events/buried');
-			holds($event !== null && $event->intendedTemplate()->name() === 'koyomi-event', 'the event below the draft container resolves');
-			expect(false, $event->isDraft(), 'the event itself is no draft in Kirby\'s eyes');
-			throws(NotFoundException::class, fn () => Output::eventIcs($event), 'eventIcs() of an event below a draft container');
+			$this->assertTrue($event !== null && $event->intendedTemplate()->name() === 'koyomi-event', 'the event below the draft container resolves');
+			$this->assertSame(false, $event->isDraft(), 'the event itself is no draft in Kirby\'s eyes');
+			try {
+				Output::eventIcs($event);
+				$this->fail('eventIcs() of an event below a draft container: nothing thrown');
+			} catch (NotFoundException $e) {
+				$this->assertInstanceOf(NotFoundException::class, $e, 'eventIcs() of an event below a draft container');
+			}
 		};
 
 		try {

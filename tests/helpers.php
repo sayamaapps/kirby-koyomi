@@ -1,37 +1,9 @@
 <?php
 
 /**
- * Shared helpers for the PHPUnit tests (loaded by tests/bootstrap.php).
- *
- * expect(), holds() and throws() are thin wrappers around PHPUnit's assertions,
- * so each call counts as one assertion and reports its label on failure.
+ * Shared test helpers (loaded by tests/bootstrap.php). Assertions are PHPUnit's own,
+ * called as $this->assertSame(), $this->assertTrue() and so on.
  */
-
-use PHPUnit\Framework\Assert;
-
-/** Strict equality (===). The label names the check. */
-function expect(mixed $expected, mixed $actual, string $what): void
-{
-	Assert::assertSame($expected, $actual, $what);
-}
-
-/** A condition that must be true. */
-function holds(bool $ok, string $what): void
-{
-	Assert::assertTrue($ok, $what);
-}
-
-/** The callable must throw an instance of $class. */
-function throws(string $class, callable $fn, string $what): void
-{
-	try {
-		$fn();
-	} catch (Throwable $e) {
-		Assert::assertInstanceOf($class, $e, $what);
-		return;
-	}
-	Assert::fail($what . ': nothing thrown, expected ' . $class);
-}
 
 /** Loads every Kirby-free class of the plugin (no Kirby, no index.php). */
 function koyomi_require_core(): void

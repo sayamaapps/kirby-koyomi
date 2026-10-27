@@ -63,7 +63,7 @@ final class MultilangTest extends TestCase
 		try {
 
 			$app = multilang_app($root);
-			holds($app->multilang(), 'the test site is multi-language');
+			$this->assertTrue($app->multilang(), 'the test site is multi-language');
 
 			// Finding 8 / 2: cancel and move in the default language; the Czech translation follows.
 			$app->impersonate('kirby');
@@ -72,18 +72,29 @@ final class MultilangTest extends TestCase
 			$app = multilang_app($root);
 			$app->setCurrentLanguage('cs');
 			$czech = $app->page('events/retreat');
-			expect('Retreat CZ', $czech->title()->value(), 'cs keeps its own title');
+			$this->assertSame('Retreat CZ', $czech->title()->value(), 'cs keeps its own title');
 			// The stored Czech file still says "scheduled" and the old date (saved before the field was shared).
-			expect(['scheduled', '2027-03-12'], [$czech->content('cs')->get('eventStatus')->value(), substr($czech->content('cs')->get('startDate')->value(), 0, 10)], 'precondition: the Czech file holds the old values');
+			$this->assertSame(
+				['scheduled', '2027-03-12'],
+				[$czech->content('cs')->get('eventStatus')->value(), substr($czech->content('cs')->get('startDate')->value(), 0, 10)],
+				'precondition: the Czech file holds the old values'
+			);
 			$czechEvent = Mapper::event($czech);
-			expect(['cancelled', '2027-04-01'], [$czechEvent->status, substr(Mapper::raw($czech)['startDate'], 0, 10)], 'cs: the Event is the cancelled one on the new date (shared fields from the default language)');
+			$this->assertSame(
+				['cancelled', '2027-04-01'],
+				[$czechEvent->status, substr(Mapper::raw($czech)['startDate'], 0, 10)],
+				'cs: the Event is the cancelled one on the new date (shared fields from the default language)'
+			);
 			$czechIcs = (string)$app->render('events/retreat.ics')?->body();
-			holds(str_contains($czechIcs, 'STATUS:CANCELLED') && str_contains($czechIcs, 'DTSTART;TZID=Europe/Berlin:20270401T180000'), 'cs ICS: same status and date as de');
+			$this->assertTrue(
+				str_contains($czechIcs, 'STATUS:CANCELLED') && str_contains($czechIcs, 'DTSTART;TZID=Europe/Berlin:20270401T180000'),
+				'cs ICS: same status and date as de'
+			);
 
 			$app->setCurrentLanguage('de');
 			$deIcs = (string)multilang_app($root)->render('events/retreat.ics')?->body();
-			holds(str_contains($deIcs, 'STATUS:CANCELLED') && str_contains($deIcs, 'DTSTART;TZID=Europe/Berlin:20270401T180000'), 'de ICS: cancelled on the new date');
-			holds(str_contains($deIcs, 'UID:evt-retreat@example.test') && str_contains($czechIcs, 'UID:evt-retreat@example.test'), 'the same UID in every language');
+			$this->assertTrue(str_contains($deIcs, 'STATUS:CANCELLED') && str_contains($deIcs, 'DTSTART;TZID=Europe/Berlin:20270401T180000'), 'de ICS: cancelled on the new date');
+			$this->assertTrue(str_contains($deIcs, 'UID:evt-retreat@example.test') && str_contains($czechIcs, 'UID:evt-retreat@example.test'), 'the same UID in every language');
 
 			// Finding 2: the duplicate reset reaches every translation of the copy.
 			$app = multilang_app($root);
@@ -92,15 +103,15 @@ final class MultilangTest extends TestCase
 			$app->page('events/retreat')->update(['EventStatus' => 'cancelled', 'StatusNote' => 'Zrušeno'], 'cs');
 			$app->setCurrentLanguage('de');
 			$copy = $app->page('events/retreat')->duplicate('retreat-copy');
-			holds($copy instanceof Page, 'duplicate returns a Page');
-			expect('scheduled', $copy->content()->get('eventStatus')->value(), 'duplicate: de status reset');
+			$this->assertTrue($copy instanceof Page, 'duplicate returns a Page');
+			$this->assertSame('scheduled', $copy->content()->get('eventStatus')->value(), 'duplicate: de status reset');
 			// A fresh App reads the copy the way a later request does (the duplicate's own page object still holds the pre-reset content).
 			$fresh = multilang_app($root);
 			$fresh->impersonate('kirby');
 			$fresh->setCurrentLanguage('cs');
 			$copyCs = $fresh->page('events/retreat-copy');
-			expect('scheduled', Mapper::event($copyCs)->status, 'duplicate: the Czech translation is reset too (what the outputs read)');
-			expect('', Mapper::raw($copyCs)['statusNote'], 'duplicate: a translatable status note is cleared in every language');
+			$this->assertSame('scheduled', Mapper::event($copyCs)->status, 'duplicate: the Czech translation is reset too (what the outputs read)');
+			$this->assertSame('', Mapper::raw($copyCs)['statusNote'], 'duplicate: a translatable status note is cleared in every language');
 			$copyCs->delete(true);
 
 		} finally {

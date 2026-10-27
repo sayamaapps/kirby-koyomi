@@ -136,42 +136,42 @@ final class IcsTest extends TestCase
 			$retreat = ics_test_retreat();
 
 			// escape(): each special character, and the order of the replacements.
-			expect('\\\\', Ics::escape('\\'), 'backslash doubled');
-			expect('\\;', Ics::escape(';'), 'semicolon escaped');
-			expect('\\,', Ics::escape(','), 'comma escaped');
-			expect('\\n', Ics::escape("\r\n"), 'CRLF becomes backslash-n');
-			expect('\\n', Ics::escape("\r"), 'bare CR becomes backslash-n');
-			expect('\\n', Ics::escape("\n"), 'bare LF becomes backslash-n');
-			expect('n', Ics::escape('n'), 'the letter n is not touched');
-			expect('a\\\\b\\;c\\,d\\ne', Ics::escape("a\\b;c,d\ne"), 'mixed text escaped once');
-			expect('\\\\\\;', Ics::escape('\\;'), 'backslash before semicolon: no double escaping');
-			expect('Lüge\\, nein', Ics::escape('Lüge, nein'), 'umlauts untouched, comma escaped');
+			$this->assertSame('\\\\', Ics::escape('\\'), 'backslash doubled');
+			$this->assertSame('\\;', Ics::escape(';'), 'semicolon escaped');
+			$this->assertSame('\\,', Ics::escape(','), 'comma escaped');
+			$this->assertSame('\\n', Ics::escape("\r\n"), 'CRLF becomes backslash-n');
+			$this->assertSame('\\n', Ics::escape("\r"), 'bare CR becomes backslash-n');
+			$this->assertSame('\\n', Ics::escape("\n"), 'bare LF becomes backslash-n');
+			$this->assertSame('n', Ics::escape('n'), 'the letter n is not touched');
+			$this->assertSame('a\\\\b\\;c\\,d\\ne', Ics::escape("a\\b;c,d\ne"), 'mixed text escaped once');
+			$this->assertSame('\\\\\\;', Ics::escape('\\;'), 'backslash before semicolon: no double escaping');
+			$this->assertSame('Lüge\\, nein', Ics::escape('Lüge, nein'), 'umlauts untouched, comma escaped');
 
 			// fold(): octets, not characters; continuation = CRLF + space.
 			$ascii = 'DESCRIPTION:' . str_repeat('a', 100);
-			expect(112, strlen($ascii), 'fixture is 112 octets');
-			expect(
+			$this->assertSame(112, strlen($ascii), 'fixture is 112 octets');
+			$this->assertSame(
 				'DESCRIPTION:' . str_repeat('a', 63) . "\r\n " . str_repeat('a', 37),
 				Ics::fold($ascii),
 				'ASCII 112 octets: 75 + 37',
 			);
 			$umlaut = 'SUMMARY:' . str_repeat('ä', 40);
-			expect(88, strlen($umlaut), 'fixture is 88 octets');
-			expect(
+			$this->assertSame(88, strlen($umlaut), 'fixture is 88 octets');
+			$this->assertSame(
 				'SUMMARY:' . str_repeat('ä', 33) . "\r\n " . str_repeat('ä', 7),
 				Ics::fold($umlaut),
 				'ä line: first chunk 74 octets (no split inside ä), continuation 15 with the space',
 			);
-			expect(str_repeat('b', 75), Ics::fold(str_repeat('b', 75)), 'exactly 75 octets unchanged');
-			expect(
+			$this->assertSame(str_repeat('b', 75), Ics::fold(str_repeat('b', 75)), 'exactly 75 octets unchanged');
+			$this->assertSame(
 				str_repeat('b', 75) . "\r\n b",
 				Ics::fold(str_repeat('b', 76)),
 				'76 octets: one more chunk',
 			);
-			expect('short line', Ics::fold('short line'), 'short line unchanged');
+			$this->assertSame('short line', Ics::fold('short line'), 'short line unchanged');
 			$emoji = str_repeat('a', 73) . "\u{1F600}";
-			expect(77, strlen($emoji), 'fixture: 73 ASCII + one 4-byte emoji');
-			expect(
+			$this->assertSame(77, strlen($emoji), 'fixture: 73 ASCII + one 4-byte emoji');
+			$this->assertSame(
 				str_repeat('a', 73) . "\r\n \u{1F600}",
 				Ics::fold($emoji),
 				'a 4-byte emoji is never split (cut moves back to 73)',
@@ -179,43 +179,43 @@ final class IcsTest extends TestCase
 			$emojis = Ics::fold(str_repeat("\u{1F600}", 30));
 			foreach (explode("\r\n", $emojis) as $index => $physical) {
 				$content = $index === 0 ? $physical : substr($physical, 1);
-				holds(strlen($physical) <= 75, 'emoji physical line ≤ 75 octets');
-				holds(preg_match('//u', $content) === 1, 'emoji chunk is valid UTF-8 on its own');
+				$this->assertTrue(strlen($physical) <= 75, 'emoji physical line ≤ 75 octets');
+				$this->assertTrue(preg_match('//u', $content) === 1, 'emoji chunk is valid UTF-8 on its own');
 			}
-			expect(str_repeat("\u{1F600}", 30), str_replace("\r\n ", '', $emojis), 'emoji fold unfolds to the original');
+			$this->assertSame(str_repeat("\u{1F600}", 30), str_replace("\r\n ", '', $emojis), 'emoji fold unfolds to the original');
 
 			// render(): CRLF everywhere, final CRLF, every physical line ≤ 75 octets.
-			expect("A:1\r\nB:2\r\n", Ics::render(['A:1', 'B:2']), 'render joins with CRLF and ends with CRLF');
-			expect('', Ics::render([]), 'render of no lines is empty');
+			$this->assertSame("A:1\r\nB:2\r\n", Ics::render(['A:1', 'B:2']), 'render joins with CRLF and ends with CRLF');
+			$this->assertSame('', Ics::render([]), 'render of no lines is empty');
 			$document = Ics::event($retreat, ics_test_options());
-			holds(str_ends_with($document, "\r\n"), 'document ends with CRLF');
-			holds(preg_match('/(?<!\r)\n/', $document) === 0, 'no bare LF in the document');
-			holds(preg_match('/\r(?!\n)/', $document) === 0, 'no bare CR in the document');
+			$this->assertTrue(str_ends_with($document, "\r\n"), 'document ends with CRLF');
+			$this->assertTrue(preg_match('/(?<!\r)\n/', $document) === 0, 'no bare LF in the document');
+			$this->assertTrue(preg_match('/\r(?!\n)/', $document) === 0, 'no bare CR in the document');
 			foreach (explode("\r\n", $document) as $physical) {
-				holds(strlen($physical) <= 75, 'every physical line ≤ 75 octets: ' . $physical);
+				$this->assertTrue(strlen($physical) <= 75, 'every physical line ≤ 75 octets: ' . $physical);
 			}
 
 			// uid()
-			expect('evt-retreat@example.test', Ics::uid($retreat, 'example.test'), 'uid of a clean id');
+			$this->assertSame('evt-retreat@example.test', Ics::uid($retreat, 'example.test'), 'uid of a clean id');
 			$messy = ics_test_retreat(['id' => 'evt retreat/1 ä']);
-			expect('evt-retreat-1--@example.test', Ics::uid($messy, 'example.test'), 'uid: space, slash and ä become "-" (one each)');
+			$this->assertSame('evt-retreat-1--@example.test', Ics::uid($messy, 'example.test'), 'uid: space, slash and ä become "-" (one each)');
 			$dots = ics_test_retreat(['id' => 'Abc.def_ghi-9']);
-			expect('Abc.def_ghi-9@example.test', Ics::uid($dots, 'example.test'), 'uid: [A-Za-z0-9._-] kept');
+			$this->assertSame('Abc.def_ghi-9@example.test', Ics::uid($dots, 'example.test'), 'uid: [A-Za-z0-9._-] kept');
 
 			// sequence()
-			expect(3552720, Ics::sequence($retreat), 'SEQUENCE example of the reference retreat');
-			expect(0, Ics::sequence(koyomi_test_event_modified(0)), 'SEQUENCE 0 for modified 0');
-			expect(0, Ics::sequence(koyomi_test_event_modified(1)), 'SEQUENCE 0 before the epoch');
-			expect(3552730, Ics::sequence(koyomi_test_event_modified(1791000600)), 'SEQUENCE grows with modified (10 minutes later)');
-			holds(Ics::sequence(koyomi_test_event_modified(1791000600)) > Ics::sequence($retreat), 'SEQUENCE is monotonic');
+			$this->assertSame(3552720, Ics::sequence($retreat), 'SEQUENCE example of the reference retreat');
+			$this->assertSame(0, Ics::sequence(koyomi_test_event_modified(0)), 'SEQUENCE 0 for modified 0');
+			$this->assertSame(0, Ics::sequence(koyomi_test_event_modified(1)), 'SEQUENCE 0 before the epoch');
+			$this->assertSame(3552730, Ics::sequence(koyomi_test_event_modified(1791000600)), 'SEQUENCE grows with modified (10 minutes later)');
+			$this->assertTrue(Ics::sequence(koyomi_test_event_modified(1791000600)) > Ics::sequence($retreat), 'SEQUENCE is monotonic');
 
 			// vevent(): the full VEVENT of $retreat, line by line.
-			expect(
+			$this->assertSame(
 				ics_test_retreat_vevent(),
 				Ics::vevent($retreat, ics_test_options()),
 				'full VEVENT of the reference retreat',
 			);
-			holds(ics_test_line(Ics::vevent(koyomi_test_event_modified(0), ics_test_options()), 'LAST-MODIFIED:') === null, 'LAST-MODIFIED omitted when modified = 0');
+			$this->assertTrue(ics_test_line(Ics::vevent(koyomi_test_event_modified(0), ics_test_options()), 'LAST-MODIFIED:') === null, 'LAST-MODIFIED omitted when modified = 0');
 
 			// calendar(): header, timezone and the complete document of $retreat.
 			// No METHOD: a feed or download is no iTIP message, and PUBLISH would need an
@@ -232,22 +232,22 @@ final class IcsTest extends TestCase
 				ics_test_retreat_vevent(),
 				['END:VCALENDAR'],
 			);
-			expect(
+			$this->assertSame(
 				Ics::render($expectedDocument),
 				Ics::event($retreat, ics_test_options()),
 				'event() of the reference retreat: header, VTIMEZONE, VEVENT, END',
 			);
-			expect(
+			$this->assertSame(
 				$expectedDocument,
 				ics_test_unfold(Ics::event($retreat, ics_test_options())),
 				'the unfolded document matches the expected line list',
 			);
 			$bare = ics_test_unfold(Ics::calendar([], ics_test_options()));
-			expect(array_merge($header, ['END:VCALENDAR']), $bare, 'empty calendar: header and END only');
+			$this->assertSame(array_merge($header, ['END:VCALENDAR']), $bare, 'empty calendar: header and END only');
 			$withHeader = ics_test_unfold(Ics::calendar([$retreat], ics_test_options([
 				'name' => 'Events, Sayama', 'description' => 'Upcoming', 'timezone' => 'Europe/Berlin', 'refresh' => 'PT6H',
 			])));
-			expect(
+			$this->assertSame(
 				array_merge($header, [
 					'X-WR-CALNAME:Events\\, Sayama',
 					'X-WR-CALDESC:Upcoming',
@@ -258,10 +258,10 @@ final class IcsTest extends TestCase
 				array_slice($withHeader, 0, count($header) + 5),
 				'calendar header with X-WR-* and refresh, in output order',
 			);
-			expect('BEGIN:VTIMEZONE', $withHeader[count($header) + 5], 'VTIMEZONE follows the header');
+			$this->assertSame('BEGIN:VTIMEZONE', $withHeader[count($header) + 5], 'VTIMEZONE follows the header');
 			$noWrLines = ics_test_unfold(Ics::calendar([$retreat], ics_test_options()));
-			holds(ics_test_line($noWrLines, 'X-WR-') === null && ics_test_line($noWrLines, 'REFRESH-INTERVAL') === null, 'X-WR-* and refresh omitted when not given');
-			holds(ics_test_line($withHeader, 'METHOD') === null && ics_test_line($noWrLines, 'METHOD') === null, 'no METHOD line in the calendar header');
+			$this->assertTrue(ics_test_line($noWrLines, 'X-WR-') === null && ics_test_line($noWrLines, 'REFRESH-INTERVAL') === null, 'X-WR-* and refresh omitted when not given');
+			$this->assertTrue(ics_test_line($withHeader, 'METHOD') === null && ics_test_line($noWrLines, 'METHOD') === null, 'no METHOD line in the calendar header');
 
 			// Zones: one VTIMEZONE per zone of the timed events, sorted by name.
 			$prague = Event::fromArray(koyomi_raw_event([
@@ -273,16 +273,16 @@ final class IcsTest extends TestCase
 				'endTime' => '11:00', 'timezone' => 'Europe/Berlin',
 			]));
 			$two = Ics::calendar([$prague, $retreat, $berlinOther], ics_test_options());
-			expect(2, substr_count($two, "BEGIN:VTIMEZONE\r\n"), 'one VTIMEZONE per zone (Berlin twice → once)');
+			$this->assertSame(2, substr_count($two, "BEGIN:VTIMEZONE\r\n"), 'one VTIMEZONE per zone (Berlin twice → once)');
 			$zoneOrder = array_values(array_filter(ics_test_unfold($two), fn (string $l) => str_starts_with($l, 'TZID:')));
-			expect(['TZID:Europe/Berlin', 'TZID:Europe/Prague'], $zoneOrder, 'VTIMEZONEs sorted by zone name');
+			$this->assertSame(['TZID:Europe/Berlin', 'TZID:Europe/Prague'], $zoneOrder, 'VTIMEZONEs sorted by zone name');
 			$allDayOnly = Event::fromArray(koyomi_raw_event([
 				'id' => 'evt-allday', 'startDate' => '2027-03-25', 'startTime' => '', 'endDate' => '', 'endTime' => '',
 				'allDay' => 'true',
 			]));
-			holds(!str_contains(Ics::calendar([$allDayOnly], ics_test_options()), 'VTIMEZONE'), 'no VTIMEZONE for an all-day-only calendar');
+			$this->assertTrue(!str_contains(Ics::calendar([$allDayOnly], ics_test_options()), 'VTIMEZONE'), 'no VTIMEZONE for an all-day-only calendar');
 			$ordered = ics_test_unfold(Ics::calendar([$prague, $retreat], ics_test_options()));
-			expect(['UID:evt-foreign-zone@example.test', 'UID:evt-retreat@example.test'], array_values(array_filter(
+			$this->assertSame(['UID:evt-foreign-zone@example.test', 'UID:evt-retreat@example.test'], array_values(array_filter(
 				$ordered,
 				fn (string $l) => str_starts_with($l, 'UID:'),
 			)), 'events keep the given order (foreign zone first, although it sorts after Berlin)');
@@ -293,18 +293,18 @@ final class IcsTest extends TestCase
 				'endTime' => '', 'allDay' => 'true',
 			]));
 			$allDayLines = ics_test_unfold(Ics::event($allDay, ics_test_options()));
-			expect('DTSTART;VALUE=DATE:20270330', ics_test_line($allDayLines, 'DTSTART'), 'all-day DTSTART as DATE');
-			expect('DTEND;VALUE=DATE:20270401', ics_test_line($allDayLines, 'DTEND'), 'all-day DTEND is the day after the last day (month end)');
+			$this->assertSame('DTSTART;VALUE=DATE:20270330', ics_test_line($allDayLines, 'DTSTART'), 'all-day DTSTART as DATE');
+			$this->assertSame('DTEND;VALUE=DATE:20270401', ics_test_line($allDayLines, 'DTEND'), 'all-day DTEND is the day after the last day (month end)');
 			$single = Event::fromArray(koyomi_raw_event([
 				'id' => 'evt-day', 'startDate' => '2027-03-25', 'startTime' => '', 'endDate' => '', 'endTime' => '', 'allDay' => 'true',
 			]));
-			expect('DTEND;VALUE=DATE:20270326', ics_test_line(ics_test_unfold(Ics::event($single, ics_test_options())), 'DTEND'), 'single all-day: DTEND = next day');
+			$this->assertSame('DTEND;VALUE=DATE:20270326', ics_test_line(ics_test_unfold(Ics::event($single, ics_test_options())), 'DTEND'), 'single all-day: DTEND = next day');
 			$acrossDst = Event::fromArray(koyomi_raw_event([
 				'id' => 'evt-dst', 'startDate' => '2027-03-27', 'startTime' => '', 'endDate' => '2027-03-28', 'endTime' => '', 'allDay' => 'true',
 			]));
 			$dstDocument = Ics::event($acrossDst, ics_test_options());
-			expect('DTEND;VALUE=DATE:20270329', ics_test_line(ics_test_unfold($dstDocument), 'DTEND'), 'all-day across the DST change: DATE values, no time');
-			holds(!str_contains($dstDocument, 'TZID') && !str_contains($dstDocument, 'VTIMEZONE'), 'all-day: no TZID and no VTIMEZONE');
+			$this->assertSame('DTEND;VALUE=DATE:20270329', ics_test_line(ics_test_unfold($dstDocument), 'DTEND'), 'all-day across the DST change: DATE values, no time');
+			$this->assertTrue(!str_contains($dstDocument, 'TZID') && !str_contains($dstDocument, 'VTIMEZONE'), 'all-day: no TZID and no VTIMEZONE');
 
 			// UTC zone: Z form, no VTIMEZONE.
 			$utc = Event::fromArray(koyomi_raw_event([
@@ -312,46 +312,58 @@ final class IcsTest extends TestCase
 			]));
 			$utcDocument = Ics::event($utc, ics_test_options());
 			$utcLines = ics_test_unfold($utcDocument);
-			expect('DTSTART:20270312T180000Z', ics_test_line($utcLines, 'DTSTART'), 'UTC zone: Z form');
-			expect('DTEND:20270312T200000Z', ics_test_line($utcLines, 'DTEND'), 'UTC zone: Z form end');
-			holds(!str_contains($utcDocument, 'TZID') && !str_contains($utcDocument, 'VTIMEZONE'), 'UTC zone: no TZID and no VTIMEZONE');
+			$this->assertSame('DTSTART:20270312T180000Z', ics_test_line($utcLines, 'DTSTART'), 'UTC zone: Z form');
+			$this->assertSame('DTEND:20270312T200000Z', ics_test_line($utcLines, 'DTEND'), 'UTC zone: Z form end');
+			$this->assertTrue(!str_contains($utcDocument, 'TZID') && !str_contains($utcDocument, 'VTIMEZONE'), 'UTC zone: no TZID and no VTIMEZONE');
 
 			// Status mapping and SUMMARY/DESCRIPTION prefixes.
 			$cancelled = ics_test_retreat(['title' => 'Breathing Workshop', 'status' => 'cancelled', 'statusNote' => 'Venue flooded']);
 			$cancelledLines = Ics::vevent($cancelled, ics_test_options());
-			expect('SUMMARY:Cancelled: Breathing Workshop', ics_test_line($cancelledLines, 'SUMMARY:'), 'cancelled: SUMMARY prefix');
-			expect('DESCRIPTION:Cancelled: Venue flooded\\n\\nThree days of silence.\\n\\nMore information: https://example.test/events/retreat', ics_test_line($cancelledLines, 'DESCRIPTION:'), 'cancelled: status line in DESCRIPTION');
-			expect('STATUS:CANCELLED', ics_test_line($cancelledLines, 'STATUS:'), 'cancelled: STATUS');
-			expect('TRANSP:TRANSPARENT', ics_test_line($cancelledLines, 'TRANSP:'), 'cancelled: TRANSP');
+			$this->assertSame('SUMMARY:Cancelled: Breathing Workshop', ics_test_line($cancelledLines, 'SUMMARY:'), 'cancelled: SUMMARY prefix');
+			$this->assertSame(
+				'DESCRIPTION:Cancelled: Venue flooded\\n\\nThree days of silence.\\n\\nMore information: https://example.test/events/retreat',
+				ics_test_line($cancelledLines, 'DESCRIPTION:'),
+				'cancelled: status line in DESCRIPTION'
+			);
+			$this->assertSame('STATUS:CANCELLED', ics_test_line($cancelledLines, 'STATUS:'), 'cancelled: STATUS');
+			$this->assertSame('TRANSP:TRANSPARENT', ics_test_line($cancelledLines, 'TRANSP:'), 'cancelled: TRANSP');
 			$postponed = ics_test_retreat(['status' => 'postponed', 'statusNote' => 'New date follows']);
 			$postponedLines = Ics::vevent($postponed, ics_test_options());
-			expect('STATUS:TENTATIVE', ics_test_line($postponedLines, 'STATUS:'), 'postponed → TENTATIVE');
-			expect('SUMMARY:Postponed: Silent Retreat', ics_test_line($postponedLines, 'SUMMARY:'), 'postponed: SUMMARY prefix');
-			expect('TRANSP:OPAQUE', ics_test_line($postponedLines, 'TRANSP:'), 'postponed keeps the time blocked');
+			$this->assertSame('STATUS:TENTATIVE', ics_test_line($postponedLines, 'STATUS:'), 'postponed → TENTATIVE');
+			$this->assertSame('SUMMARY:Postponed: Silent Retreat', ics_test_line($postponedLines, 'SUMMARY:'), 'postponed: SUMMARY prefix');
+			$this->assertSame('TRANSP:OPAQUE', ics_test_line($postponedLines, 'TRANSP:'), 'postponed keeps the time blocked');
 			$rescheduled = ics_test_retreat(['status' => 'rescheduled', 'previousStart' => '2027-02-20 18:00', 'statusNote' => 'Spring']);
 			$reschedLines = Ics::vevent($rescheduled, ics_test_options());
-			expect('STATUS:CONFIRMED', ics_test_line($reschedLines, 'STATUS:'), 'rescheduled → CONFIRMED');
-			expect('SUMMARY:Silent Retreat', ics_test_line($reschedLines, 'SUMMARY:'), 'rescheduled: no SUMMARY prefix');
-			expect('DESCRIPTION:Rescheduled: Spring\\n\\nThree days of silence.\\n\\nMore information: https://example.test/events/retreat', ics_test_line($reschedLines, 'DESCRIPTION:'), 'rescheduled: status line in DESCRIPTION');
+			$this->assertSame('STATUS:CONFIRMED', ics_test_line($reschedLines, 'STATUS:'), 'rescheduled → CONFIRMED');
+			$this->assertSame('SUMMARY:Silent Retreat', ics_test_line($reschedLines, 'SUMMARY:'), 'rescheduled: no SUMMARY prefix');
+			$this->assertSame(
+				'DESCRIPTION:Rescheduled: Spring\\n\\nThree days of silence.\\n\\nMore information: https://example.test/events/retreat',
+				ics_test_line($reschedLines, 'DESCRIPTION:'),
+				'rescheduled: status line in DESCRIPTION'
+			);
 			$scheduledLines = Ics::vevent($retreat, ics_test_options());
-			holds(!str_contains(implode("\n", $scheduledLines), 'Scheduled'), 'scheduled: no status line');
+			$this->assertTrue(!str_contains(implode("\n", $scheduledLines), 'Scheduled'), 'scheduled: no status line');
 
 			// LOCATION and GEO.
 			$online = ics_test_retreat(['attendance' => 'online']);
 			$onlineLines = Ics::vevent($online, ics_test_options());
-			expect('LOCATION:Online (Zoom)', ics_test_line($onlineLines, 'LOCATION:'), 'online only: "Online (Zoom)", no venue address');
-			holds(ics_test_line($onlineLines, 'GEO:') === null, 'online only: no GEO');
+			$this->assertSame('LOCATION:Online (Zoom)', ics_test_line($onlineLines, 'LOCATION:'), 'online only: "Online (Zoom)", no venue address');
+			$this->assertTrue(ics_test_line($onlineLines, 'GEO:') === null, 'online only: no GEO');
 			$movedOnline = ics_test_retreat(['attendance' => 'offline', 'status' => 'movedOnline', 'onlinePlatform' => '']);
 			$movedLines = Ics::vevent($movedOnline, ics_test_options());
-			expect('LOCATION:Online', ics_test_line($movedLines, 'LOCATION:'), 'movedOnline: "Online", the old venue is gone');
-			holds(ics_test_line($movedLines, 'GEO:') === null, 'movedOnline: no GEO');
-			expect('STATUS:CONFIRMED', ics_test_line($movedLines, 'STATUS:'), 'movedOnline → CONFIRMED');
+			$this->assertSame('LOCATION:Online', ics_test_line($movedLines, 'LOCATION:'), 'movedOnline: "Online", the old venue is gone');
+			$this->assertTrue(ics_test_line($movedLines, 'GEO:') === null, 'movedOnline: no GEO');
+			$this->assertSame('STATUS:CONFIRMED', ics_test_line($movedLines, 'STATUS:'), 'movedOnline → CONFIRMED');
 			$offlineNoVenue = ics_test_retreat(['attendance' => 'offline', 'venue' => null]);
-			holds(ics_test_line(Ics::vevent($offlineNoVenue, ics_test_options()), 'LOCATION:') === null, 'no venue and not online: no LOCATION');
+			$this->assertTrue(ics_test_line(Ics::vevent($offlineNoVenue, ics_test_options()), 'LOCATION:') === null, 'no venue and not online: no LOCATION');
 			$mixedNoVenue = ics_test_retreat(['venue' => null]);
-			expect('LOCATION:Online (Zoom)', ics_test_line(Ics::vevent($mixedNoVenue, ics_test_options()), 'LOCATION:'), 'mixed without venue: online text only');
-			expect('', Ics::location($offlineNoVenue, 'en'), 'location(): empty without venue and online');
-			expect('Seminarhaus Beispielhof, Musterstraße 1, 12345 Musterstadt, DE', Ics::location(ics_test_retreat(['attendance' => 'offline', 'onlinePlatform' => '']), 'en'), 'location(): venue label');
+			$this->assertSame('LOCATION:Online (Zoom)', ics_test_line(Ics::vevent($mixedNoVenue, ics_test_options()), 'LOCATION:'), 'mixed without venue: online text only');
+			$this->assertSame('', Ics::location($offlineNoVenue, 'en'), 'location(): empty without venue and online');
+			$this->assertSame(
+				'Seminarhaus Beispielhof, Musterstraße 1, 12345 Musterstadt, DE',
+				Ics::location(ics_test_retreat(['attendance' => 'offline', 'onlinePlatform' => '']), 'en'),
+				'location(): venue label'
+			);
 
 			// ORGANIZER: only a public email, first one wins, no quotes in CN.
 			$publicOrganizer = ics_test_retreat(['organizers' => [
@@ -359,49 +371,49 @@ final class IcsTest extends TestCase
 				['id' => 'org-sayama', 'name' => 'Sayama', 'kind' => 'organization', 'email' => 'info@sayama.example'],
 				['id' => 'org-second', 'name' => 'Second', 'email' => 'second@sayama.example'],
 			]]);
-			expect(
+			$this->assertSame(
 				'ORGANIZER;CN="Sayama":mailto:info@sayama.example',
 				ics_test_line(Ics::vevent($publicOrganizer, ics_test_options()), 'ORGANIZER'),
 				'ORGANIZER from the first organizer with a public email',
 			);
 			$quoted = ics_test_retreat(['organizers' => [['id' => 'org-q', 'name' => 'Say"ama', 'email' => 'info@sayama.example']]]);
-			expect(
+			$this->assertSame(
 				'ORGANIZER;CN="Sayama":mailto:info@sayama.example',
 				ics_test_line(Ics::vevent($quoted, ics_test_options()), 'ORGANIZER'),
 				'double quote removed from CN',
 			);
-			holds(ics_test_line(Ics::vevent($retreat, ics_test_options()), 'ORGANIZER') === null, 'organizer without email: no ORGANIZER line');
+			$this->assertTrue(ics_test_line(Ics::vevent($retreat, ics_test_options()), 'ORGANIZER') === null, 'organizer without email: no ORGANIZER line');
 
 			// Language option: applied for the call, previous language restored.
 			I18n::setLanguage('en');
 			$german = Ics::vevent($cancelled, ics_test_options(['language' => 'de']));
-			expect('SUMMARY:Abgesagt: Breathing Workshop', ics_test_line($german, 'SUMMARY:'), 'de: cancelled prefix in German');
-			holds(str_contains(implode("\n", $german), 'Weitere Informationen: https://example.test/events/retreat'), 'de: "More information" in German');
-			expect('en', I18n::language(), 'language restored after a German call');
+			$this->assertSame('SUMMARY:Abgesagt: Breathing Workshop', ics_test_line($german, 'SUMMARY:'), 'de: cancelled prefix in German');
+			$this->assertTrue(str_contains(implode("\n", $german), 'Weitere Informationen: https://example.test/events/retreat'), 'de: "More information" in German');
+			$this->assertSame('en', I18n::language(), 'language restored after a German call');
 			I18n::setLanguage('de');
 			Ics::event($cancelled, ics_test_options(['language' => 'en']));
-			expect('de', I18n::language(), 'previous language (de) restored after an English call');
+			$this->assertSame('de', I18n::language(), 'previous language (de) restored after an English call');
 			I18n::setLanguage('en');
 			$germanDocument = Ics::event($cancelled, ics_test_options(['language' => 'de']));
-			holds(str_contains($germanDocument, "\r\nSUMMARY:Abgesagt: Breathing Workshop\r\n"), 'de: document contains the German summary');
-			expect('Online (Zoom)', Ics::location($online, 'de'), 'location() uses the given language; "Online" is shared');
+			$this->assertTrue(str_contains($germanDocument, "\r\nSUMMARY:Abgesagt: Breathing Workshop\r\n"), 'de: document contains the German summary');
+			$this->assertSame('Online (Zoom)', Ics::location($online, 'de'), 'location() uses the given language; "Online" is shared');
 
 			// Folding at the limit (review): a continuation line of exactly 75 octets is correct, 76 is not.
 			$long = 'DESCRIPTION:' . str_repeat('x', 200);                    // 212 octets
 			$physicals = explode("\r\n", Ics::fold($long));
-			expect([75, 75, 64], array_map('strlen', $physicals), 'fold at the limit: 75, then continuation lines of 75 (74 + space), then the rest');
+			$this->assertSame([75, 75, 64], array_map('strlen', $physicals), 'fold at the limit: 75, then continuation lines of 75 (74 + space), then the rest');
 			foreach (array_slice($physicals, 1) as $continuation) {
-				holds(str_starts_with($continuation, ' '), 'fold: continuation lines start with one space');
+				$this->assertTrue(str_starts_with($continuation, ' '), 'fold: continuation lines start with one space');
 			}
-			expect($long, str_replace(["\r\n ", "\r\n"], '', Ics::fold($long)), 'fold: unfolding gives the original line');
+			$this->assertSame($long, str_replace(["\r\n ", "\r\n"], '', Ics::fold($long)), 'fold: unfolding gives the original line');
 			$multibyte = 'SUMMARY:' . str_repeat('ä', 100);                     // 208 octets
 			$parts = explode("\r\n", Ics::fold($multibyte));
 			foreach ($parts as $index => $physical) {
-				holds(strlen($physical) <= 75, 'fold multibyte: physical line ≤ 75 octets');
-				holds(preg_match('//u', $index === 0 ? $physical : substr($physical, 1)) === 1, 'fold multibyte: no split character');
+				$this->assertTrue(strlen($physical) <= 75, 'fold multibyte: physical line ≤ 75 octets');
+				$this->assertTrue(preg_match('//u', $index === 0 ? $physical : substr($physical, 1)) === 1, 'fold multibyte: no split character');
 			}
-			holds(in_array(75, array_map('strlen', array_slice($parts, 1)), true), 'fold multibyte: a continuation line reaches exactly 75 octets');
-			expect($multibyte, str_replace(["\r\n "], '', Ics::fold($multibyte)), 'fold multibyte: unfolding gives the original line');
+			$this->assertTrue(in_array(75, array_map('strlen', array_slice($parts, 1)), true), 'fold multibyte: a continuation line reaches exactly 75 octets');
+			$this->assertSame($multibyte, str_replace(["\r\n "], '', Ics::fold($multibyte)), 'fold multibyte: unfolding gives the original line');
 
 			// Organizer names cannot inject lines (review): control characters leave the quoted CN parameter.
 			$injected = \Sayamaapps\Koyomi\Organizer::fromArray([
@@ -409,24 +421,37 @@ final class IcsTest extends TestCase
 				'email' => 'info@sayama.example',
 			]);
 			$injectedLines = Ics::vevent(Event::fromArray(koyomi_raw_event(['organizers' => [$injected]])), ics_test_options());
-			expect('ORGANIZER;CN="SayamaATTENDEE:mailto:evil@example.comX-INJECT:1":mailto:info@sayama.example', ics_test_line($injectedLines, 'ORGANIZER;'), 'organizer CN: control characters and quotes removed, one logical line');
-			holds(ics_test_line($injectedLines, 'ATTENDEE') === null && ics_test_line($injectedLines, 'X-INJECT') === null, 'organizer CN: no ATTENDEE or X-INJECT line');
+			$this->assertSame(
+				'ORGANIZER;CN="SayamaATTENDEE:mailto:evil@example.comX-INJECT:1":mailto:info@sayama.example',
+				ics_test_line($injectedLines, 'ORGANIZER;'),
+				'organizer CN: control characters and quotes removed, one logical line'
+			);
+			$this->assertTrue(
+				ics_test_line($injectedLines, 'ATTENDEE') === null && ics_test_line($injectedLines, 'X-INJECT') === null,
+				'organizer CN: no ATTENDEE or X-INJECT line'
+			);
 			$injectedDocument = Ics::event(Event::fromArray(koyomi_raw_event(['organizers' => [$injected]])), ics_test_options());
 			foreach (explode("\r\n", $injectedDocument) as $physical) {
-				holds(!str_starts_with($physical, 'ATTENDEE') && !str_starts_with($physical, 'X-INJECT'), 'organizer CN: no physical line starts with an injected property');
+				$this->assertTrue(
+					!str_starts_with($physical, 'ATTENDEE') && !str_starts_with($physical, 'X-INJECT'),
+					'organizer CN: no physical line starts with an injected property'
+				);
 			}
 
 			// Autumn DST overlap (review): 02:30 on 2027-10-31 in Berlin names two instants; the ICS form is UTC (the standard-time instant the page shows).
 			$overlap = Event::fromArray(koyomi_raw_event(['startDate' => '2027-10-31', 'startTime' => '02:30', 'endTime' => '03:30']));
-			holds(Ics::isAmbiguous($overlap->start), 'isAmbiguous: 02:30 on 2027-10-31 in Berlin');
-			holds(!Ics::isAmbiguous(Event::fromArray(koyomi_raw_event(['startDate' => '2027-03-12']))->start), 'isAmbiguous: an ordinary evening is not');
-			holds(!Ics::isAmbiguous(Event::fromArray(koyomi_raw_event(['startDate' => '2027-03-28', 'startTime' => '02:30', 'endTime' => '04:00']))->start), 'isAmbiguous: a spring-forward gap time is not ambiguous');
+			$this->assertTrue(Ics::isAmbiguous($overlap->start), 'isAmbiguous: 02:30 on 2027-10-31 in Berlin');
+			$this->assertTrue(!Ics::isAmbiguous(Event::fromArray(koyomi_raw_event(['startDate' => '2027-03-12']))->start), 'isAmbiguous: an ordinary evening is not');
+			$this->assertTrue(
+				!Ics::isAmbiguous(Event::fromArray(koyomi_raw_event(['startDate' => '2027-03-28', 'startTime' => '02:30', 'endTime' => '04:00']))->start),
+				'isAmbiguous: a spring-forward gap time is not ambiguous'
+			);
 			$overlapLines = Ics::vevent($overlap, ics_test_options());
-			expect('DTSTART:20271031T013000Z', ics_test_line($overlapLines, 'DTSTART'), 'ambiguous start: UTC form (01:30Z = 02:30+01:00)');
-			expect('DTEND;TZID=Europe/Berlin:20271031T033000', ics_test_line($overlapLines, 'DTEND'), 'a non-ambiguous end keeps the TZID form');
+			$this->assertSame('DTSTART:20271031T013000Z', ics_test_line($overlapLines, 'DTSTART'), 'ambiguous start: UTC form (01:30Z = 02:30+01:00)');
+			$this->assertSame('DTEND;TZID=Europe/Berlin:20271031T033000', ics_test_line($overlapLines, 'DTEND'), 'a non-ambiguous end keeps the TZID form');
 			$overnight = Event::fromArray(koyomi_raw_event(['startDate' => '2027-10-30', 'startTime' => '22:00', 'endTime' => '02:30']));
 			$overnightEnd = Ics::vevent($overnight, ics_test_options());
-			expect('DTEND:20271031T013000Z', ics_test_line($overnightEnd, 'DTEND'), 'overnight end in the overlap: UTC form, same instant as the page (02:30+01:00)');
+			$this->assertSame('DTEND:20271031T013000Z', ics_test_line($overnightEnd, 'DTEND'), 'overnight end in the overlap: UTC form, same instant as the page (02:30+01:00)');
 
 			// Privacy: onlineUrl never reaches any output.
 			$secret = Event::fromArray(koyomi_raw_event([
@@ -434,9 +459,9 @@ final class IcsTest extends TestCase
 				'onlineUrl' => 'https://zoom.us/j/SECRET', 'description' => 'Join us.',
 			]));
 			$secretDocument = Ics::event($secret, ics_test_options());
-			holds(!str_contains($secretDocument, 'SECRET'), 'onlineUrl value absent from the ICS');
-			holds(!str_contains($secretDocument, 'zoom.us'), 'onlineUrl host absent from the ICS');
-			holds(!str_contains(Ics::calendar([$secret], ics_test_options(['name' => 'Feed'])), 'SECRET'), 'onlineUrl absent from the feed too');
+			$this->assertTrue(!str_contains($secretDocument, 'SECRET'), 'onlineUrl value absent from the ICS');
+			$this->assertTrue(!str_contains($secretDocument, 'zoom.us'), 'onlineUrl host absent from the ICS');
+			$this->assertTrue(!str_contains(Ics::calendar([$secret], ics_test_options(['name' => 'Feed'])), 'SECRET'), 'onlineUrl absent from the feed too');
 
 		} finally {
 

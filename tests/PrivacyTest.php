@@ -24,7 +24,7 @@ final class PrivacyTest extends TestCase
 				foreach ($forbidden as $needle) {
 					// Also catch JSON-escaped and HTML-escaped variants.
 					foreach ([$needle, str_replace('/', '\\/', $needle), htmlspecialchars($needle, ENT_QUOTES)] as $variant) {
-						holds(!str_contains($output, $variant), "$label must not contain $needle");
+						$this->assertTrue(!str_contains($output, $variant), "$label must not contain $needle");
 					}
 				}
 			};
@@ -35,7 +35,17 @@ final class PrivacyTest extends TestCase
 
 				// Content representations.
 				$paths = ['events.ics', 'events.rss', 'events.json'];
-				foreach (['retreat', 'zoom-session', 'concert', 'workshop-cancelled', 'past-workshop', 'ongoing-retreat', 'series-part-1', 'series-part-2', 'unlisted-event'] as $slug) {
+								foreach ([
+					'retreat',
+					'zoom-session',
+					'concert',
+					'workshop-cancelled',
+					'past-workshop',
+					'ongoing-retreat',
+					'series-part-1',
+					'series-part-2',
+					'unlisted-event'
+				] as $slug) {
 					$paths[] = 'events/' . $slug . '.ics';
 					$paths[] = 'events/' . $slug;
 				}
@@ -43,9 +53,9 @@ final class PrivacyTest extends TestCase
 				array_push($paths, 'events', 'venues/beispielhof', 'venues/stadthalle', 'organizers/anna', 'organizers/sayama');
 				foreach ($paths as $path) {
 					$response = $kirby->render($path);
-					holds($response !== null && $response->code() === 200, "$language: $path renders (got " . ($response?->code() ?? 'null') . ')');
+					$this->assertTrue($response !== null && $response->code() === 200, "$language: $path renders (got " . ($response?->code() ?? 'null') . ')');
 					$body = (string)$response->body();
-					holds(trim($body) !== '', "$language: $path is not empty");
+					$this->assertTrue(trim($body) !== '', "$language: $path is not empty");
 					$check("$language: $path", $body);
 					$all .= $body;
 				}
@@ -71,7 +81,10 @@ final class PrivacyTest extends TestCase
 						$check("$language: JsonLd " . $page->slug(), \Sayamaapps\Koyomi\JsonLd::encode(\Sayamaapps\Koyomi\JsonLd::event($event)));
 						$check("$language: Ics " . $page->slug(), \Sayamaapps\Koyomi\Ics::event($event, ['host' => 'example.test']));
 						$check("$language: Google " . $page->slug(), \Sayamaapps\Koyomi\GoogleLink::url($event, $language));
-						$check("$language: Rss " . $page->slug(), \Sayamaapps\Koyomi\Rss::feed([$event], ['title' => 'T', 'link' => KoyomiFixture::URL, 'self' => KoyomiFixture::URL . '/events.rss']));
+												$check(
+							"$language: Rss " . $page->slug(),
+							\Sayamaapps\Koyomi\Rss::feed([$event], ['title' => 'T', 'link' => KoyomiFixture::URL, 'self' => KoyomiFixture::URL . '/events.rss'])
+						);
 					}
 				}
 				foreach (['koyomi/list', 'koyomi/filters', 'koyomi/pagination', 'koyomi/subscribe'] as $snippet) {
@@ -86,12 +99,12 @@ final class PrivacyTest extends TestCase
 				$check("$language: koyomiList", json_encode(array_map(fn ($e) => $e->toArray(), $calendar->koyomiList()['events'])));
 
 				// Not trivially empty: the real content is there.
-				holds(str_contains($all, 'BEGIN:VEVENT'), "$language: ICS has events");
-				holds(str_contains($all, '<item>'), "$language: RSS has items");
-				holds(str_contains($all, '"@type":"Event"'), "$language: JSON-LD present");
-				holds(str_contains($all, 'Silent Retreat') && str_contains($all, 'Seminarhaus Beispielhof'), "$language: titles and venues shown");
-				holds(str_contains($all, 'Zoom'), "$language: the platform NAME may be shown");
-				holds(str_contains($all, KoyomiFixture::PUBLIC_EMAIL), "$language: a public organizer email is shown somewhere");
+				$this->assertTrue(str_contains($all, 'BEGIN:VEVENT'), "$language: ICS has events");
+				$this->assertTrue(str_contains($all, '<item>'), "$language: RSS has items");
+				$this->assertTrue(str_contains($all, '"@type":"Event"'), "$language: JSON-LD present");
+				$this->assertTrue(str_contains($all, 'Silent Retreat') && str_contains($all, 'Seminarhaus Beispielhof'), "$language: titles and venues shown");
+				$this->assertTrue(str_contains($all, 'Zoom'), "$language: the platform NAME may be shown");
+				$this->assertTrue(str_contains($all, KoyomiFixture::PUBLIC_EMAIL), "$language: a public organizer email is shown somewhere");
 			}
 
 		} finally {

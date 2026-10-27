@@ -2,6 +2,7 @@
 
 use Kirby\Cms\Blueprint;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Sayamaapps\Koyomi\Availability;
 use Sayamaapps\Koyomi\Blueprints;
@@ -63,7 +64,7 @@ function koyomi_field_names(array $node): array
 /** The label of a field or section is ['en' => …, 'de' => …] with both languages filled. */
 function koyomi_assert_labels(mixed $label, string $what): void
 {
-	holds(is_array($label) && isset($label['en'], $label['de']) && $label['en'] !== '' && $label['de'] !== '', "$what: labels in en and de");
+	Assert::assertTrue(is_array($label) && isset($label['en'], $label['de']) && $label['en'] !== '' && $label['de'] !== '', "$what: labels in en and de");
 }
 
 /**
@@ -96,10 +97,14 @@ final class BlueprintsTest extends TestCase
 
 			// --- 1. Kirby-free ---------------------------------------------------
 
-			expect(['koyomi-calendar', 'koyomi-event', 'koyomi-venues', 'koyomi-venue', 'koyomi-organizers', 'koyomi-organizer'], Blueprints::NAMES, 'NAMES lists the six blueprints');
+			$this->assertSame(
+				['koyomi-calendar', 'koyomi-event', 'koyomi-venues', 'koyomi-venue', 'koyomi-organizers', 'koyomi-organizer'],
+				Blueprints::NAMES,
+				'NAMES lists the six blueprints'
+			);
 			foreach (['calendar', 'event', 'venues', 'venue', 'organizers', 'organizer'] as $method) {
-				holds(is_array(Blueprints::$method($settings)), "$method() returns an array");
-				holds(isset(Blueprints::$method($settings)['title']), "$method() has a title");
+				$this->assertTrue(is_array(Blueprints::$method($settings)), "$method() returns an array");
+				$this->assertTrue(isset(Blueprints::$method($settings)['title']), "$method() has a title");
 			}
 
 			// Multi-language (review): every non-text field is shared by all languages, the text fields stay translatable.
@@ -108,42 +113,42 @@ final class BlueprintsTest extends TestCase
 				'onlinePlatform', 'onlineUrl', 'eventStatus', 'previousStart', 'isFree', 'price', 'currency', 'availability', 'bookingUrl',
 				'organizers', 'eventLanguages', 'featured', 'series', 'seriesPart'];
 			foreach ($shared as $name) {
-				expect(false, $eventFields[$name]['translate'] ?? null, "event $name: translate false");
+				$this->assertSame(false, $eventFields[$name]['translate'] ?? null, "event $name: translate false");
 			}
 			foreach (['excerpt', 'text', 'statusNote', 'priceNote', 'bookingLabel', 'categories'] as $name) {
-				holds(!array_key_exists('translate', $eventFields[$name] ?? []), "event $name: stays translatable");
+				$this->assertTrue(!array_key_exists('translate', $eventFields[$name] ?? []), "event $name: stays translatable");
 			}
 			$venueFields = koyomi_blueprint_fields(Blueprints::venue($settings));
 			foreach (['street', 'postalCode', 'city', 'region', 'country', 'lat', 'lng', 'mapImage', 'showMap', 'website'] as $name) {
-				expect(false, $venueFields[$name]['translate'] ?? null, "venue $name: translate false");
+				$this->assertSame(false, $venueFields[$name]['translate'] ?? null, "venue $name: translate false");
 			}
-			holds(!array_key_exists('translate', $venueFields['directions'] ?? []), 'venue directions stays translatable');
+			$this->assertTrue(!array_key_exists('translate', $venueFields['directions'] ?? []), 'venue directions stays translatable');
 			foreach (['street', 'postalCode', 'city'] as $name) {
-				holds(($venueFields[$name]['required'] ?? false) === true, "venue $name is required");
+				$this->assertTrue(($venueFields[$name]['required'] ?? false) === true, "venue $name is required");
 			}
-			holds(!isset($venueFields['region']['required']) && !isset($venueFields['country']['required']), 'venue region and country stay optional');
+			$this->assertTrue(!isset($venueFields['region']['required']) && !isset($venueFields['country']['required']), 'venue region and country stay optional');
 			$organizerFields = koyomi_blueprint_fields(Blueprints::organizer($settings));
 			foreach (['kind', 'email', 'showEmail', 'website', 'photo'] as $name) {
-				expect(false, $organizerFields[$name]['translate'] ?? null, "organizer $name: translate false");
+				$this->assertSame(false, $organizerFields[$name]['translate'] ?? null, "organizer $name: translate false");
 			}
 			// New venues, organizers and containers are unlisted, not drafts (review, finding 9).
-			expect('unlisted', Blueprints::venue($settings)['create']['status'] ?? null, 'venue: created unlisted');
-			expect('unlisted', Blueprints::organizer($settings)['create']['status'] ?? null, 'organizer: created unlisted');
-			expect('unlisted', Blueprints::venues($settings)['create']['status'] ?? null, 'venues container: created unlisted');
-			expect('unlisted', Blueprints::organizers($settings)['create']['status'] ?? null, 'organizers container: created unlisted');
+			$this->assertSame('unlisted', Blueprints::venue($settings)['create']['status'] ?? null, 'venue: created unlisted');
+			$this->assertSame('unlisted', Blueprints::organizer($settings)['create']['status'] ?? null, 'organizer: created unlisted');
+			$this->assertSame('unlisted', Blueprints::venues($settings)['create']['status'] ?? null, 'venues container: created unlisted');
+			$this->assertSame('unlisted', Blueprints::organizers($settings)['create']['status'] ?? null, 'organizers container: created unlisted');
 
 			// options() helper
-			expect(
+			$this->assertSame(
 				[['value' => 'scheduled', 'text' => I18n::all('status.scheduled')], ['value' => 'cancelled', 'text' => I18n::all('status.cancelled')]],
 				Blueprints::options(['scheduled', 'cancelled'], 'status.'),
 				'options(): value + translated text per entry'
 			);
-			expect(
+			$this->assertSame(
 				array_map(fn ($v) => ['value' => $v, 'text' => I18n::all('availability.' . $v)], Availability::ALL),
 				Blueprints::options(Availability::ALL, 'availability.'),
 				'options(): availability keys'
 			);
-			expect(
+			$this->assertSame(
 				[['value' => 'person', 'text' => I18n::all('kind.person')], ['value' => 'organization', 'text' => I18n::all('kind.organization')]],
 				Blueprints::options(['person', 'organization'], 'kind.'),
 				'options(): kind keys'
@@ -152,12 +157,12 @@ final class BlueprintsTest extends TestCase
 			// --- event ----------------------------------------------
 
 			$event = Blueprints::event($settings);
-			expect('{{ page.startDate.toDate("Ymd") }}', $event['num'], 'event num from the start date');
-			expect(['fields' => ['startDate']], $event['create'], 'event create asks for the start date');
-			expect(['changeTemplate' => false], $event['options'], 'event options');
-			expect(['event', 'when', 'status', 'tickets', 'details'], array_keys($event['tabs']), 'event tabs in order');
-			expect(['en' => 'Event', 'de' => 'Veranstaltung'], $event['title'], 'event title label');
-			expect(I18n::all('tab.when'), $event['tabs']['when']['label'], 'when tab label');
+			$this->assertSame('{{ page.startDate.toDate("Ymd") }}', $event['num'], 'event num from the start date');
+			$this->assertSame(['fields' => ['startDate']], $event['create'], 'event create asks for the start date');
+			$this->assertSame(['changeTemplate' => false], $event['options'], 'event options');
+			$this->assertSame(['event', 'when', 'status', 'tickets', 'details'], array_keys($event['tabs']), 'event tabs in order');
+			$this->assertSame(['en' => 'Event', 'de' => 'Veranstaltung'], $event['title'], 'event title label');
+			$this->assertSame(I18n::all('tab.when'), $event['tabs']['when']['label'], 'when tab label');
 
 			$fields = koyomi_blueprint_fields($event);
 			// Field name => [type, extra checks]. Every event field must be present.
@@ -173,82 +178,85 @@ final class BlueprintsTest extends TestCase
 				'featured' => 'toggle', 'series' => 'pages', 'seriesPart' => 'number',
 			];
 			foreach ($expected as $name => $type) {
-				holds(isset($fields[$name]), "event has field $name");
-				expect($type, $fields[$name]['type'] ?? null, "event field $name type");
+				$this->assertTrue(isset($fields[$name]), "event has field $name");
+				$this->assertSame($type, $fields[$name]['type'] ?? null, "event field $name type");
 				koyomi_assert_labels($fields[$name]['label'] ?? null, "event field $name");
 			}
 
 			// when conditions (equality only)
-			expect(['allDay' => false], $fields['startTime']['when'], 'startTime when allDay false');
-			expect(['allDay' => false], $fields['endTime']['when'], 'endTime when allDay false');
-			expect(['inPerson' => true], $fields['venue']['when'], 'venue when inPerson true');
-			expect(['online' => true], $fields['onlinePlatform']['when'], 'onlinePlatform when online true');
-			expect(['online' => true], $fields['onlineUrl']['when'], 'onlineUrl when online true');
-			expect(['eventStatus' => 'rescheduled'], $fields['previousStart']['when'], 'previousStart when rescheduled');
-			expect(['isFree' => false], $fields['price']['when'], 'price when not free');
-			expect(['isFree' => false], $fields['currency']['when'], 'currency when not free');
-			holds(!isset($fields['startDate']['when']) && !isset($fields['endDate']['when']), 'dates have no when');
+			$this->assertSame(['allDay' => false], $fields['startTime']['when'], 'startTime when allDay false');
+			$this->assertSame(['allDay' => false], $fields['endTime']['when'], 'endTime when allDay false');
+			$this->assertSame(['inPerson' => true], $fields['venue']['when'], 'venue when inPerson true');
+			$this->assertSame(['online' => true], $fields['onlinePlatform']['when'], 'onlinePlatform when online true');
+			$this->assertSame(['online' => true], $fields['onlineUrl']['when'], 'onlineUrl when online true');
+			$this->assertSame(['eventStatus' => 'rescheduled'], $fields['previousStart']['when'], 'previousStart when rescheduled');
+			$this->assertSame(['isFree' => false], $fields['price']['when'], 'price when not free');
+			$this->assertSame(['isFree' => false], $fields['currency']['when'], 'currency when not free');
+			$this->assertTrue(!isset($fields['startDate']['when']) && !isset($fields['endDate']['when']), 'dates have no when');
 
 			// required and defaults
 			foreach (['startDate', 'startTime', 'timezone', 'venue', 'onlineUrl', 'eventStatus'] as $name) {
-				holds(($fields[$name]['required'] ?? false) === true, "$name is required");
+				$this->assertTrue(($fields[$name]['required'] ?? false) === true, "$name is required");
 			}
 			// For the package Fude: asked before a new event, never required.
 			foreach (['endTime', 'price', 'bookingUrl'] as $name) {
-				holds(($fields[$name]['fudeAsk'] ?? false) === true && !isset($fields[$name]['required']), "$name is asked by Fude");
+				$this->assertTrue(($fields[$name]['fudeAsk'] ?? false) === true && !isset($fields[$name]['required']), "$name is asked by Fude");
 			}
 			// For the package Fude: the marked fields are exactly FUDE_FIELDS, each of a type Fude can set.
 			$marked = array_keys(array_filter($fields, fn ($field) => ($field['fude'] ?? null) === true));
 			sort($marked);
 			$fudeFields = Blueprints::FUDE_FIELDS;
 			sort($fudeFields);
-			expect($fudeFields, $marked, 'marked fields are FUDE_FIELDS');
+			$this->assertSame($fudeFields, $marked, 'marked fields are FUDE_FIELDS');
 			// A free event becomes paid by chat: the toggle comes along with the price.
-			expect(true, in_array('isFree', $marked, true), 'isFree reachable by Fude');
+			$this->assertSame(true, in_array('isFree', $marked, true), 'isFree reachable by Fude');
 			foreach ($marked as $name) {
-				holds(in_array($fields[$name]['type'], ['text', 'textarea', 'date', 'time', 'toggle', 'select', 'number', 'url', 'pages'], true), "$name has a type Fude can set");
+				$this->assertTrue(
+					in_array($fields[$name]['type'], ['text', 'textarea', 'date', 'time', 'toggle', 'select', 'number', 'url', 'pages'], true),
+					"$name has a type Fude can set"
+				);
 			}
-			expect(false, $fields['venue']['multiple'], 'the marked pages field holds one page');
+			$this->assertSame(false, $fields['venue']['multiple'], 'the marked pages field holds one page');
 			foreach (['text', 'categories', 'eventLanguages', 'organizers', 'series'] as $name) {
-				holds(!isset($fields[$name]['fude']), "$name is not marked (type Fude cannot set)");
+				$this->assertTrue(!isset($fields[$name]['fude']), "$name is not marked (type Fude cannot set)");
 			}
-			expect(false, $fields['allDay']['default'], 'allDay default false');
-			expect(true, $fields['inPerson']['default'], 'inPerson default true');
-			expect(false, $fields['online']['default'], 'online default false');
-			expect('Europe/Berlin', $fields['timezone']['default'], 'timezone default from settings');
-			expect(Status::SCHEDULED, $fields['eventStatus']['default'], 'eventStatus default scheduled');
-			expect(Availability::AVAILABLE, $fields['availability']['default'], 'availability default available');
-			expect('EUR', $fields['currency']['default'], 'currency default from settings');
-			expect(false, $fields['isFree']['default'], 'isFree default false');
-			expect(I18n::all('status.scheduled'), $fields['eventStatus']['options'][0]['text'], 'status options use translated text');
-			expect(Status::ALL, array_column($fields['eventStatus']['options'], 'value'), 'eventStatus options are the Status enum');
-			expect(Availability::ALL, array_column($fields['availability']['options'], 'value'), 'availability options are the Availability enum');
+			$this->assertSame(false, $fields['allDay']['default'], 'allDay default false');
+			$this->assertSame(true, $fields['inPerson']['default'], 'inPerson default true');
+			$this->assertSame(false, $fields['online']['default'], 'online default false');
+			$this->assertSame('Europe/Berlin', $fields['timezone']['default'], 'timezone default from settings');
+			$this->assertSame(Status::SCHEDULED, $fields['eventStatus']['default'], 'eventStatus default scheduled');
+			$this->assertSame(Availability::AVAILABLE, $fields['availability']['default'], 'availability default available');
+			$this->assertSame('EUR', $fields['currency']['default'], 'currency default from settings');
+			$this->assertSame(false, $fields['isFree']['default'], 'isFree default false');
+			$this->assertSame(I18n::all('status.scheduled'), $fields['eventStatus']['options'][0]['text'], 'status options use translated text');
+			$this->assertSame(Status::ALL, array_column($fields['eventStatus']['options'], 'value'), 'eventStatus options are the Status enum');
+			$this->assertSame(Availability::ALL, array_column($fields['availability']['options'], 'value'), 'availability options are the Availability enum');
 
 			// widths and attributes that the Panel layout relies on
-			expect('1/2', $fields['startDate']['width'], 'startDate width');
-			expect('1/3', $fields['price']['width'], 'price width');
-			expect(0, $fields['price']['min'], 'price min 0');
-			expect(0.01, $fields['price']['step'], 'price step 0.01');
-			expect(1, $fields['seriesPart']['min'], 'seriesPart min 1');
-			expect(1, $fields['seriesPart']['step'], 'seriesPart step 1');
-			expect(500, $fields['excerpt']['maxlength'], 'excerpt maxlength 500');
-			expect(false, $fields['excerpt']['buttons'], 'excerpt without buttons');
-			expect('page.images', $fields['cover']['query'], 'cover query page.images');
-			expect(false, $fields['cover']['multiple'], 'cover single file');
-			expect('kirby.collection("koyomi/venues")', $fields['venue']['query'], 'venue collection query');
-			expect(false, $fields['venue']['multiple'], 'venue single page');
-			expect('kirby.collection("koyomi/organizers")', $fields['organizers']['query'], 'organizers collection query');
-			expect('page.siblings(false)', $fields['series']['query'], 'series siblings query');
-			expect(true, $fields['previousStart']['time'], 'previousStart with time');
-			expect(false, $fields['statusNote']['buttons'], 'statusNote without buttons');
+			$this->assertSame('1/2', $fields['startDate']['width'], 'startDate width');
+			$this->assertSame('1/3', $fields['price']['width'], 'price width');
+			$this->assertSame(0, $fields['price']['min'], 'price min 0');
+			$this->assertSame(0.01, $fields['price']['step'], 'price step 0.01');
+			$this->assertSame(1, $fields['seriesPart']['min'], 'seriesPart min 1');
+			$this->assertSame(1, $fields['seriesPart']['step'], 'seriesPart step 1');
+			$this->assertSame(500, $fields['excerpt']['maxlength'], 'excerpt maxlength 500');
+			$this->assertSame(false, $fields['excerpt']['buttons'], 'excerpt without buttons');
+			$this->assertSame('page.images', $fields['cover']['query'], 'cover query page.images');
+			$this->assertSame(false, $fields['cover']['multiple'], 'cover single file');
+			$this->assertSame('kirby.collection("koyomi/venues")', $fields['venue']['query'], 'venue collection query');
+			$this->assertSame(false, $fields['venue']['multiple'], 'venue single page');
+			$this->assertSame('kirby.collection("koyomi/organizers")', $fields['organizers']['query'], 'organizers collection query');
+			$this->assertSame('page.siblings(false)', $fields['series']['query'], 'series siblings query');
+			$this->assertSame(true, $fields['previousStart']['time'], 'previousStart with time');
+			$this->assertSame(false, $fields['statusNote']['buttons'], 'statusNote without buttons');
 
 			// Timezone and currency options from settings (plain value as text)
-			expect(
+			$this->assertSame(
 				[['value' => 'Europe/Berlin', 'text' => 'Europe/Berlin'], ['value' => 'Europe/Prague', 'text' => 'Europe/Prague'], ['value' => 'UTC', 'text' => 'UTC']],
 				$fields['timezone']['options'],
 				'timezone options come from settings.timezones'
 			);
-			expect(
+			$this->assertSame(
 				[['value' => 'EUR', 'text' => 'EUR'], ['value' => 'CZK', 'text' => 'CZK'], ['value' => 'CHF', 'text' => 'CHF'], ['value' => 'USD', 'text' => 'USD']],
 				$fields['currency']['options'],
 				'currency options come from settings.currencies incl. USD'
@@ -256,15 +264,15 @@ final class BlueprintsTest extends TestCase
 
 			// Languages: custom label, translated key, unknown code upper-cased
 			$languages = $fields['eventLanguages']['options'];
-			expect(['de', 'en', 'cs', 'pt-br'], array_column($languages, 'value'), 'language values in settings order');
-			expect(I18n::all('language.de'), $languages[0]['text'], 'language without label uses translation language.de');
-			expect(I18n::all('language.en'), $languages[1]['text'], 'language en uses translation');
-			expect('Čeština', $languages[2]['text'], 'custom label wins');
-			expect('PT-BR', $languages[3]['text'], 'unknown code is upper-cased');
+			$this->assertSame(['de', 'en', 'cs', 'pt-br'], array_column($languages, 'value'), 'language values in settings order');
+			$this->assertSame(I18n::all('language.de'), $languages[0]['text'], 'language without label uses translation language.de');
+			$this->assertSame(I18n::all('language.en'), $languages[1]['text'], 'language en uses translation');
+			$this->assertSame('Čeština', $languages[2]['text'], 'custom label wins');
+			$this->assertSame('PT-BR', $languages[3]['text'], 'unknown code is upper-cased');
 
 			// A plain list of languages works too (no labels)
 			$plain = Blueprints::event(array_replace($settings, ['languages' => ['cs', 'xx']]));
-			expect(
+			$this->assertSame(
 				[['value' => 'cs', 'text' => I18n::all('language.cs')], ['value' => 'xx', 'text' => 'XX']],
 				koyomi_blueprint_fields($plain)['eventLanguages']['options'],
 				'plain language list: unknown code upper-cased, known one translated'
@@ -272,31 +280,35 @@ final class BlueprintsTest extends TestCase
 
 			// Defaults when settings are missing (hand-made or partial arrays)
 			$bare = Blueprints::event([]);
-			expect('Europe/Berlin', koyomi_blueprint_fields($bare)['timezone']['default'], 'timezone default without settings');
-			expect('EUR', koyomi_blueprint_fields($bare)['currency']['default'], 'currency default without settings');
+			$this->assertSame('Europe/Berlin', koyomi_blueprint_fields($bare)['timezone']['default'], 'timezone default without settings');
+			$this->assertSame('EUR', koyomi_blueprint_fields($bare)['currency']['default'], 'currency default without settings');
 
 			// Calendar: drafts + events sections, intro in the sidebar
 			$calendar = Blueprints::calendar($settings);
 			$calendarFields = koyomi_blueprint_fields($calendar);
-			expect('textarea', $calendarFields['intro']['type'], 'calendar intro is a textarea');
+			$this->assertSame('textarea', $calendarFields['intro']['type'], 'calendar intro is a textarea');
 			koyomi_assert_labels($calendarFields['intro']['label'], 'calendar intro');
-			expect(['draft', 'published'], [$calendar['columns']['main']['sections']['drafts']['status'], $calendar['columns']['main']['sections']['events']['status']], 'calendar sections by status');
-			expect(['koyomi-event'], $calendar['columns']['main']['sections']['events']['templates'], 'calendar lists events only');
-			expect(50, $calendar['columns']['main']['sections']['events']['limit'], 'calendar events limit 50');
-			expect('startDate desc', $calendar['columns']['main']['sections']['events']['sortBy'], 'calendar sorts by start date');
-			expect('startDate', $calendar['columns']['main']['sections']['events']['fude']['key'] ?? null, 'events section: Fude marker, keyed by the start date');
+			$this->assertSame(
+				['draft', 'published'],
+				[$calendar['columns']['main']['sections']['drafts']['status'], $calendar['columns']['main']['sections']['events']['status']],
+				'calendar sections by status'
+			);
+			$this->assertSame(['koyomi-event'], $calendar['columns']['main']['sections']['events']['templates'], 'calendar lists events only');
+			$this->assertSame(50, $calendar['columns']['main']['sections']['events']['limit'], 'calendar events limit 50');
+			$this->assertSame('startDate desc', $calendar['columns']['main']['sections']['events']['sortBy'], 'calendar sorts by start date');
+			$this->assertSame('startDate', $calendar['columns']['main']['sections']['events']['fude']['key'] ?? null, 'events section: Fude marker, keyed by the start date');
 			koyomi_assert_labels($calendar['columns']['main']['sections']['events']['fude']['description'] ?? null, 'events section Fude description');
-			holds(!isset($calendar['columns']['main']['sections']['drafts']['fude']), 'drafts section is not marked');
+			$this->assertTrue(!isset($calendar['columns']['main']['sections']['drafts']['fude']), 'drafts section is not marked');
 
 			// Containers and children: draft + unlisted only
 			$statusDraftUnlisted = ['draft' => true, 'unlisted' => true, 'listed' => false];
 			$venues = Blueprints::venues($settings);
-			expect($statusDraftUnlisted, $venues['status'], 'venues container status');
-			expect(['koyomi-venue'], $venues['sections']['venues']['templates'], 'venues section lists venues');
-			expect('title asc', $venues['sections']['venues']['sortBy'], 'venues sorted by title');
+			$this->assertSame($statusDraftUnlisted, $venues['status'], 'venues container status');
+			$this->assertSame(['koyomi-venue'], $venues['sections']['venues']['templates'], 'venues section lists venues');
+			$this->assertSame('title asc', $venues['sections']['venues']['sortBy'], 'venues sorted by title');
 
 			$venue = Blueprints::venue($settings);
-			expect($statusDraftUnlisted, $venue['status'], 'venue status');
+			$this->assertSame($statusDraftUnlisted, $venue['status'], 'venue status');
 			$venueFields = koyomi_blueprint_fields($venue);
 			$venueExpected = [
 				'street' => 'text', 'postalCode' => 'text', 'city' => 'text', 'region' => 'text', 'country' => 'text',
@@ -304,41 +316,41 @@ final class BlueprintsTest extends TestCase
 				'website' => 'url', 'directions' => 'textarea',
 			];
 			foreach ($venueExpected as $name => $type) {
-				holds(isset($venueFields[$name]), "venue has field $name");
-				expect($type, $venueFields[$name]['type'] ?? null, "venue field $name type");
+				$this->assertTrue(isset($venueFields[$name]), "venue has field $name");
+				$this->assertSame($type, $venueFields[$name]['type'] ?? null, "venue field $name type");
 				koyomi_assert_labels($venueFields[$name]['label'] ?? null, "venue field $name");
 			}
-			expect(2, $venueFields['country']['maxlength'], 'country maxlength 2');
-			expect('DE', $venueFields['country']['placeholder'], 'country placeholder DE');
-			expect(0.000001, $venueFields['lat']['step'], 'lat step');
-			expect([-90, 90], [$venueFields['lat']['min'], $venueFields['lat']['max']], 'lat range');
-			expect([-180, 180], [$venueFields['lng']['min'], $venueFields['lng']['max']], 'lng range');
-			expect(false, $venueFields['showMap']['default'], 'showMap default false');
-			expect(false, $venueFields['mapImage']['multiple'], 'mapImage single file');
-			holds(isset($venue['columns']['sidebar']['sections']['files']), 'venue has a files section');
+			$this->assertSame(2, $venueFields['country']['maxlength'], 'country maxlength 2');
+			$this->assertSame('DE', $venueFields['country']['placeholder'], 'country placeholder DE');
+			$this->assertSame(0.000001, $venueFields['lat']['step'], 'lat step');
+			$this->assertSame([-90, 90], [$venueFields['lat']['min'], $venueFields['lat']['max']], 'lat range');
+			$this->assertSame([-180, 180], [$venueFields['lng']['min'], $venueFields['lng']['max']], 'lng range');
+			$this->assertSame(false, $venueFields['showMap']['default'], 'showMap default false');
+			$this->assertSame(false, $venueFields['mapImage']['multiple'], 'mapImage single file');
+			$this->assertTrue(isset($venue['columns']['sidebar']['sections']['files']), 'venue has a files section');
 
 			$organizers = Blueprints::organizers($settings);
-			expect($statusDraftUnlisted, $organizers['status'], 'organizers container status');
-			expect(['koyomi-organizer'], $organizers['sections']['organizers']['templates'], 'organizers section lists organizers');
+			$this->assertSame($statusDraftUnlisted, $organizers['status'], 'organizers container status');
+			$this->assertSame(['koyomi-organizer'], $organizers['sections']['organizers']['templates'], 'organizers section lists organizers');
 
 			$organizer = Blueprints::organizer($settings);
-			expect($statusDraftUnlisted, $organizer['status'], 'organizer status');
+			$this->assertSame($statusDraftUnlisted, $organizer['status'], 'organizer status');
 			$organizerFields = koyomi_blueprint_fields($organizer);
 			$organizerExpected = ['kind' => 'select', 'email' => 'email', 'showEmail' => 'toggle', 'website' => 'url', 'photo' => 'files'];
 			foreach ($organizerExpected as $name => $type) {
-				holds(isset($organizerFields[$name]), "organizer has field $name");
-				expect($type, $organizerFields[$name]['type'] ?? null, "organizer field $name type");
+				$this->assertTrue(isset($organizerFields[$name]), "organizer has field $name");
+				$this->assertSame($type, $organizerFields[$name]['type'] ?? null, "organizer field $name type");
 				koyomi_assert_labels($organizerFields[$name]['label'] ?? null, "organizer field $name");
 			}
-			expect('organization', $organizerFields['kind']['default'], 'kind default organization');
-			expect(['person', 'organization'], array_column($organizerFields['kind']['options'], 'value'), 'kind options');
-			expect(false, $organizerFields['showEmail']['default'], 'showEmail default false');
-			expect(false, $organizerFields['photo']['multiple'], 'photo single file');
+			$this->assertSame('organization', $organizerFields['kind']['default'], 'kind default organization');
+			$this->assertSame(['person', 'organization'], array_column($organizerFields['kind']['options'], 'value'), 'kind options');
+			$this->assertSame(false, $organizerFields['showEmail']['default'], 'showEmail default false');
+			$this->assertSame(false, $organizerFields['photo']['multiple'], 'photo single file');
 
 			// No field named status or image anywhere (they are Kirby Page methods).
 			foreach (['calendar', 'event', 'venues', 'venue', 'organizers', 'organizer'] as $method) {
 				$names = koyomi_field_names(Blueprints::$method($settings));
-				holds(!in_array('status', $names, true) && !in_array('image', $names, true), "$method: no status/image field");
+				$this->assertTrue(!in_array('status', $names, true) && !in_array('image', $names, true), "$method: no status/image field");
 			}
 
 			// --- 2. Kirby: the blueprints load, the Panel accepts the syntax -----
@@ -354,32 +366,32 @@ final class BlueprintsTest extends TestCase
 			];
 			foreach ($expectedBlueprints as $path => $name) {
 				$page = $kirby->page($path);
-				holds($page !== null, "fixture page $path exists");
-				expect($name, $page->blueprint()->name(), "$path blueprint name");
+				$this->assertTrue($page !== null, "fixture page $path exists");
+				$this->assertSame($name, $page->blueprint()->name(), "$path blueprint name");
 				// These must not throw: the Panel reads them.
-				holds(is_array($page->blueprint()->fields()), "$path fields() works");
-				holds(koyomi_tab_names($page->blueprint()) !== [], "$path tabs() works");
-				holds(koyomi_section_names($page->blueprint()) !== [], "$path sections() works");
+				$this->assertTrue(is_array($page->blueprint()->fields()), "$path fields() works");
+				$this->assertTrue(koyomi_tab_names($page->blueprint()) !== [], "$path tabs() works");
+				$this->assertTrue(koyomi_section_names($page->blueprint()) !== [], "$path sections() works");
 			}
 
 			// Field names as Kirby sees them (lower-cased by the Form layer): the event's fields are all there.
 			$kirbyEvent = $kirby->page('events/retreat')->blueprint();
 			$kirbyFieldNames = array_map('strtolower', array_keys($kirbyEvent->fields()));
 			foreach (['startdate', 'venue', 'eventstatus', 'eventlanguages', 'isfree', 'bookingurl'] as $name) {
-				holds(in_array($name, $kirbyFieldNames, true), "Kirby sees event field $name");
+				$this->assertTrue(in_array($name, $kirbyFieldNames, true), "Kirby sees event field $name");
 			}
 
 			// Options follow the configuration: USD and the Prague zone show up in the registered blueprint.
 			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.currencies' => ['EUR', 'USD'], 'sayamaapps.koyomi.timezone' => 'Europe/Prague']);
 			$blueprint = Blueprint::find('pages/koyomi-event');
-			holds(is_array($blueprint['tabs'] ?? null), 'registered event blueprint has tabs');
+			$this->assertTrue(is_array($blueprint['tabs'] ?? null), 'registered event blueprint has tabs');
 			$encoded = json_encode($blueprint);
-			holds(str_contains($encoded, '"USD"') && str_contains($encoded, 'Europe\/Prague'), 'registered blueprint reflects currencies and timezone');
-			holds(!str_contains($encoded, '"CZK"'), 'currencies follow the option (no CZK when not configured)');
-			expect('pages/koyomi-event', $kirby->page('events/retreat')->blueprint()->name(), 'page blueprint instantiates after config change');
+			$this->assertTrue(str_contains($encoded, '"USD"') && str_contains($encoded, 'Europe\/Prague'), 'registered blueprint reflects currencies and timezone');
+			$this->assertTrue(!str_contains($encoded, '"CZK"'), 'currencies follow the option (no CZK when not configured)');
+			$this->assertSame('pages/koyomi-event', $kirby->page('events/retreat')->blueprint()->name(), 'page blueprint instantiates after config change');
 
 			foreach (['koyomi-calendar', 'koyomi-venues', 'koyomi-venue', 'koyomi-organizers', 'koyomi-organizer'] as $name) {
-				holds(is_array(Blueprint::find('pages/' . $name)), "registered blueprint $name");
+				$this->assertTrue(is_array(Blueprint::find('pages/' . $name)), "registered blueprint $name");
 			}
 
 		} finally {

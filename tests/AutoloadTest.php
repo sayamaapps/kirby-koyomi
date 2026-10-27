@@ -10,11 +10,16 @@ use PHPUnit\Framework\TestCase;
 #[CoversNothing]
 final class AutoloadTest extends TestCase
 {
-	public function testSuite(): void
+	/** @return array<string, string> class name in lower case => path relative to the plugin root */
+	private function classMap(): array
+	{
+		return require dirname(__DIR__) . '/autoload.php';
+	}
+
+	/** @return list<string> every PHP file of src/, relative to the plugin root, sorted */
+	private function sourceFiles(): array
 	{
 		$root = dirname(__DIR__);
-		$map = require $root . '/autoload.php';
-
 		$files = [];
 		foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root . '/src')) as $file) {
 			if ($file->isFile() && $file->getExtension() === 'php') {
@@ -22,27 +27,59 @@ final class AutoloadTest extends TestCase
 			}
 		}
 		sort($files);
+		return $files;
+	}
 
-		expect(count($files), count($map), 'the class map lists every file of src/ once');
-		foreach ($map as $class => $path) {
-			expect(true, is_file($root . '/' . $path), "class map: $path exists");
-			expect(true, in_array($path, $files, true), "class map: $path is in src/");
-			$name = 'Sayamaapps\\Koyomi\\' . str_replace('/', '\\', substr($path, strlen('src/'), -strlen('.php')));
-			expect($name, $name, 'class map: key matches the file path');
-			expect(strtolower($name), $class, "class map: key of $path is the lower-case class name");
-			holds(class_exists($name) || interface_exists($name), "class map: $name loads");
+	/** The namespaced class name of a file of src/. */
+	private function classOf(string $path): string
+	{
+		return 'Sayamaapps\\Koyomi\\' . str_replace('/', '\\', substr($path, strlen('src/'), -strlen('.php')));
+	}
+
+	public function testMapListsEveryFileOfSrcOnce(): void
+	{
+		$this->assertSame(count($this->sourceFiles()), count($this->classMap()), 'the class map lists every file of src/ once');
+	}
+
+	public function testMapPointsOnlyToExistingFilesOfSrc(): void
+	{
+		$root = dirname(__DIR__);
+		$files = $this->sourceFiles();
+		foreach ($this->classMap() as $path) {
+			$this->assertTrue(is_file($root . '/' . $path), "class map: $path exists");
+			$this->assertTrue(in_array($path, $files, true), "class map: $path is in src/");
 		}
+	}
 
-		// 1.x names: every class keeps its old name as an alias.
-		foreach ($map as $path) {
-			$new = 'Sayamaapps\\Koyomi\\' . str_replace('/', '\\', substr($path, strlen('src/'), -strlen('.php')));
+	public function testMapKeysAreLowerCaseClassNames(): void
+	{
+		foreach ($this->classMap() as $class => $path) {
+			$this->assertSame(strtolower($this->classOf($path)), $class, "class map: key of $path is the lower-case class name");
+		}
+	}
+
+	public function testEveryMappedClassLoads(): void
+	{
+		foreach ($this->classMap() as $path) {
+			$name = $this->classOf($path);
+			$this->assertTrue(class_exists($name) || interface_exists($name), "class map: $name loads");
+		}
+	}
+
+	public function testOneXNamesResolveToTheNewClasses(): void
+	{
+		// legacy.php defines the 1.x names; index.php loads it in the app, here it is loaded on its own.
+		require_once dirname(__DIR__) . '/legacy.php';
+
+		foreach ($this->classMap() as $path) {
+			$new = $this->classOf($path);
 			if ($new === 'Sayamaapps\\Koyomi\\Api') {
 				// New in 2.0: no 1.x name.
 				continue;
 			}
 			$old = 'Koyomi\\' . substr($new, strlen('Sayamaapps\\Koyomi\\'));
-			holds(class_exists($old), "1.x name $old resolves");
-			expect($new, (new ReflectionClass($old))->getName(), "1.x name $old points to the new class");
+			$this->assertTrue(class_exists($old), "1.x name $old resolves");
+			$this->assertSame($new, (new ReflectionClass($old))->getName(), "1.x name $old points to the new class");
 		}
 	}
 }
