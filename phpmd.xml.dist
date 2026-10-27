@@ -31,7 +31,6 @@
 		<exclude name="ExcessiveParameterList" />
 		<!-- Set above: the exceptions are listed on their rules. -->
 		<exclude name="CyclomaticComplexity" />
-		<exclude name="ExcessiveMethodLength" />
 		<exclude name="NPathComplexity" />
 		<!-- Format, Ics, Options and Event are large by design (one file per output format or setting group); splitting them is a follow-up. -->
 		<exclude name="ExcessiveClassComplexity" />
