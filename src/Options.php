@@ -241,7 +241,7 @@ final class Options
 		$option = self::get($kirby, 'languages', self::DEFAULT_LANGUAGES);
 		$out = [];
 		foreach ((array)$option as $key => $value) {
-			[$code, $label] = is_int($key) ? [(string)$value, ''] : [$key, $value];
+			[$code, $label] = is_int($key) ? [(string)$value, ''] : [(string)$key, (string)$value];
 			$code = Normalize::languages($code)[0] ?? null;
 			if ($code !== null && !isset($out[$code])) {
 				$out[$code] = trim($label);
