@@ -72,12 +72,14 @@ if ($list !== null) {
     <?php if ($view === 'upcoming') : $today = Api::now(kirby()); Api::expiresAt(kirby(), \Sayamaapps\Koyomi\Expiry::midnight($today)); ?>
     <p class="koyomi-today"><time datetime="<?= esc($today->format('Y-m-d')) ?>"><?= esc(Api::t('list.today', ['date' => \Sayamaapps\Koyomi\Format::date($today)])) ?></time></p>
     <?php endif ?>
-    <?php foreach (\Sayamaapps\Koyomi\Query::byMonth($items) as $month) : $monthLevel = min(6, $level + 1); ?>
+    <?php foreach (\Sayamaapps\Koyomi\Query::byMonth($items) as $month) :
+		$monthLevel = min(6, $level + 1);
+		$monthKey = esc($month['key']);
+		$monthId = esc($month['key'], 'attr');
+		$monthTitle = esc(\Sayamaapps\Koyomi\Format::monthTitle($month['first']));
+	?>
     <section class="koyomi-month" aria-labelledby="koyomi-month-<?= esc($month['key'], 'attr') ?>">
-      <h<?= $monthLevel ?> class="koyomi-month-title" id="koyomi-month-<?= esc(
-	$month['key'],
-	'attr'
-) ?>"><time datetime="<?= esc($month['key']) ?>"><?= esc(\Sayamaapps\Koyomi\Format::monthTitle($month['first'])) ?></time></h<?= $monthLevel ?>>
+      <h<?= $monthLevel ?> class="koyomi-month-title" id="koyomi-month-<?= $monthId ?>"><time datetime="<?= $monthKey ?>"><?= $monthTitle ?></time></h<?= $monthLevel ?>>
       <ol class="koyomi-events">
         <?php foreach ($month['events'] as $event) : ?>
         <li class="koyomi-events-item"><?php snippet('koyomi/card', ['event' => $event, 'level' => min(6, $level + 2)]) ?></li>

@@ -112,8 +112,8 @@ $seriesTotal = count($series);
       <ul>
         <?php foreach ($organizers as $organizer) : ?>
         <li class="koyomi-organizer"><?php if ($organizer->link() !== '') : ?><a href="<?= esc($organizer->link()) ?>"><?= esc($organizer->name) ?></a><?php else : ?>
-<?= esc($organizer->name) ?><?php endif ?><?php if ($organizer->email !== '') : ?> <a class="koyomi-organizer-email" href="mailto:<?= esc($organizer->email) ?>
-"><?= esc($organizer->email) ?></a><?php endif ?></li>
+<?= esc($organizer->name) ?><?php endif ?><?php if ($organizer->email !== '') : ?>
+ <a class="koyomi-organizer-email" href="mailto:<?= esc($organizer->email) ?>"><?= esc($organizer->email) ?></a><?php endif ?></li>
         <?php endforeach ?>
       </ul>
     </dd>
@@ -128,9 +128,10 @@ $seriesTotal = count($series);
   <?php if ($e->bookingUrl !== '' && !$past && !$cancelled) : ?>
     <?php if ($e->availability === \Sayamaapps\Koyomi\Availability::SOLDOUT) : ?>
     <p class="koyomi-booking koyomi-booking--soldout"><?= esc(Api::t('availability.soldout')) ?></p>
-    <?php else : ?>
-    <p class="koyomi-booking"><a class="koyomi-booking-link" href="<?= esc($e->bookingUrl) ?>
-" target="_blank" rel="noopener"><?= esc($e->bookingLabel !== '' ? $e->bookingLabel : Api::t('booking.default')) ?>
+    <?php else :
+		$bookingLabel = $e->bookingLabel !== '' ? $e->bookingLabel : Api::t('booking.default');
+	?>
+    <p class="koyomi-booking"><a class="koyomi-booking-link" href="<?= esc($e->bookingUrl) ?>" target="_blank" rel="noopener"><?= esc($bookingLabel) ?>
 <span class="koyomi-sr-only"> <?= esc(Api::t('booking.opensNewTab')) ?></span></a></p>
     <?php endif ?>
   <?php endif ?>

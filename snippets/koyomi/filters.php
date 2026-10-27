@@ -75,11 +75,10 @@ $featuredChecked = !empty($filters['featured']);
     <label for="koyomi-filter-category"><?= esc(Api::t('filters.category')) ?></label>
     <select id="koyomi-filter-category" name="category">
       <option value=""><?= esc(Api::t('filters.all')) ?></option>
-      <?php foreach ($categories as $name => $count) : ?>
-      <option value="<?= esc((string)$name) ?>"<?= $selectedCategory !== null && strcasecmp(
-	(string)$name,
-	$selectedCategory
-) === 0 ? ' selected' : '' ?>><?= esc((string)$name) ?> (<?= (int)$count ?>)</option>
+      <?php foreach ($categories as $name => $count) :
+		  $isSelected = $selectedCategory !== null && strcasecmp((string)$name, $selectedCategory) === 0;
+	  ?>
+      <option value="<?= esc((string)$name) ?>"<?= $isSelected ? ' selected' : '' ?>><?= esc((string)$name) ?> (<?= (int)$count ?>)</option>
       <?php endforeach ?>
     </select>
   </p>
@@ -102,11 +101,10 @@ $featuredChecked = !empty($filters['featured']);
     <label for="koyomi-filter-language"><?= esc(Api::t('filters.language')) ?></label>
     <select id="koyomi-filter-language" name="language">
       <option value=""><?= esc(Api::t('filters.all')) ?></option>
-      <?php foreach ($languages as $code => $count) : ?>
-      <option value="<?= esc((string)$code) ?>"<?= $selectedLanguage === (string)$code ? ' selected' : '' ?>><?= esc(\Sayamaapps\Koyomi\Format::languageName(
-	(string)$code,
-	(string)($customLanguages[$code] ?? '')
-)) ?> (<?= (int)$count ?>)</option>
+      <?php foreach ($languages as $code => $count) :
+		  $languageLabel = \Sayamaapps\Koyomi\Format::languageName((string)$code, (string)($customLanguages[$code] ?? ''));
+	  ?>
+      <option value="<?= esc((string)$code) ?>"<?= $selectedLanguage === (string)$code ? ' selected' : '' ?>><?= esc($languageLabel) ?> (<?= (int)$count ?>)</option>
       <?php endforeach ?>
     </select>
   </p>
