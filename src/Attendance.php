@@ -1,6 +1,6 @@
 <?php
 
-namespace Koyomi;
+namespace Sayamaapps\Koyomi;
 
 /**
  * How people attend. The Panel stores two toggles, `inPerson` and `online`
@@ -15,27 +15,32 @@ namespace Koyomi;
  *
  * Status `movedOnline` makes the EFFECTIVE attendance `online`
  * (Event::effectiveAttendance()).
+ *
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
-final class Attendance
+class Attendance
 {
-    public const OFFLINE = 'offline';
-    public const ONLINE = 'online';
-    public const MIXED = 'mixed';
+	public const ALL = [self::OFFLINE, self::ONLINE, self::MIXED];
+	public const MIXED = 'mixed';
+	public const OFFLINE = 'offline';
+	public const ONLINE = 'online';
 
-    public const ALL = [self::OFFLINE, self::ONLINE, self::MIXED];
+	/** From the two Panel toggles; both off counts as offline. */
+	public static function fromToggles(bool $inPerson, bool $online): string
+	{
+		return match (true) {
+			$inPerson && $online => self::MIXED,
+			$online => self::ONLINE,
+			default => self::OFFLINE,
+		};
+	}
 
-    public static function normalize(mixed $value): string
-    {
-        return Normalize::choice($value, self::ALL, self::OFFLINE);
-    }
-
-    /** From the two Panel toggles; both off counts as offline. */
-    public static function fromToggles(bool $inPerson, bool $online): string
-    {
-        return match (true) {
-            $inPerson && $online => self::MIXED,
-            $online => self::ONLINE,
-            default => self::OFFLINE,
-        };
-    }
+	/** The value when it is one of ALL, otherwise offline. */
+	public static function normalize(mixed $value): string
+	{
+		return Normalize::choice($value, self::ALL, self::OFFLINE);
+	}
 }

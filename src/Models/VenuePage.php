@@ -1,28 +1,44 @@
 <?php
 
-namespace Koyomi\Models;
+namespace Sayamaapps\Koyomi\Models;
 
 use Kirby\Cms\Page;
-use Koyomi\Mapper;
-use Koyomi\Repository;
-use Koyomi\Venue;
+use Sayamaapps\Koyomi\Event;
+use Sayamaapps\Koyomi\Mapper;
+use Sayamaapps\Koyomi\Repository;
+use Sayamaapps\Koyomi\Venue;
 
 /**
- * Page model of template `koyomi-venue`.           OWNER: task `kirby`
+ * Page model of template `koyomi-venue`.
+ *
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
 class VenuePage extends Page
 {
-    private ?Venue $koyomiVenueValue = null;
+	private Venue|null $koyomiVenueValue = null;
 
-    /** Mapper::venue($this), memoized. */
-    public function koyomiVenue(): Venue
-    {
-        return $this->koyomiVenueValue ??= Mapper::venue($this);
-    }
+	/** Same as upcomingEvents(), with the plugin prefix. */
+	public function koyomiUpcomingEvents(): array
+	{
+		return $this->upcomingEvents();
+	}
 
-    /** Repository::forVenue($this->kirby(), $this). @return list<\Koyomi\Event> */
-    public function upcomingEvents(): array
-    {
-        return Repository::forVenue($this->kirby(), $this);
-    }
+	/** Mapper::venue($this), memoized. */
+	public function koyomiVenue(): Venue
+	{
+		return $this->koyomiVenueValue ??= Mapper::venue($this);
+	}
+
+	/**
+	 * Repository::forVenue($this->kirby(), $this).
+	 *
+	 * @return list<Event>
+	 */
+	public function upcomingEvents(): array
+	{
+		return Repository::forVenue($this->kirby(), $this);
+	}
 }

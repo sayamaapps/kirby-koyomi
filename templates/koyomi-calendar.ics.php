@@ -1,1 +1,1 @@
-<?php echo \Koyomi\Output::calendarIcs($page);
+<?php echo \Sayamaapps\Koyomi\Output::calendarIcs($page);

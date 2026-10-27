@@ -1,1 +1,1 @@
-<?php echo \Koyomi\Output::eventIcs($page);
+<?php echo \Sayamaapps\Koyomi\Output::eventIcs($page);

@@ -1,4 +1,7 @@
 <?php
+
+use Sayamaapps\Koyomi\Api;
+
 /**
  * The HTML document around Koyomi's pages, used by the four HTML templates.
  * It is the one snippet that is not silent when Koyomi is inactive: it is a
@@ -14,18 +17,20 @@
  * @var \Kirby\Template\Slot $slot   the captured content (Kirby slot)
  */
 $page ??= null;
-$language = koyomi_i18n();
-$siteTitle = (string) site()->title();
-$pageTitle = (string) ($page?->title() ?? '');
+$language = Api::i18n(kirby());
+$siteTitle = (string)site()->title();
+$pageTitle = (string)($page?->title() ?? '');
 $title = $pageTitle !== '' && $pageTitle !== $siteTitle ? $pageTitle . ' – ' . $siteTitle : $siteTitle;
 ?>
 <!doctype html>
-<html lang="<?= esc($language) ?>">
+<html lang="<?= esc($language) ?>
+">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><?= esc($title) ?></title>
-  <?php if ($page instanceof \Koyomi\Models\EventPage) : ?>
+  <title><?= esc($title) ?>
+</title>
+  <?php if ($page instanceof \Sayamaapps\Koyomi\Models\EventPage) : ?>
   <?php snippet('koyomi/jsonld', ['page' => $page]) ?>
   <?php endif ?>
 </head>

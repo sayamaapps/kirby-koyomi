@@ -1,6 +1,9 @@
 <?php
+
+use Sayamaapps\Koyomi\Api;
+
 /**
- * schema.org JSON-LD of one event (SPEC §8.3, §8.14), for the <head> of an
+ * schema.org JSON-LD of one event, for the <head> of an
  * event page. Koyomi's layout calls it for koyomi-event pages only; a site
  * with its own layout calls it the same way:
  *
@@ -9,15 +12,15 @@
  * Prints nothing when Koyomi is inactive or when the data is not an event.
  * Never prints lists: one event, one script element.
  *
- * @var \Koyomi\Event|\Koyomi\Models\EventPage|null $event  or $page
+ * @var \Sayamaapps\Koyomi\Event|\Sayamaapps\Koyomi\Models\EventPage|null $event  or $page
  */
-if (!koyomi_active()) {
-    return;
+if (!Api::active(kirby())) {
+	return;
 }
-koyomi_i18n();
+Api::i18n(kirby());
 
-$e = koyomi_event($event ?? $page ?? null);
-if (!$e instanceof \Koyomi\Event) {
-    return;
+$e = Api::event($event ?? $page ?? null);
+if (!$e instanceof \Sayamaapps\Koyomi\Event) {
+	return;
 }
-echo \Koyomi\JsonLd::script(\Koyomi\JsonLd::event($e));
+echo \Sayamaapps\Koyomi\JsonLd::script(\Sayamaapps\Koyomi\JsonLd::event($e));

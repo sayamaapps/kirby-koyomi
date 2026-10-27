@@ -1,0 +1,29 @@
+{
+	"scan-files": [
+		"index.php",
+		"legacy.php",
+		"autoload.php",
+		"config/*.php",
+		"src/*.php",
+		"src/Models/*.php"
+	],
+	"symbol-whitelist": [
+		"FILTER_VALIDATE_EMAIL",
+		"filter_var",
+		"Kirby",
+		"Kirby\\Cms\\App",
+		"Kirby\\Cms\\Blocks",
+		"Kirby\\Cms\\Helpers",
+		"Kirby\\Cms\\Page",
+		"Kirby\\Cms\\Pages",
+		"Kirby\\Content\\Content",
+		"Kirby\\Content\\Field",
+		"Kirby\\Exception\\NotFoundException",
+		"Kirby\\Filesystem\\F",
+		"Kirby\\Toolkit\\Str",
+		"Sayamaapps\\Koyomi\\Models\\CalendarPage",
+		"Sayamaapps\\Koyomi\\Models\\EventPage",
+		"Sayamaapps\\Koyomi\\Models\\OrganizerPage",
+		"Sayamaapps\\Koyomi\\Models\\VenuePage"
+	]
+}

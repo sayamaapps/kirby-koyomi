@@ -1,4 +1,7 @@
 <?php
+
+use Sayamaapps\Koyomi\Api;
+
 /**
  * A venue: name, address, and (outside compact mode) directions and the
  * self-hosted map image. Links: a plain OpenStreetMap link (or
@@ -10,41 +13,60 @@
  *
  * Prints nothing when Koyomi is inactive or the data is not a venue.
  *
- * @var \Koyomi\Venue|\Koyomi\Models\VenuePage|null $venue   (required)
- * @var bool|null                                    $compact name and address only (used inside an event)
+ * @var \Sayamaapps\Koyomi\Venue|\Sayamaapps\Koyomi\Models\VenuePage|null $venue   (required)
+ * @var bool|null $compact name and address only (used inside an event)
  */
-if (!koyomi_active()) {
-    return;
+if (!Api::active(kirby())) {
+	return;
 }
-koyomi_i18n();
+Api::i18n(kirby());
 
 $v = $venue ?? null;
-if ($v instanceof \Koyomi\Models\VenuePage) {
-    $v = $v->koyomiVenue();
+if ($v instanceof \Sayamaapps\Koyomi\Models\VenuePage) {
+	$v = $v->koyomiVenue();
 }
-if (!$v instanceof \Koyomi\Venue) {
-    return;
+if (!$v instanceof \Sayamaapps\Koyomi\Venue) {
+	return;
 }
-$compact = (bool) ($compact ?? false);
+$compact = (bool)($compact ?? false);
 
-$addressLines = \Koyomi\Format::addressLines($v, \Koyomi\Options::country(\Kirby\Cms\App::instance()));
+$addressLines = \Sayamaapps\Koyomi\Format::addressLines($v, \Sayamaapps\Koyomi\Options::country(\Kirby\Cms\App::instance()));
 $mapLink = $v->mapLink();
 ?>
 <div class="koyomi-venue">
-  <p class="koyomi-venue-name"><?php if ($v->url !== '') : ?><a href="<?= esc($v->url) ?>"><?= esc($v->name) ?></a><?php else : ?><?= esc($v->name) ?><?php endif ?></p>
+  <p class="koyomi-venue-name"><?php if ($v->url !== '') : ?>
+<a href="<?= esc($v->url) ?>
+"><?= esc($v->name) ?>
+</a><?php else : ?>
+<?= esc($v->name) ?>
+<?php endif ?>
+</p>
   <?php if ($addressLines !== []) : ?>
-  <p class="koyomi-venue-address"><?= implode('<br>', array_map(fn (string $line) => esc($line), $addressLines)) ?></p>
+  <p class="koyomi-venue-address"><?= implode('<br>', array_map(fn (string $line) => esc($line), $addressLines)) ?>
+</p>
   <?php endif ?>
   <?php if (!$compact && $v->directions !== '') : ?>
-  <p class="koyomi-venue-directions"><strong><?= esc(koyomi_t('venue.directions')) ?></strong><br><?= nl2br(esc($v->directions)) ?></p>
+  <p class="koyomi-venue-directions"><strong><?= esc(Api::t('venue.directions')) ?>
+</strong><br><?= nl2br(esc($v->directions)) ?>
+</p>
   <?php endif ?>
-  <?php if (!$compact && $v->showMap && $v->mapImage !== '') : ?>
-  <img class="koyomi-venue-map" src="<?= esc($v->mapImage) ?>" alt="<?= esc($v->mapImageAlt !== '' ? $v->mapImageAlt : koyomi_t('venue.mapAlt', ['name' => $v->name])) ?>" loading="lazy">
+  <?php if (!$compact && $v->showMap && $v->mapImage !== '') :
+	  $mapAlt = $v->mapImageAlt !== '' ? $v->mapImageAlt : Api::t('venue.mapAlt', ['name' => $v->name]);
+  ?>
+  <img class="koyomi-venue-map" src="<?= esc($v->mapImage) ?>
+" alt="<?= esc($mapAlt) ?>
+" loading="lazy">
   <?php endif ?>
   <?php if ($mapLink !== '' || $v->website !== '') : ?>
   <p class="koyomi-venue-links">
-    <?php if ($mapLink !== '') : ?><a href="<?= esc($mapLink) ?>" target="_blank" rel="noopener"><?= esc(koyomi_t('venue.map')) ?></a><?php endif ?>
-    <?php if ($v->website !== '') : ?><a href="<?= esc($v->website) ?>" rel="noopener"><?= esc(koyomi_t('venue.website')) ?></a><?php endif ?>
+    <?php if ($mapLink !== '') : ?>
+<a href="<?= esc($mapLink) ?>
+" target="_blank" rel="noopener"><?= esc(Api::t('venue.map')) ?>
+</a><?php endif ?>
+    <?php if ($v->website !== '') : ?>
+<a href="<?= esc($v->website) ?>
+" rel="noopener"><?= esc(Api::t('venue.website')) ?>
+</a><?php endif ?>
   </p>
   <?php endif ?>
 </div>

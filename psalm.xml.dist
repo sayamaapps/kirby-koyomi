@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<psalm
+    errorLevel="3"
+    phpVersion="8.2"
+    resolveFromConfigFile="true"
+    findUnusedBaselineEntry="false"
+    findUnusedCode="false"
+>
+    <projectFiles>
+        <directory name="src" />
+        <file name="index.php" />
+        <file name="legacy.php" />
+        <file name="autoload.php" />
+        <ignoreFiles>
+            <directory name="vendor" />
+            <directory name="tests" />
+            <!-- config/ returns closures that Kirby binds to the page or site at runtime -->
+            <directory name="config" />
+        </ignoreFiles>
+    </projectFiles>
+    <issueHandlers>
+        <!-- Kirby's Field and File answer toFile(), toPage(), toBlocks(), alt() and friends through __call.
+             Psalm cannot see these methods. Limited to the mapper that reads the Panel fields. -->
+        <UndefinedMagicMethod>
+            <errorLevel type="suppress">
+                <file name="src/Mapper.php" />
+            </errorLevel>
+        </UndefinedMagicMethod>
+        <!-- Page::uuid() is null when UUIDs are off; the id fallback keeps the page id form for that case. -->
+        <RedundantCondition>
+            <errorLevel type="suppress">
+                <file name="src/Mapper.php" />
+            </errorLevel>
+        </RedundantCondition>
+        <TypeDoesNotContainNull>
+            <errorLevel type="suppress">
+                <file name="src/Mapper.php" />
+            </errorLevel>
+        </TypeDoesNotContainNull>
+        <!-- Kirby's Content::get() is typed loosely; the Field it returns has value(), the documented accessor. -->
+        <PossiblyInvalidMethodCall>
+            <errorLevel type="suppress">
+                <file name="src/Mapper.php" />
+            </errorLevel>
+        </PossiblyInvalidMethodCall>
+    </issueHandlers>
+</psalm>

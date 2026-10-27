@@ -15,20 +15,38 @@ Koyomi keeps venues and organizers as pages of their own, so an address changes 
 
 ## Requirements
 
-- PHP 8.2 to 8.4 with `mbstring`
-- Kirby 5
+| | Supported |
+|---|---|
+| Kirby | 5 (`getkirby/cms` ^5.0) |
+| PHP | 8.2 to 8.5, with `mbstring` |
+
+Kirby 5.0 to 5.5 have security advisories, and Composer refuses to install them, so the lowest version the tests can install is 5.6.0. The constraint stays `^5.0`, so sites on those versions are not blocked from updating.
 
 ## Installation
+
+Pick one of three ways. Koyomi works the same in each.
+
+**Composer** (recommended), from the site's root:
 
 ```sh
 composer require sayamaapps/kirby-koyomi
 ```
 
-Composer installs to `site/plugins/koyomi/`. Add that path to `.gitignore` and deploy it like `vendor/`. Copying the folder there by hand works too.
+Composer installs to `site/plugins/koyomi/`. Add that path to `.gitignore` and deploy it like `vendor/`.
+
+**Git submodule**, in the site's `site/plugins/` folder:
+
+```sh
+git submodule add https://github.com/sayamaapps/kirby-koyomi.git site/plugins/koyomi
+```
+
+**ZIP**: download the release archive from the [releases page](https://github.com/sayamaapps/kirby-koyomi/releases) and extract it to `site/plugins/koyomi/`.
+
+Use the release tags (for example `1.4.0`), not the `main` branch, on a live site.
 
 ## Setup
 
-Koyomi is off by default. In `site/config/config.php`:
+Koyomi is off by default. In `site/config/config.php`, switch it on and set the default zone:
 
 ```php
 return [
@@ -94,7 +112,7 @@ A switched-off output returns Kirby's 404 page, and `koyomi.active` switches all
 
 ## Options
 
-Every option is `koyomi.<name>`, flat or nested. `null` means "not set".
+Every option is `koyomi.<name>`, flat or nested (`'koyomi.active' => true` or `'koyomi' => ['active' => true]`). `null` means "not set".
 
 | Option | Default | Description |
 |---|---|---|
@@ -119,11 +137,51 @@ Every option is `koyomi.<name>`, flat or nested. `null` means "not set".
 | `hideCancelled` | `false` | Leave cancelled events out of the upcoming list and the RSS feed. |
 | `duplicateReset` | `true` | A duplicate loses its status, previous date, status note and availability. |
 | `formats` | `[]` | Date and time patterns per language, for example `['de' => ['time' => 'G.i']]`. See [docs/reference.md](docs/reference.md#date-formats). |
-| `mapUrl` | `null` | Closure `fn (Koyomi\Venue $venue): string` that replaces the OpenStreetMap link. |
+| `mapUrl` | `null` | Closure `fn (Sayamaapps\Koyomi\Venue $venue): string` that replaces the OpenStreetMap link. |
 | `calendar` | first `koyomi-calendar` | Page ID of the calendar used by snippets and feeds. |
 | `venues` | first `koyomi-venues` | Page ID of the venues container. |
 | `organizers` | first `koyomi-organizers` | Page ID of the organizers container. |
 | `now` | real time | Pins the clock, for example `'2027-03-10 12:00'`, for tests and previews. |
+
+Koyomi's texts are also registered as Kirby translations (`config/translations.php`), so a site can call `t('sayamaapps.koyomi.status.cancelled')`. The 1.x keys `t('koyomi.status.cancelled')` stay registered too. Koyomi reads its own copy in `translations/` through its `I18n` class, not through Kirby's `$t`: the language of the plugin follows the `language` option, which can differ from the Kirby site language, and a missing Kirby translation must not turn a German page English.
+
+## Deprecations
+
+The 1.x names keep working in every 1.x release. Koyomi logs nothing for them, so debug mode and the error log stay as they are. Each name is marked `@deprecated` in the code; the table shows what replaces it.
+
+| 1.x | Use instead |
+|---|---|
+| `koyomi_option($name, $default)` | `Sayamaapps\Koyomi\Api::option($kirby, $name, $default)` |
+| `koyomi_active()` | `Sayamaapps\Koyomi\Api::active($kirby)` |
+| `koyomi_now()` | `Sayamaapps\Koyomi\Api::now($kirby)` |
+| `koyomi_i18n()` | `Sayamaapps\Koyomi\Api::i18n($kirby)` |
+| `koyomi_t($key, $values)` | `Sayamaapps\Koyomi\Api::t($key, $values)` |
+| `koyomi_event($value)` | `Sayamaapps\Koyomi\Api::event($value)` |
+| `koyomi_expires($events)` | `Sayamaapps\Koyomi\Api::expires($kirby, $events)` |
+| `koyomi_expires_at($timestamp)` | `Sayamaapps\Koyomi\Api::expiresAt($kirby, $timestamp)` |
+| Classes `Koyomi\…`, for example `Koyomi\Event` | `Sayamaapps\Koyomi\…`, same names (class aliases in `legacy.php`) |
+
+The functions are guarded by Kirby's `Helpers::hasOverride()`, which looks only for the constant `KIRBY_HELPER_<NAME>`, for example `KIRBY_HELPER_KOYOMI_ACTIVE`. A site that declares its own `koyomi_active()` must define that constant first; without it, the declaration fails with "Cannot redeclare", as it did in 1.x.
+
+Blueprint, snippet, template, page method and route names do not change, and neither do the feed URLs or the stored content.
+
+The 1.x page methods `$page->icsUrl()`, `jsonUrl()`, `rssUrl()`, `webcalUrl()`, `googleCalendarUrl()`, `isOngoing()`, `isPast()` and `upcomingEvents()` keep their names and results and are not deprecated. The prefixed twins `koyomiIcsUrl()`, `koyomiJsonUrl()`, `koyomiRssUrl()`, `koyomiWebcalUrl()`, `koyomiGoogleCalendarUrl()`, `koyomiIsOngoing()`, `koyomiIsPast()` and `koyomiUpcomingEvents()` return the same values; use them in new templates.
+
+### Changes you may notice
+
+No site output changes. Two things differ in the code itself:
+
+- Class names read from objects (`get_class()`, `::class`, `var_dump()`) and in some error messages (for example "Cannot modify readonly property") now show `Sayamaapps\Koyomi\…`. `instanceof`, type hints and exception classes are unchanged.
+- PHP messages that contain a file name or line number (for example a `TypeError` raised by a feed helper) show the new location.
+
+### Planned for 2.0
+
+These changes would break existing sites, so they wait for the next major version:
+
+- Option names `sayamaapps.koyomi.<name>`, read in place of `koyomi.<name>`.
+- Deprecation notices at runtime for the 1.x names, shown in debug mode.
+- Removal of the 1.x functions, the `Koyomi\` class aliases, and the test helpers `Format::reset()` and `Repository::reset()`.
+- Translation keys `koyomi.<key>`: only `sayamaapps.koyomi.<key>` remains.
 
 ## Privacy
 

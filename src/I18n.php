@@ -1,86 +1,95 @@
 <?php
 
-namespace Koyomi;
+namespace Sayamaapps\Koyomi;
 
 /**
  * Strings of snippets, feeds and Panel labels, Kirby-free.
  *
  * The tables live in translations/<language>.php and are also registered as
- * Kirby plugin translations under `koyomi.<key>` (index.php), so site
- * snippets can use t('koyomi.status.cancelled'). Koyomi itself reads its own
- * tables: a missing Kirby translation must never silently turn a German
+ * Kirby plugin translations under `koyomi.<key>` (config/translations.php), so
+ * site snippets can use t('koyomi.status.cancelled'). Koyomi itself reads its
+ * own tables: a missing Kirby translation must never silently turn a German
  * page English.
  *
- * The language is set per request (koyomi_i18n() in index.php, from
+ * The language is set per request (Api::i18n(), from
  * Options::language()) and defaults to English. Missing keys fall back to
  * English, then to the key itself.
+ *
+ * @author    Simon Räder
+ * @link      https://github.com/sayamaapps/kirby-koyomi
+ * @copyright Simon Räder
+ * @license   https://opensource.org/licenses/MIT
  */
-final class I18n
+class I18n
 {
-    /** Languages Koyomi ships. English is the default and the fallback. */
-    public const LANGUAGES = ['en', 'de'];
+	/** Languages Koyomi ships. English is the default and the fallback. */
+	public const LANGUAGES = ['en', 'de'];
 
-    private static string $language = 'en';
+	private static string $language = 'en';
 
-    /** @var array<string, array<string,string>> */
-    private static array $tables = [];
+	/** @var array<string, array<string,string>> */
+	private static array $tables = [];
 
-    public static function setLanguage(string $language): void
-    {
-        $language = strtolower($language);
-        self::$language = in_array($language, self::LANGUAGES, true) ? $language : 'en';
-    }
+	/**
+	 * The key in every shipped language, for Panel labels in blueprints:
+	 * `['en' => 'Start date', 'de' => 'Beginn (Datum)']`. Kirby picks the
+	 * entry of the Panel user's language and falls back to English.
+	 *
+	 * @return array<string,string>
+	 */
+	public static function all(string $key): array
+	{
+		$out = [];
+		foreach (self::LANGUAGES as $language) {
+			$out[$language] = self::table($language)[$key] ?? self::table('en')[$key] ?? $key;
+		}
+		return $out;
+	}
 
-    public static function language(): string
-    {
-        return self::$language;
-    }
+	/** True when the English table has this key. */
+	public static function has(string $key): bool
+	{
+		return array_key_exists($key, self::table('en'));
+	}
 
-    /** @return array<string,string> */
-    public static function table(string $language): array
-    {
-        if (!in_array($language, self::LANGUAGES, true)) {
-            return [];
-        }
-        return self::$tables[$language] ??= require dirname(__DIR__) . '/translations/' . $language . '.php';
-    }
+	/** The current language, `en` or `de`. */
+	public static function language(): string
+	{
+		return self::$language;
+	}
 
-    /** True when the English table has this key. */
-    public static function has(string $key): bool
-    {
-        return array_key_exists($key, self::table('en'));
-    }
+	/** Sets the language; a code Koyomi does not ship falls back to English. */
+	public static function setLanguage(string $language): void
+	{
+		$language = strtolower($language);
+		self::$language = in_array($language, self::LANGUAGES, true) ? $language : 'en';
+	}
 
-    /**
-     * `{name}` placeholders are replaced with the given values, unescaped —
-     * escaping is the caller's job (snippets use esc()).
-     */
-    public static function t(string $key, array $values = []): string
-    {
-        $text = self::table(self::$language)[$key] ?? self::table('en')[$key] ?? $key;
-        if ($values === []) {
-            return $text;
-        }
-        $pairs = [];
-        foreach ($values as $name => $value) {
-            $pairs['{' . $name . '}'] = (string) $value;
-        }
-        return strtr($text, $pairs);
-    }
+	/**
+	 * `{name}` placeholders are replaced with the given values, unescaped —
+	 * escaping is the caller's job (snippets use esc()).
+	 */
+	public static function t(string $key, array $values = []): string
+	{
+		$text = self::table(self::$language)[$key] ?? self::table('en')[$key] ?? $key;
+		if ($values === []) {
+			return $text;
+		}
+		$pairs = [];
+		foreach ($values as $name => $value) {
+			$pairs['{' . $name . '}'] = (string)$value;
+		}
+		return strtr($text, $pairs);
+	}
 
-    /**
-     * The key in every shipped language, for Panel labels in blueprints:
-     * `['en' => 'Start date', 'de' => 'Beginn (Datum)']`. Kirby picks the
-     * entry of the Panel user's language and falls back to English.
-     *
-     * @return array<string,string>
-     */
-    public static function all(string $key): array
-    {
-        $out = [];
-        foreach (self::LANGUAGES as $language) {
-            $out[$language] = self::table($language)[$key] ?? self::table('en')[$key] ?? $key;
-        }
-        return $out;
-    }
+	/**
+	 * @return array<string,string>
+	 */
+	public static function table(string $language): array
+	{
+		if (!in_array($language, self::LANGUAGES, true)) {
+			return [];
+		}
+		return self::$tables[$language] ??= require dirname(__DIR__) . '/translations/' . $language . '.php';
+	}
 }

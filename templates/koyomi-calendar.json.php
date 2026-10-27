@@ -1,1 +1,1 @@
-<?php echo \Koyomi\Output::json($page);
+<?php echo \Sayamaapps\Koyomi\Output::json($page);

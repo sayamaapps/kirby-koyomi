@@ -11,6 +11,29 @@ All notable changes to this project are documented here. Versions follow
 
 ## [Unreleased]
 
+No breaking changes to the 1.x API: the 1.x names and their behaviour stay as
+they are. Class names shown by `get_class()` and in some error messages change;
+see "Changes you may notice" in the README.
+
+### Added
+
+- Prefixed page methods: `koyomiIcsUrl()`, `koyomiJsonUrl()`, `koyomiRssUrl()`,
+  `koyomiWebcalUrl()`, `koyomiGoogleCalendarUrl()`, `koyomiIsOngoing()`,
+  `koyomiIsPast()` and `koyomiUpcomingEvents()`. They return what the 1.x names
+  return.
+- Translations are also registered under `sayamaapps.koyomi.<key>`. The
+  `koyomi.<key>` keys stay.
+
+### Changed
+
+- Code follows the Kirby plugin conventions. Classes live in the namespace
+  `Sayamaapps\Koyomi`. Plugin definitions are in `config/`, and `index.php` is
+  short. The output and the stored content do not change.
+- The 1.x class names (`Koyomi\…`) and global functions (`koyomi_active()` and
+  so on) still work. They are marked `@deprecated`. Nothing is logged at runtime.
+- `Format::reset()` and `Repository::reset()` are kept as `@deprecated @internal`
+  test helpers, as in 1.x.
+
 ### Fixed
 
 - **README privacy statement.** It said nothing is loaded from third parties, but
@@ -128,7 +151,7 @@ All notable changes to this project are documented here. Versions follow
 
 ## [1.0.0] — 2026-10-11
 
-### Timeline (Simon 11.10.2026: "a calendar is always a time line")
+### Timeline
 
 - `koyomi/list` shows the events as a timeline by default: a "today" line,
   month headings, and per card a calendar-sheet date (weekday, day, month) and

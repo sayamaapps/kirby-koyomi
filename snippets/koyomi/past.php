@@ -1,4 +1,7 @@
 <?php
+
+use Sayamaapps\Koyomi\Api;
+
 /**
  * The note "This event has already taken place." with a link back to the
  * upcoming dates. Prints nothing for an event that is not past, and nothing
@@ -6,21 +9,26 @@
  *
  *   <?php snippet('koyomi/past', ['event' => $event, 'calendarUrl' => $calendarUrl]) ?>
  *
- * @var \Koyomi\Event|\Koyomi\Models\EventPage|null $event       (required)
- * @var string|null                                  $calendarUrl link target; default: the site's calendar
+ * @var \Sayamaapps\Koyomi\Event|\Sayamaapps\Koyomi\Models\EventPage|null $event       (required)
+ * @var string|null $calendarUrl link target; default: the site's calendar
  */
-if (!koyomi_active()) {
-    return;
+if (!Api::active(kirby())) {
+	return;
 }
-koyomi_i18n();
+Api::i18n(kirby());
 
-$e = koyomi_event($event ?? null);
-if ($e === null || !$e->isPast(koyomi_now())) {
-    return;
+$e = Api::event($event ?? null);
+if ($e === null || !$e->isPast(Api::now(kirby()))) {
+	return;
 }
 if (!isset($calendarUrl)) {
-    $calendarUrl = site()->koyomiCalendar()?->url();
+	$calendarUrl = site()->koyomiCalendar()?->url();
 }
-$calendarUrl = (string) ($calendarUrl ?? '');
+$calendarUrl = (string)($calendarUrl ?? '');
 ?>
-<p class="koyomi-past" role="note"><?= esc(koyomi_t('event.pastNote')) ?><?php if ($calendarUrl !== '') : ?> <a href="<?= esc($calendarUrl) ?>"><?= esc(koyomi_t('event.toUpcoming')) ?></a><?php endif ?></p>
+<p class="koyomi-past" role="note"><?= esc(Api::t('event.pastNote')) ?>
+<?php if ($calendarUrl !== '') : ?>
+ <a href="<?= esc($calendarUrl) ?>
+"><?= esc(Api::t('event.toUpcoming')) ?>
+</a><?php endif ?>
+</p>
