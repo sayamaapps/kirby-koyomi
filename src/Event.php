@@ -21,7 +21,6 @@ use InvalidArgumentException;
  * - Past = end <= now. An ongoing retreat (start <= now < end) is still
  *   listed as upcoming.
  *
- * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

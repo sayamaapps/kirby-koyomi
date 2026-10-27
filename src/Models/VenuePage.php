@@ -11,7 +11,6 @@ use Sayamaapps\Koyomi\Venue;
 /**
  * Page model of template `koyomi-venue`.
  *
- * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

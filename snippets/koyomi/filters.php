@@ -9,8 +9,7 @@ use Sayamaapps\Koyomi\Api;
  * URLs of its own beyond the form action.
  *
  *   <?php snippet('koyomi/filters', ['list' => $list]) ?>
- *   <?php snippet('koyomi/filters', ['calendar' => $page]) ?>
-   (the list of that calendar)
+ *   <?php snippet('koyomi/filters', ['calendar' => $page]) ?>   (the list of that calendar)
  *
  * Prints nothing when Koyomi is inactive or there is nothing to filter by.
  *

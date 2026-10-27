@@ -9,8 +9,7 @@ use Sayamaapps\Koyomi\Api;
  * either way. Links keep the other filters and the view (upcoming / past).
  *
  *   <?php snippet('koyomi/switch', ['list' => $list]) ?>
- *   <?php snippet('koyomi/switch', ['calendar' => $page]) ?>
-   (the list of that calendar)
+ *   <?php snippet('koyomi/switch', ['calendar' => $page]) ?>   (the list of that calendar)
  *
  * Prints nothing when Koyomi is inactive, when koyomi.attendanceSwitch is
  * false, or when the view has no in-person or no online event (nothing to

@@ -19,7 +19,6 @@ use Kirby\Exception\NotFoundException;
  * The response charset is not set here: Kirby's Responder has no charset
  * setter, and Kirby's default is UTF-8, which is what every body is in.
  *
- * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

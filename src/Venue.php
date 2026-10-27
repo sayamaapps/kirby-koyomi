@@ -11,7 +11,6 @@ namespace Sayamaapps\Koyomi;
  * a plain link (OpenStreetMap by default, `koyomi.mapUrl` to change) that
  * only opens on click.
  *
- * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

@@ -17,7 +17,6 @@ use Kirby\Cms\App;
  *
  * Defaults are given here, at the call sites.
  *
- * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

@@ -15,7 +15,6 @@ namespace Sayamaapps\Koyomi;
  * Options::language()) and defaults to English. Missing keys fall back to
  * English, then to the key itself.
  *
- * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

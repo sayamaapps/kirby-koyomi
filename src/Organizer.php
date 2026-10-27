@@ -9,7 +9,6 @@ namespace Sayamaapps\Koyomi;
  * the organizer's `showEmail` toggle is on, so a hidden address never enters
  * this object and therefore can never reach any output.
  *
- * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

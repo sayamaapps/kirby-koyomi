@@ -14,7 +14,6 @@ namespace Sayamaapps\Koyomi;
  *   rescheduled  status.rescheduled   https://schema.org/EventRescheduled CONFIRMED
  *   movedOnline  status.movedOnline   https://schema.org/EventMovedOnline CONFIRMED
  *
- * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

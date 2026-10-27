@@ -11,7 +11,6 @@ use DateTimeZone;
  * DAYLIGHT sub-component with an explicit DTSTART. That is valid RFC 5545,
  * exact for any zone PHP knows, and needs no guessing of rules.
  *
- * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

@@ -12,7 +12,6 @@ use Kirby\Cms\App;
  * These replace the 1.x global functions (koyomi_active(), koyomi_t(), …),
  * which legacy.php still offers as @deprecated functions.
  *
- * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

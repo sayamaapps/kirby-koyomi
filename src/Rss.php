@@ -7,7 +7,6 @@ use DateTimeImmutable;
 /**
  * RSS 2.0 feed of events, Kirby-free.
  *
- * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

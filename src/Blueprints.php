@@ -23,7 +23,6 @@ namespace Sayamaapps\Koyomi;
  * Missing settings keys fall back to the defaults below, so a hand-made
  * array (tests) works too.
  *
- * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder
