@@ -134,10 +134,12 @@ The booking link carries a `koyomi-sr-only` span; the site's own CSS must hide i
 |---|---|
 | `$page->koyomi()` | The `Event` of an event page, or `null`. |
 | `$page->koyomiData()` | `[]` for an invalid start date. Otherwise `Event::toArray()` (the basis of the JSON feed; no online meeting link) plus `labels`, `isPast`, `isOngoing`, `googleCalendarUrl`. |
-| `$page->isPast()`, `$page->isOngoing()` | Booleans; `false` without a valid event. |
+| `$page->isPast()`, `$page->isOngoing()` | Booleans; `false` without a valid event. Prefixed twins: `$page->koyomiIsPast()`, `$page->koyomiIsOngoing()`. |
 | `$page->koyomiList($query)` | Calendar: `events` (current page), `pagination`, `facets`, `view`, `filtered`, `filters`, `baseUrl`, `upcomingUrl`, `pastUrl`. |
 | `$page->koyomiUpcoming()`, `$page->koyomiPast()` | Lists of `Event` objects. |
-| `$page->icsUrl()`, `webcalUrl()`, `rssUrl()`, `jsonUrl()` | Calendar feed addresses. |
+| `$page->koyomiUpcomingEvents()` | Venue and organizer pages: the same list as `$page->upcomingEvents()`. |
+| `$page->icsUrl()`, `webcalUrl()`, `rssUrl()`, `jsonUrl()` | Calendar feed addresses. Prefixed twins: `$page->koyomiIcsUrl()`, `koyomiWebcalUrl()`, `koyomiRssUrl()`, `koyomiJsonUrl()`. |
+| `$page->googleCalendarUrl()`, `$page->icsUrl()` on an event page | Event pages: the Google Calendar link and the `.ics` address. Prefixed twins: `$page->koyomiGoogleCalendarUrl()`, `koyomiIcsUrl()`. |
 | `$site->koyomiCalendar()` | The calendar page, or `null`. |
 
 | Call | Returns |

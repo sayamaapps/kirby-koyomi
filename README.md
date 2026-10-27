@@ -143,7 +143,7 @@ Every option is `koyomi.<name>`, flat or nested (`'koyomi.active' => true` or `'
 | `organizers` | first `koyomi-organizers` | Page ID of the organizers container. |
 | `now` | real time | Pins the clock, for example `'2027-03-10 12:00'`, for tests and previews. |
 
-Koyomi's texts are also registered as Kirby translations under `koyomi.<key>` (`config/translations.php`), so a site can call `t('koyomi.status.cancelled')`. The prefix is `koyomi.`, the 1.x name, because sites already use it. Koyomi reads its own copy in `translations/` through its `I18n` class, not through Kirby's `$t`: the language of the plugin follows the `language` option, which can differ from the Kirby site language, and a missing Kirby translation must not turn a German page English.
+Koyomi's texts are also registered as Kirby translations (`config/translations.php`), so a site can call `t('sayamaapps.koyomi.status.cancelled')`. The 1.x keys `t('koyomi.status.cancelled')` stay registered too. Koyomi reads its own copy in `translations/` through its `I18n` class, not through Kirby's `$t`: the language of the plugin follows the `language` option, which can differ from the Kirby site language, and a missing Kirby translation must not turn a German page English.
 
 ## Deprecations
 
@@ -165,6 +165,15 @@ The functions are guarded by Kirby's `Helpers::hasOverride()`, which looks only 
 
 Blueprint, snippet, template, page method and route names do not change, and neither do the feed URLs or the stored content.
 
+The 1.x page methods `$page->icsUrl()`, `jsonUrl()`, `rssUrl()`, `webcalUrl()`, `googleCalendarUrl()`, `isOngoing()`, `isPast()` and `upcomingEvents()` keep their names and results and are not deprecated. The prefixed twins `koyomiIcsUrl()`, `koyomiJsonUrl()`, `koyomiRssUrl()`, `koyomiWebcalUrl()`, `koyomiGoogleCalendarUrl()`, `koyomiIsOngoing()`, `koyomiIsPast()` and `koyomiUpcomingEvents()` return the same values; use them in new templates.
+
+### Changes you may notice
+
+No site output changes. Two things differ in the code itself:
+
+- Class names read from objects (`get_class()`, `::class`, `var_dump()`) and in some error messages (for example "Cannot modify readonly property") now show `Sayamaapps\Koyomi\…`. `instanceof`, type hints and exception classes are unchanged.
+- PHP messages that contain a file name or line number (for example a `TypeError` raised by a feed helper) show the new location.
+
 ### Planned for 2.0
 
 These changes would break existing sites, so they wait for the next major version:
@@ -172,6 +181,7 @@ These changes would break existing sites, so they wait for the next major versio
 - Option names `sayamaapps.koyomi.<name>`, read in place of `koyomi.<name>`.
 - Deprecation notices at runtime for the 1.x names, shown in debug mode.
 - Removal of the 1.x functions, the `Koyomi\` class aliases, and the test helpers `Format::reset()` and `Repository::reset()`.
+- Translation keys `koyomi.<key>`: only `sayamaapps.koyomi.<key>` remains.
 
 ## Privacy
 

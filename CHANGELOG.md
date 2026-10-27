@@ -11,7 +11,18 @@ All notable changes to this project are documented here. Versions follow
 
 ## [Unreleased]
 
-No breaking changes: the 1.x names and their behaviour stay as they are.
+No breaking changes to the 1.x API: the 1.x names and their behaviour stay as
+they are. Class names shown by `get_class()` and in some error messages change;
+see "Changes you may notice" in the README.
+
+### Added
+
+- Prefixed page methods: `koyomiIcsUrl()`, `koyomiJsonUrl()`, `koyomiRssUrl()`,
+  `koyomiWebcalUrl()`, `koyomiGoogleCalendarUrl()`, `koyomiIsOngoing()`,
+  `koyomiIsPast()` and `koyomiUpcomingEvents()`. They return what the 1.x names
+  return.
+- Translations are also registered under `sayamaapps.koyomi.<key>`. The
+  `koyomi.<key>` keys stay.
 
 ### Changed
 
