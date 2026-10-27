@@ -20,6 +20,12 @@ class VenuePage extends Page
 {
 	private Venue|null $koyomiVenueValue = null;
 
+	/** Same as upcomingEvents(), with the plugin prefix. */
+	public function koyomiUpcomingEvents(): array
+	{
+		return $this->upcomingEvents();
+	}
+
 	/** Mapper::venue($this), memoized. */
 	public function koyomiVenue(): Venue
 	{

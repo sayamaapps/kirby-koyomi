@@ -125,4 +125,28 @@ class EventPage extends Page
 			'googleCalendarUrl' => $this->googleCalendarUrl(),
 		];
 	}
+
+	/** Same as googleCalendarUrl(), with the plugin prefix. */
+	public function koyomiGoogleCalendarUrl(): string
+	{
+		return $this->googleCalendarUrl();
+	}
+
+	/** Same as icsUrl(), with the plugin prefix. */
+	public function koyomiIcsUrl(): string
+	{
+		return $this->icsUrl();
+	}
+
+	/** Same as isOngoing(), with the plugin prefix. */
+	public function koyomiIsOngoing(): bool
+	{
+		return $this->isOngoing();
+	}
+
+	/** Same as isPast(), with the plugin prefix. */
+	public function koyomiIsPast(): bool
+	{
+		return $this->isPast();
+	}
 }

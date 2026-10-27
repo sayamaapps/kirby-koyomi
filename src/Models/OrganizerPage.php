@@ -26,6 +26,12 @@ class OrganizerPage extends Page
 		return $this->koyomiOrganizerValue ??= Mapper::organizer($this);
 	}
 
+	/** Same as upcomingEvents(), with the plugin prefix. */
+	public function koyomiUpcomingEvents(): array
+	{
+		return $this->upcomingEvents();
+	}
+
 	/**
 	 * Repository::forOrganizer($this->kirby(), $this).
 	 *

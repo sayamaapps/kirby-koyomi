@@ -28,6 +28,18 @@ class CalendarPage extends Page
 		return $this->url() . '.json';
 	}
 
+	/** Same as icsUrl(), with the plugin prefix. */
+	public function koyomiIcsUrl(): string
+	{
+		return $this->icsUrl();
+	}
+
+	/** Same as jsonUrl(), with the plugin prefix. */
+	public function koyomiJsonUrl(): string
+	{
+		return $this->jsonUrl();
+	}
+
 	/**
 	 * Repository::list($this, $query); $query null = the current request's
 	 * query parameters ($this->kirby()->request()->query()->toArray()).
@@ -48,6 +60,12 @@ class CalendarPage extends Page
 		return Repository::past($this, $filters);
 	}
 
+	/** Same as rssUrl(), with the plugin prefix. */
+	public function koyomiRssUrl(): string
+	{
+		return $this->rssUrl();
+	}
+
 	/**
 	 * Repository::upcoming($this, $filters).
 	 *
@@ -56,6 +74,12 @@ class CalendarPage extends Page
 	public function koyomiUpcoming(array $filters = []): array
 	{
 		return Repository::upcoming($this, $filters);
+	}
+
+	/** Same as webcalUrl(), with the plugin prefix. */
+	public function koyomiWebcalUrl(): string
+	{
+		return $this->webcalUrl();
 	}
 
 	/** $this->url() . '.rss' */
