@@ -65,6 +65,16 @@ jobs:
       - name: Unused dependencies
         run: composer analyze:unused
 
+      # phpcpd 6.0.3 pins sebastian/cli-parser ^1, which PHPUnit 11 does not
+      # allow, so it runs as a global tool like kirby-cs in the style job.
+      - name: Copy and paste detection
+        run: |
+          composer global require --no-interaction sebastian/phpcpd:6.0.3
+          "$(composer global config home)/vendor/bin/phpcpd" --fuzzy --exclude tests --exclude vendor .
+
+      - name: Platform requirements
+        run: composer check-platform-reqs
+
       - name: Psalm
         run: composer analyze:psalm
 
