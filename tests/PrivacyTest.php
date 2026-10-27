@@ -1,7 +1,11 @@
 <?php
 
-use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Sayamaapps\Koyomi\GoogleLink;
+use Sayamaapps\Koyomi\Ics;
+use Sayamaapps\Koyomi\JsonLd;
+use Sayamaapps\Koyomi\Rss;
 
 /**
  * output of Koyomi on the fixture site — HTML pages, every snippet, every
@@ -10,7 +14,10 @@ use PHPUnit\Framework\TestCase;
  * hidden organizer email appears anywhere. Also checks the outputs are not
  * trivially empty, so "prints nothing" cannot pass.
  */
-#[CoversNothing]
+#[CoversClass(GoogleLink::class)]
+#[CoversClass(Ics::class)]
+#[CoversClass(JsonLd::class)]
+#[CoversClass(Rss::class)]
 final class PrivacyTest extends TestCase
 {
 	public function testSuite(): void

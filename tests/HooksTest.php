@@ -1,15 +1,16 @@
 <?php
 
 use Kirby\Cms\Page;
-use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Sayamaapps\Koyomi\Hooks;
 
 /**
  * Duplicate hook (Sayamaapps\Koyomi\Hooks::duplicateAfter, duplicate hook): duplicating an
  * event resets its status fields and keeps the dates; off switches and other
  * templates leave the copy alone; the hook always hands back a page.
  */
-#[CoversNothing]
+#[CoversClass(Hooks::class)]
 final class HooksTest extends TestCase
 {
 	public function testSuite(): void

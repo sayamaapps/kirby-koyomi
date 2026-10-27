@@ -1,6 +1,6 @@
 <?php
 
-use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Sayamaapps\Koyomi\Event;
 use Sayamaapps\Koyomi\Venue;
@@ -26,7 +26,8 @@ function koyomi_snippet_event(array $override = []): Event
  * or Filters is involved, so the test passes event/venue/events/list/
  * calendarUrl explicitly.
  */
-#[CoversNothing]
+#[CoversClass(Event::class)]
+#[CoversClass(Venue::class)]
 final class SnippetsTest extends TestCase
 {
 	public function testSuite(): void

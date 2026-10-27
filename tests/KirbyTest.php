@@ -2,7 +2,7 @@
 
 use Kirby\Cms\App;
 use Kirby\Uuid\Uuids;
-use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Sayamaapps\Koyomi\Event;
 use Sayamaapps\Koyomi\Mapper;
@@ -49,7 +49,16 @@ function koyomi_berlin(string $wall): int
  * The bodies of .ics/.rss/.json are checked by their own tests and by
  * AcceptanceTest; this file checks status codes, headers, expiry and data.
  */
-#[CoversNothing]
+#[CoversClass(Event::class)]
+#[CoversClass(Mapper::class)]
+#[CoversClass(CalendarPage::class)]
+#[CoversClass(EventPage::class)]
+#[CoversClass(OrganizerPage::class)]
+#[CoversClass(VenuePage::class)]
+#[CoversClass(Normalize::class)]
+#[CoversClass(Organizer::class)]
+#[CoversClass(Repository::class)]
+#[CoversClass(Venue::class)]
 final class KirbyTest extends TestCase
 {
 	public function testSuite(): void

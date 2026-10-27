@@ -1,6 +1,6 @@
 <?php
 
-use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Sayamaapps\Koyomi\Api;
 
@@ -9,7 +9,7 @@ use Sayamaapps\Koyomi\Api;
  * `koyomi.*` option names. They log nothing, so a site with debug mode on runs
  * as it did before. Only the 1.x names are read.
  */
-#[CoversNothing]
+#[CoversClass(Api::class)]
 final class LegacyTest extends TestCase
 {
 	/** @var list<string> deprecation messages raised during the current test */

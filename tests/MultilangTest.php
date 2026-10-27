@@ -2,7 +2,7 @@
 
 use Kirby\Cms\App;
 use Kirby\Cms\Page;
-use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Sayamaapps\Koyomi\Mapper;
 
@@ -53,7 +53,7 @@ function multilang_app(string $root, array $options = []): App
  * false), so a change in the default language reaches every translation and
  * the ICS UID stays one event. The duplicate reset covers every translation.
  */
-#[CoversNothing]
+#[CoversClass(Mapper::class)]
 final class MultilangTest extends TestCase
 {
 	public function testSuite(): void

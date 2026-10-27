@@ -1,7 +1,9 @@
 <?php
 
-use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Sayamaapps\Koyomi\Ics;
+use Sayamaapps\Koyomi\Output;
 
 /** Berlin wall time as a timestamp (the expiry is a Unix timestamp). */
 function feed_window_berlin(string $wall): int
@@ -40,7 +42,8 @@ function feed_window_site(): string
  * the window is in events.ics, one that ended outside it is not, and
  * $page->koyomiData() lowers the page cache expiry like the event snippet does.
  */
-#[CoversNothing]
+#[CoversClass(Ics::class)]
+#[CoversClass(Output::class)]
 final class FeedWindowTest extends TestCase
 {
 	public function testSuite(): void

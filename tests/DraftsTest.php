@@ -1,6 +1,6 @@
 <?php
 
-use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Sayamaapps\Koyomi\Mapper;
 use Sayamaapps\Koyomi\Repository;
@@ -73,7 +73,8 @@ function drafts_test_site(): string
  * event data, its HTML, the JSON feed and the ICS file, and a draft calendar
  * is not "the" calendar of the site. Other calendars' events are not series parts.
  */
-#[CoversNothing]
+#[CoversClass(Mapper::class)]
+#[CoversClass(Repository::class)]
 final class DraftsTest extends TestCase
 {
 	public function testSuite(): void

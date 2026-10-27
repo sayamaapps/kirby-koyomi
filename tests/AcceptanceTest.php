@@ -1,15 +1,16 @@
 <?php
 
 use Kirby\Cms\Blueprint;
-use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Sayamaapps\Koyomi\Api;
 
 /**
  * plugin on the fixture site — off switch, output switches, headers, lists
  * and filters, cache expiry, past pages, JSON-LD only on the single page,
  * duplicate reset, German, site overrides, blueprints.
  */
-#[CoversNothing]
+#[CoversClass(Api::class)]
 final class AcceptanceTest extends TestCase
 {
 	public function testSuite(): void

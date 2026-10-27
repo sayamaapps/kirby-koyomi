@@ -1,6 +1,6 @@
 <?php
 
-use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Sayamaapps\Koyomi\Event;
 use Sayamaapps\Koyomi\Format;
@@ -12,7 +12,10 @@ use Sayamaapps\Koyomi\Query;
  * attendance switch (koyomi/switch) and the filter form without its format
  * select. With the fixture calendar (tests/lib/Fixture.php, now 2027-03-10).
  */
-#[CoversNothing]
+#[CoversClass(Event::class)]
+#[CoversClass(Format::class)]
+#[CoversClass(I18n::class)]
+#[CoversClass(Query::class)]
 final class TimelineTest extends TestCase
 {
 	public function testSuite(): void

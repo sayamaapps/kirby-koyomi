@@ -1,7 +1,7 @@
 <?php
 
 use Kirby\Exception\NotFoundException;
-use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Sayamaapps\Koyomi\Mapper;
 use Sayamaapps\Koyomi\Output;
@@ -75,7 +75,9 @@ function ancestors_site(): string
  * that reference it, the calendar lookup and /<event>.ics must treat it as a
  * draft; the same pages under a published container stay visible.
  */
-#[CoversNothing]
+#[CoversClass(Mapper::class)]
+#[CoversClass(Output::class)]
+#[CoversClass(Repository::class)]
 final class DraftAncestorsTest extends TestCase
 {
 	public function testSuite(): void
