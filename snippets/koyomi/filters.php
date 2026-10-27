@@ -9,7 +9,8 @@ use Sayamaapps\Koyomi\Api;
  * URLs of its own beyond the form action.
  *
  *   <?php snippet('koyomi/filters', ['list' => $list]) ?>
- *   <?php snippet('koyomi/filters', ['calendar' => $page]) ?>   (the list of that calendar)
+ *   <?php snippet('koyomi/filters', ['calendar' => $page]) ?>
+   (the list of that calendar)
  *
  * Prints nothing when Koyomi is inactive or there is nothing to filter by.
  *
@@ -62,23 +63,32 @@ $selectedAttendance = isset($filters['attendance']) ? (string)$filters['attendan
 $selectedLanguage = isset($filters['language']) ? (string)$filters['language'] : null;
 $featuredChecked = !empty($filters['featured']);
 ?>
-<form class="koyomi-filters" method="get" action="<?= esc($baseUrl) ?>" aria-label="<?= esc(Api::t('filters.label')) ?>">
+<form class="koyomi-filters" method="get" action="<?= esc($baseUrl) ?>
+" aria-label="<?= esc(Api::t('filters.label')) ?>
+">
   <?php if ($view === 'past') : ?>
   <input type="hidden" name="view" value="past">
   <?php endif ?>
   <?php if (!$attendance && $selectedAttendance !== null) : ?>
-  <input type="hidden" name="attendance" value="<?= esc($selectedAttendance) ?>">
+  <input type="hidden" name="attendance" value="<?= esc($selectedAttendance) ?>
+">
   <?php endif ?>
 
   <?php if ($categories !== []) : ?>
   <p class="koyomi-filter">
-    <label for="koyomi-filter-category"><?= esc(Api::t('filters.category')) ?></label>
+    <label for="koyomi-filter-category"><?= esc(Api::t('filters.category')) ?>
+</label>
     <select id="koyomi-filter-category" name="category">
-      <option value=""><?= esc(Api::t('filters.all')) ?></option>
+      <option value=""><?= esc(Api::t('filters.all')) ?>
+</option>
       <?php foreach ($categories as $name => $count) :
 		  $isSelected = $selectedCategory !== null && strcasecmp((string)$name, $selectedCategory) === 0;
 	  ?>
-      <option value="<?= esc((string)$name) ?>"<?= $isSelected ? ' selected' : '' ?>><?= esc((string)$name) ?> (<?= (int)$count ?>)</option>
+      <option value="<?= esc((string)$name) ?>
+"<?= $isSelected ? ' selected' : '' ?>
+><?= esc((string)$name) ?>
+ (<?= (int)$count ?>
+)</option>
       <?php endforeach ?>
     </select>
   </p>
@@ -86,11 +96,17 @@ $featuredChecked = !empty($filters['featured']);
 
   <?php if ($attendanceOptions !== []) : ?>
   <p class="koyomi-filter">
-    <label for="koyomi-filter-attendance"><?= esc(Api::t('filters.attendance')) ?></label>
+    <label for="koyomi-filter-attendance"><?= esc(Api::t('filters.attendance')) ?>
+</label>
     <select id="koyomi-filter-attendance" name="attendance">
-      <option value=""><?= esc(Api::t('filters.all')) ?></option>
+      <option value=""><?= esc(Api::t('filters.all')) ?>
+</option>
       <?php foreach ($attendanceOptions as $code => $count) : ?>
-      <option value="<?= esc($code) ?>"<?= $selectedAttendance === $code ? ' selected' : '' ?>><?= esc(Api::t('attendance.' . $code)) ?> (<?= $count ?>)</option>
+      <option value="<?= esc($code) ?>
+"<?= $selectedAttendance === $code ? ' selected' : '' ?>
+><?= esc(Api::t('attendance.' . $code)) ?>
+ (<?= $count ?>
+)</option>
       <?php endforeach ?>
     </select>
   </p>
@@ -98,13 +114,19 @@ $featuredChecked = !empty($filters['featured']);
 
   <?php if ($languages !== []) : ?>
   <p class="koyomi-filter">
-    <label for="koyomi-filter-language"><?= esc(Api::t('filters.language')) ?></label>
+    <label for="koyomi-filter-language"><?= esc(Api::t('filters.language')) ?>
+</label>
     <select id="koyomi-filter-language" name="language">
-      <option value=""><?= esc(Api::t('filters.all')) ?></option>
+      <option value=""><?= esc(Api::t('filters.all')) ?>
+</option>
       <?php foreach ($languages as $code => $count) :
 		  $languageLabel = \Sayamaapps\Koyomi\Format::languageName((string)$code, (string)($customLanguages[$code] ?? ''));
 	  ?>
-      <option value="<?= esc((string)$code) ?>"<?= $selectedLanguage === (string)$code ? ' selected' : '' ?>><?= esc($languageLabel) ?> (<?= (int)$count ?>)</option>
+      <option value="<?= esc((string)$code) ?>
+"<?= $selectedLanguage === (string)$code ? ' selected' : '' ?>
+><?= esc($languageLabel) ?>
+ (<?= (int)$count ?>
+)</option>
       <?php endforeach ?>
     </select>
   </p>
@@ -112,14 +134,19 @@ $featuredChecked = !empty($filters['featured']);
 
   <?php if ($featuredCount > 0) : ?>
   <p class="koyomi-filter">
-    <label><input type="checkbox" name="featured" value="1"<?= $featuredChecked ? ' checked' : '' ?>> <?= esc(Api::t('filters.featured')) ?></label>
+    <label><input type="checkbox" name="featured" value="1"<?= $featuredChecked ? ' checked' : '' ?>
+> <?= esc(Api::t('filters.featured')) ?>
+</label>
   </p>
   <?php endif ?>
 
   <p class="koyomi-filter-actions">
-    <button type="submit"><?= esc(Api::t('filters.apply')) ?></button>
+    <button type="submit"><?= esc(Api::t('filters.apply')) ?>
+</button>
     <?php if ($filtered && $resetUrl !== '') : ?>
-    <a class="koyomi-filters-reset" href="<?= esc($resetUrl) ?>"><?= esc(Api::t('filters.reset')) ?></a>
+    <a class="koyomi-filters-reset" href="<?= esc($resetUrl) ?>
+"><?= esc(Api::t('filters.reset')) ?>
+</a>
     <?php endif ?>
   </p>
 </form>

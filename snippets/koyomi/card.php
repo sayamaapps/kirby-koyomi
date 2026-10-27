@@ -61,30 +61,53 @@ $priceLine = implode(' · ', array_values(array_filter(
 	fn (string $part) => $part !== ''
 )));
 ?>
-<article class="<?= esc(implode(' ', $classes)) ?>">
+<article class="<?= esc(implode(' ', $classes)) ?>
+">
   <?php if ($e->image !== '') : ?>
-  <img class="koyomi-card-image" src="<?= esc($e->image) ?>" alt="<?= esc($e->imageAlt) ?>" loading="lazy">
+  <img class="koyomi-card-image" src="<?= esc($e->image) ?>
+" alt="<?= esc($e->imageAlt) ?>
+" loading="lazy">
   <?php endif ?>
-  <p class="koyomi-card-date" aria-hidden="true"><span class="koyomi-card-weekday"><?= esc($sheet['weekday']) ?></span> <span class="koyomi-card-day"><?= esc($sheet['day']) ?>
-</span> <span class="koyomi-card-month"><?= esc($sheet['month']) ?></span><?php if ($sheet['until'] !== '') : ?> <span class="koyomi-card-until"><?= esc($sheet['until']) ?>
-</span><?php endif ?></p>
-  <h<?= $level ?> class="koyomi-card-title"><?php if ($e->url !== '') : ?><a href="<?= esc($e->url) ?>"><?= esc($e->title) ?></a><?php else : ?><?= esc($e->title) ?><?php endif ?>
-</h<?= $level ?>>
-  <p class="koyomi-card-when"><time datetime="<?= esc($datetime) ?>"><?= esc(\Sayamaapps\Koyomi\Format::when($e)) ?></time></p>
-  <p class="koyomi-card-time" aria-hidden="true"><?= esc(\Sayamaapps\Koyomi\Format::clock($e)) ?></p>
+  <p class="koyomi-card-date" aria-hidden="true"><span class="koyomi-card-weekday"><?= esc($sheet['weekday']) ?>
+</span> <span class="koyomi-card-day"><?= esc($sheet['day']) ?>
+</span> <span class="koyomi-card-month"><?= esc($sheet['month']) ?>
+</span><?php if ($sheet['until'] !== '') : ?>
+ <span class="koyomi-card-until"><?= esc($sheet['until']) ?>
+</span><?php endif ?>
+</p>
+  <h<?= $level ?>
+ class="koyomi-card-title"><?php if ($e->url !== '') : ?>
+<a href="<?= esc($e->url) ?>
+"><?= esc($e->title) ?>
+</a><?php else : ?>
+<?= esc($e->title) ?>
+<?php endif ?>
+</h<?= $level ?>
+>
+  <p class="koyomi-card-when"><time datetime="<?= esc($datetime) ?>
+"><?= esc(\Sayamaapps\Koyomi\Format::when($e)) ?>
+</time></p>
+  <p class="koyomi-card-time" aria-hidden="true"><?= esc(\Sayamaapps\Koyomi\Format::clock($e)) ?>
+</p>
   <?php if ($status !== '') : ?>
-  <p class="koyomi-card-status"><strong><?= esc($status) ?></strong></p>
+  <p class="koyomi-card-status"><strong><?= esc($status) ?>
+</strong></p>
   <?php endif ?>
   <?php if ($ongoing) : ?>
-  <p class="koyomi-card-badge"><?= esc(Api::t('event.ongoing')) ?></p>
+  <p class="koyomi-card-badge"><?= esc(Api::t('event.ongoing')) ?>
+</p>
   <?php elseif ($past) : ?>
-  <p class="koyomi-card-badge"><?= esc(Api::t('event.past')) ?></p>
+  <p class="koyomi-card-badge"><?= esc(Api::t('event.past')) ?>
+</p>
   <?php endif ?>
-  <p class="koyomi-card-place"><?= esc($placeLine) ?></p>
+  <p class="koyomi-card-place"><?= esc($placeLine) ?>
+</p>
   <?php if ($priceLine !== '') : ?>
-  <p class="koyomi-card-price"><?= esc($priceLine) ?></p>
+  <p class="koyomi-card-price"><?= esc($priceLine) ?>
+</p>
   <?php endif ?>
   <?php if ($e->description !== '') : ?>
-  <p class="koyomi-card-excerpt"><?= esc($e->description) ?></p>
+  <p class="koyomi-card-excerpt"><?= esc($e->description) ?>
+</p>
   <?php endif ?>
 </article>

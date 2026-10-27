@@ -39,10 +39,16 @@ $rssUrl = $base . '.rss';
 ?>
 <div class="koyomi-subscribe">
   <?php if ($feed) : ?>
-  <p class="koyomi-subscribe-link"><a href="<?= esc($webcal) ?>"><?= esc(Api::t('calendar.subscribe')) ?></a></p>
-  <p class="koyomi-subscribe-hint"><?= esc(Api::t('calendar.subscribeHint')) ?> <code><?= esc($ics) ?></code></p>
+  <p class="koyomi-subscribe-link"><a href="<?= esc($webcal) ?>
+"><?= esc(Api::t('calendar.subscribe')) ?>
+</a></p>
+  <p class="koyomi-subscribe-hint"><?= esc(Api::t('calendar.subscribeHint')) ?>
+ <code><?= esc($ics) ?>
+</code></p>
   <?php endif ?>
   <?php if ($rss) : ?>
-  <p class="koyomi-subscribe-rss"><a href="<?= esc($rssUrl) ?>" type="application/rss+xml"><?= esc(Api::t('calendar.rss')) ?></a></p>
+  <p class="koyomi-subscribe-rss"><a href="<?= esc($rssUrl) ?>
+" type="application/rss+xml"><?= esc(Api::t('calendar.rss')) ?>
+</a></p>
   <?php endif ?>
 </div>

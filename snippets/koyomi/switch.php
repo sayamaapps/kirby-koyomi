@@ -9,7 +9,8 @@ use Sayamaapps\Koyomi\Api;
  * either way. Links keep the other filters and the view (upcoming / past).
  *
  *   <?php snippet('koyomi/switch', ['list' => $list]) ?>
- *   <?php snippet('koyomi/switch', ['calendar' => $page]) ?>   (the list of that calendar)
+ *   <?php snippet('koyomi/switch', ['calendar' => $page]) ?>
+   (the list of that calendar)
  *
  * Prints nothing when Koyomi is inactive, when koyomi.attendanceSwitch is
  * false, or when the view has no in-person or no online event (nothing to
@@ -47,15 +48,21 @@ $options = [
 	[\Sayamaapps\Koyomi\Attendance::ONLINE, Api::t('attendance.online'), $online],
 ];
 ?>
-<nav class="koyomi-switch" aria-label="<?= esc(Api::t('switch.label')) ?>">
+<nav class="koyomi-switch" aria-label="<?= esc(Api::t('switch.label')) ?>
+">
   <ul>
     <?php foreach ($options as [$code, $label, $count]) :
 		$href = \Sayamaapps\Koyomi\Filters::url($baseUrl, $filters, ['attendance' => $code]);
 		$countLabel = Api::t('switch.count', ['count' => (string)$count]);
 		$active = $current === $code;
 	?>
-    <li><a class="koyomi-switch-option<?= $active ? ' koyomi-switch-option--active' : '' ?>" href="<?= esc($href) ?>"<?= $active ? ' aria-current="page"' : '' ?>><?= esc($label) ?>
- <span class="koyomi-switch-count" aria-label="<?= esc($countLabel) ?>"><?= (int)$count ?></span></a></li>
+    <li><a class="koyomi-switch-option<?= $active ? ' koyomi-switch-option--active' : '' ?>
+" href="<?= esc($href) ?>
+"<?= $active ? ' aria-current="page"' : '' ?>
+><?= esc($label) ?>
+ <span class="koyomi-switch-count" aria-label="<?= esc($countLabel) ?>
+"><?= (int)$count ?>
+</span></a></li>
     <?php endforeach ?>
   </ul>
 </nav>

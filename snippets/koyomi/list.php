@@ -63,14 +63,20 @@ if ($list !== null) {
 	$switchText = Api::t($view === 'past' ? 'list.toUpcoming' : 'list.toPast');
 }
 ?>
-<section class="koyomi-list koyomi-list--<?= esc($view) ?>">
+<section class="koyomi-list koyomi-list--<?= esc($view) ?>
+">
   <?php if ($title !== false && $title !== '') : ?>
-  <h<?= $level ?> class="koyomi-list-title"><?= esc($title) ?></h<?= $level ?>>
+  <h<?= $level ?>
+ class="koyomi-list-title"><?= esc($title) ?>
+</h<?= $level ?>
+>
   <?php endif ?>
   <?php if ($items !== [] && $group === 'month') : ?>
   <div class="koyomi-timeline">
     <?php if ($view === 'upcoming') : $today = Api::now(kirby()); Api::expiresAt(kirby(), \Sayamaapps\Koyomi\Expiry::midnight($today)); ?>
-    <p class="koyomi-today"><time datetime="<?= esc($today->format('Y-m-d')) ?>"><?= esc(Api::t('list.today', ['date' => \Sayamaapps\Koyomi\Format::date($today)])) ?></time></p>
+    <p class="koyomi-today"><time datetime="<?= esc($today->format('Y-m-d')) ?>
+"><?= esc(Api::t('list.today', ['date' => \Sayamaapps\Koyomi\Format::date($today)])) ?>
+</time></p>
     <?php endif ?>
     <?php foreach (\Sayamaapps\Koyomi\Query::byMonth($items) as $month) :
 		$monthLevel = min(6, $level + 1);
@@ -78,11 +84,18 @@ if ($list !== null) {
 		$monthId = esc($month['key'], 'attr');
 		$monthTitle = esc(\Sayamaapps\Koyomi\Format::monthTitle($month['first']));
 	?>
-    <section class="koyomi-month" aria-labelledby="koyomi-month-<?= esc($month['key'], 'attr') ?>">
-      <h<?= $monthLevel ?> class="koyomi-month-title" id="koyomi-month-<?= $monthId ?>"><time datetime="<?= $monthKey ?>"><?= $monthTitle ?></time></h<?= $monthLevel ?>>
+    <section class="koyomi-month" aria-labelledby="koyomi-month-<?= esc($month['key'], 'attr') ?>
+">
+      <h<?= $monthLevel ?>
+ class="koyomi-month-title" id="koyomi-month-<?= $monthId ?>
+"><time datetime="<?= $monthKey ?>
+"><?= $monthTitle ?>
+</time></h<?= $monthLevel ?>
+>
       <ol class="koyomi-events">
         <?php foreach ($month['events'] as $event) : ?>
-        <li class="koyomi-events-item"><?php snippet('koyomi/card', ['event' => $event, 'level' => min(6, $level + 2)]) ?></li>
+        <li class="koyomi-events-item"><?php snippet('koyomi/card', ['event' => $event, 'level' => min(6, $level + 2)]) ?>
+</li>
         <?php endforeach ?>
       </ol>
     </section>
@@ -91,13 +104,17 @@ if ($list !== null) {
   <?php elseif ($items !== []) : ?>
   <ol class="koyomi-events">
     <?php foreach ($items as $event) : ?>
-    <li class="koyomi-events-item"><?php snippet('koyomi/card', ['event' => $event, 'level' => $level + 1]) ?></li>
+    <li class="koyomi-events-item"><?php snippet('koyomi/card', ['event' => $event, 'level' => $level + 1]) ?>
+</li>
     <?php endforeach ?>
   </ol>
   <?php else : ?>
-  <p class="koyomi-empty"><?= esc($emptyText) ?></p>
+  <p class="koyomi-empty"><?= esc($emptyText) ?>
+</p>
   <?php endif ?>
   <?php if ($switchUrl !== null && $switchUrl !== '') : ?>
-  <p class="koyomi-list-switch"><a href="<?= esc($switchUrl) ?>"><?= esc($switchText) ?></a></p>
+  <p class="koyomi-list-switch"><a href="<?= esc($switchUrl) ?>
+"><?= esc($switchText) ?>
+</a></p>
   <?php endif ?>
 </section>

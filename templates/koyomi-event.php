@@ -16,18 +16,23 @@ $excerpt = trim((string)$page->content()->get('excerpt')->value());
 ?>
 <?php snippet('koyomi/layout', ['page' => $page], slots: true) ?>
 <article class="koyomi-event-page">
-  <h1><?= esc($page->title()) ?></h1>
+  <h1><?= esc($page->title()) ?>
+</h1>
   <?php if ($cover) : ?>
   <figure class="koyomi-cover">
-    <img class="koyomi-cover-image" src="<?= esc($cover->url()) ?>" alt="<?= esc((string)$cover->alt()) ?>">
+    <img class="koyomi-cover-image" src="<?= esc($cover->url()) ?>
+" alt="<?= esc((string)$cover->alt()) ?>
+">
   </figure>
   <?php endif ?>
   <?php if ($excerpt !== '') : ?>
-  <p class="koyomi-excerpt"><?= esc($excerpt) ?></p>
+  <p class="koyomi-excerpt"><?= esc($excerpt) ?>
+</p>
   <?php endif ?>
   <?php snippet('koyomi/event', ['event' => $page]) ?>
   <?php if ($page->content()->get('text')->isNotEmpty()) : ?>
-  <div class="koyomi-text"><?= $page->content()->get('text')->toBlocks() ?></div>
+  <div class="koyomi-text"><?= $page->content()->get('text')->toBlocks() ?>
+</div>
   <?php endif ?>
 </article>
 <?php endsnippet() ?>

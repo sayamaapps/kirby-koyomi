@@ -23,11 +23,13 @@ $pageTitle = (string)($page?->title() ?? '');
 $title = $pageTitle !== '' && $pageTitle !== $siteTitle ? $pageTitle . ' – ' . $siteTitle : $siteTitle;
 ?>
 <!doctype html>
-<html lang="<?= esc($language) ?>">
+<html lang="<?= esc($language) ?>
+">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><?= esc($title) ?></title>
+  <title><?= esc($title) ?>
+</title>
   <?php if ($page instanceof \Sayamaapps\Koyomi\Models\EventPage) : ?>
   <?php snippet('koyomi/jsonld', ['page' => $page]) ?>
   <?php endif ?>

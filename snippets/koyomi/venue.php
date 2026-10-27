@@ -34,22 +34,39 @@ $addressLines = \Sayamaapps\Koyomi\Format::addressLines($v, \Sayamaapps\Koyomi\O
 $mapLink = $v->mapLink();
 ?>
 <div class="koyomi-venue">
-  <p class="koyomi-venue-name"><?php if ($v->url !== '') : ?><a href="<?= esc($v->url) ?>"><?= esc($v->name) ?></a><?php else : ?><?= esc($v->name) ?><?php endif ?></p>
+  <p class="koyomi-venue-name"><?php if ($v->url !== '') : ?>
+<a href="<?= esc($v->url) ?>
+"><?= esc($v->name) ?>
+</a><?php else : ?>
+<?= esc($v->name) ?>
+<?php endif ?>
+</p>
   <?php if ($addressLines !== []) : ?>
-  <p class="koyomi-venue-address"><?= implode('<br>', array_map(fn (string $line) => esc($line), $addressLines)) ?></p>
+  <p class="koyomi-venue-address"><?= implode('<br>', array_map(fn (string $line) => esc($line), $addressLines)) ?>
+</p>
   <?php endif ?>
   <?php if (!$compact && $v->directions !== '') : ?>
-  <p class="koyomi-venue-directions"><strong><?= esc(Api::t('venue.directions')) ?></strong><br><?= nl2br(esc($v->directions)) ?></p>
+  <p class="koyomi-venue-directions"><strong><?= esc(Api::t('venue.directions')) ?>
+</strong><br><?= nl2br(esc($v->directions)) ?>
+</p>
   <?php endif ?>
   <?php if (!$compact && $v->showMap && $v->mapImage !== '') :
 	  $mapAlt = $v->mapImageAlt !== '' ? $v->mapImageAlt : Api::t('venue.mapAlt', ['name' => $v->name]);
   ?>
-  <img class="koyomi-venue-map" src="<?= esc($v->mapImage) ?>" alt="<?= esc($mapAlt) ?>" loading="lazy">
+  <img class="koyomi-venue-map" src="<?= esc($v->mapImage) ?>
+" alt="<?= esc($mapAlt) ?>
+" loading="lazy">
   <?php endif ?>
   <?php if ($mapLink !== '' || $v->website !== '') : ?>
   <p class="koyomi-venue-links">
-    <?php if ($mapLink !== '') : ?><a href="<?= esc($mapLink) ?>" target="_blank" rel="noopener"><?= esc(Api::t('venue.map')) ?></a><?php endif ?>
-    <?php if ($v->website !== '') : ?><a href="<?= esc($v->website) ?>" rel="noopener"><?= esc(Api::t('venue.website')) ?></a><?php endif ?>
+    <?php if ($mapLink !== '') : ?>
+<a href="<?= esc($mapLink) ?>
+" target="_blank" rel="noopener"><?= esc(Api::t('venue.map')) ?>
+</a><?php endif ?>
+    <?php if ($v->website !== '') : ?>
+<a href="<?= esc($v->website) ?>
+" rel="noopener"><?= esc(Api::t('venue.website')) ?>
+</a><?php endif ?>
   </p>
   <?php endif ?>
 </div>

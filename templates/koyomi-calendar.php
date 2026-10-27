@@ -13,12 +13,16 @@ Api::i18n(kirby());
 $list = Api::active(kirby()) ? $page->koyomiList() : null;
 ?>
 <?php snippet('koyomi/layout', ['page' => $page], slots: true) ?>
-<h1><?= esc($page->title()) ?></h1>
+<h1><?= esc($page->title()) ?>
+</h1>
 <?php if ($page->content()->get('intro')->isNotEmpty()) : ?>
-<div class="koyomi-intro"><?= $page->content()->get('intro')->kirbytext() ?></div>
+<div class="koyomi-intro"><?= $page->content()->get('intro')->kirbytext() ?>
+</div>
 <?php endif ?>
 <?php $switch = \Sayamaapps\Koyomi\Options::attendanceSwitch($kirby) ?>
-<?php if ($switch) : ?><?php snippet('koyomi/switch', ['list' => $list]) ?><?php endif ?>
+<?php if ($switch) : ?>
+<?php snippet('koyomi/switch', ['list' => $list]) ?>
+<?php endif ?>
 <?php snippet('koyomi/filters', ['list' => $list, 'attendance' => !$switch]) ?>
 <?php snippet('koyomi/list', ['list' => $list]) ?>
 <?php snippet('koyomi/pagination', ['list' => $list]) ?>
