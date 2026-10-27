@@ -14,7 +14,7 @@ use Sayamaapps\Koyomi\Api;
  * Prints nothing when Koyomi is inactive. Never calls Repository for an
  * event: the calendar is only looked up when no data was passed.
  *
- * @var array|null $list   Repository::list() shape (SPEC §8.9)
+ * @var array|null $list   Repository::list() shape
  * @var iterable|null $events list of Sayamaapps\Koyomi\Event or event pages
  * @var string|false|null $title  heading text; false = no heading
  * @var int|null $level  heading level, 2 by default; months use level + 1, cards level + 2

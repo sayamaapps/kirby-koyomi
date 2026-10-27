@@ -10,7 +10,7 @@ use Sayamaapps\Koyomi\Api;
  *   <?php snippet('koyomi/pagination', ['list' => $list]) ?>
  *   <?php snippet('koyomi/pagination', ['calendar' => $page]) ?>   (the list of that calendar)
  *
- * @var array|null $list     Repository::list() shape (SPEC §8.9)
+ * @var array|null $list     Repository::list() shape
  * @var \Kirby\Cms\Page|null $calendar used when $list is not given
  */
 if (!Api::active(kirby())) {

@@ -5,7 +5,7 @@ namespace Sayamaapps\Koyomi;
 /**
  * schema.org Event as JSON-LD, Kirby-free.
  *
- * Contract: SPEC.md §8.3 (full example array there). Rules in short:
+ * Rules in short:
  * - Only for the single event page (snippet koyomi/jsonld), never for lists.
  * - Keys with empty values are left out.
  * - VirtualLocation.url is the EVENT PAGE URL — never a meeting link (Event
@@ -55,7 +55,7 @@ final class JsonLd
 
 	/**
 	 * @param array{language?: string} $options language for nothing visible yet; reserved
-	 * @return array<string,mixed> plain array, see SPEC.md §8.3
+	 * @return array<string,mixed> plain array
 	 */
 	public static function event(Event $event, array $options = []): array
 	{

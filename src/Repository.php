@@ -12,7 +12,6 @@ use WeakMap;
  * Finds calendar, events, venues and organizers in the content tree and
  * hands out Event lists.
  *
- * Contract: SPEC.md §8.9.
  * - Lists contain only LISTED event pages (template koyomi-event) that are
  *   children of the calendar. Drafts never; unlisted events only on their
  *   own URL (page, .ics).
@@ -134,7 +133,7 @@ final class Repository
 	}
 
 	/**
-	 * Everything a list page needs (SPEC.md §8.9 shape):
+	 * Everything a list page needs:
 	 *   ['view' => 'upcoming'|'past', 'filters' => Filters array, 'events' => list<Event> (this page),
 	 *    'pagination' => Query::paginate() result + 'prevUrl' => ?string, 'nextUrl' => ?string,
 	 *    'facets' => Query::facets(all events of this view, unfiltered),

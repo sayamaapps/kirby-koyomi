@@ -13,7 +13,6 @@ use Sayamaapps\Koyomi\Options;
 
 /**
  * Page model of template `koyomi-event`.
- * Contract: SPEC.md §8.11.
  *
  * Method names must not shadow content fields a template might call
  * ($page->eventStatus(), $page->price() …): none of the names below is a
@@ -92,7 +91,7 @@ class EventPage extends Page
 	}
 
 	/**
-	 * Plain array for own markup (SPEC.md §8.11):
+	 * Plain array for own markup:
 	 *   Event::toArray() + ['labels' => Format::labels($event, Options::languages()),
 	 *                       'isPast' => bool, 'isOngoing' => bool,
 	 *                       'googleCalendarUrl' => string]

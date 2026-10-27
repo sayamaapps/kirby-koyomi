@@ -23,7 +23,7 @@ function format_test_both(array $override, string $en, string $de, string $what)
 }
 
 /**
- * Format: the when() table of SPEC §8.5 in English and German, date ranges,
+ * Format: the when() table in English and German, date ranges,
  * money, prices, status, attendance, availability, series, languages, labels,
  * the configurable patterns (configure/reset) and the apply() tokens.
  * Kirby-free.
@@ -40,7 +40,7 @@ final class FormatTest extends TestCase
 			Format::configure();
 			$berlin = new DateTimeZone('Europe/Berlin');
 
-			// when(): every row of the SPEC §8.5 table.
+			// when(): every row of the when() table.
 			format_test_both([], 'Friday, 12 March 2027, 18:00–20:00', 'Freitag, 12. März 2027, 18:00–20:00 Uhr', 'timed, one day, with end');
 			format_test_both(['endTime' => ''], 'Friday, 12 March 2027, 18:00', 'Freitag, 12. März 2027, 18:00 Uhr', 'timed, no end time');
 			format_test_both(['startTime' => '23:00', 'endTime' => ''], 'Friday, 12 March 2027, 23:00', 'Freitag, 12. März 2027, 23:00 Uhr', 'timed, late start, no end: the default duration does not make it two days');
@@ -118,7 +118,7 @@ final class FormatTest extends TestCase
 			expect('Freitag, 12. März 2027', Format::date($noon), 'date() de');
 			I18n::setLanguage('en');
 
-			// money(): the table of §8.5.
+			// money(): the table of amounts.
 			expect('€380', Format::money(380.0, 'EUR'), 'money en 380 EUR');
 			expect('€1,200.50', Format::money(1200.5, 'EUR'), 'money en 1200.5 EUR');
 			expect('CZK 450', Format::money(450.0, 'CZK'), 'money en 450 CZK');
@@ -241,7 +241,7 @@ final class FormatTest extends TestCase
 			expect('Deutsch, Tschechisch', Format::languages($retreat), 'languages de');
 			I18n::setLanguage('en');
 
-			// labels(): the keys of SPEC §8.5 and the same values as the single methods.
+			// labels(): the keys and the same values as the single methods.
 			$labels = Format::labels($retreat);
 			expect(
 				['when', 'dateRange', 'status', 'previousStart', 'attendance', 'availability', 'price', 'series', 'languages'],

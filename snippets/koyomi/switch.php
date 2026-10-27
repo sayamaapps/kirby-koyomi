@@ -15,7 +15,7 @@ use Sayamaapps\Koyomi\Api;
  * false, or when the view has no in-person or no online event (nothing to
  * switch). The counts are those of the whole view, before other filters.
  *
- * @var array|null $list     Repository::list() shape (SPEC §8.9)
+ * @var array|null $list     Repository::list() shape
  * @var \Kirby\Cms\Page|null $calendar used when $list is not given
  */
 if (!Api::active(kirby()) || !\Sayamaapps\Koyomi\Options::attendanceSwitch(\Kirby\Cms\App::instance())) {

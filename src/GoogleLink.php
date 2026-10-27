@@ -6,7 +6,6 @@ namespace Sayamaapps\Koyomi;
  * "Add to Google Calendar" — a plain link, no script, nothing loaded from
  * Google until the visitor clicks. Kirby-free.
  *
- * Contract: SPEC.md §8.6.
  */
 final class GoogleLink
 {

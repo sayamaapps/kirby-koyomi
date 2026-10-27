@@ -6,7 +6,7 @@ use Sayamaapps\Koyomi\Event;
 use Sayamaapps\Koyomi\I18n;
 use Sayamaapps\Koyomi\Ics;
 
-/** The reference retreat of SPEC §8 (start 2027-03-12 18:00 Europe/Berlin). */
+/** The reference retreat (start 2027-03-12 18:00 Europe/Berlin). */
 function ics_test_retreat(array $override = []): Event
 {
 	return Event::fromArray(koyomi_raw_event($override + [
@@ -55,7 +55,7 @@ function ics_test_line(array $lines, string $prefix): string|null
 	return null;
 }
 
-/** The exact VTIMEZONE of SPEC §8.2 for Europe/Berlin (window of the retreat). */
+/** The exact VTIMEZONE for Europe/Berlin (window of the retreat). */
 function ics_test_berlin_timezone(): array
 {
 	return [
@@ -95,7 +95,7 @@ function ics_test_berlin_timezone(): array
 	];
 }
 
-/** The full VEVENT of $retreat, unfolded, exactly as SPEC §8.1 lists it. */
+/** The full VEVENT of $retreat, unfolded, exactly as the output lists it. */
 function ics_test_retreat_vevent(): array
 {
 	return [
@@ -120,7 +120,7 @@ function ics_test_retreat_vevent(): array
 
 /**
  * Ics (RFC 5545 writer): escape, fold, render, UID and SEQUENCE, the full
- * VEVENT of the reference retreat line by line (SPEC §8.1), all-day, UTC,
+ * VEVENT of the reference retreat line by line, all-day, UTC,
  * status mapping, LOCATION rules, ORGANIZER, the language option and the
  * calendar header, plus the privacy check for onlineUrl.
  */
@@ -203,7 +203,7 @@ final class IcsTest extends TestCase
 			expect('Abc.def_ghi-9@example.test', Ics::uid($dots, 'example.test'), 'uid: [A-Za-z0-9._-] kept');
 
 			// sequence()
-			expect(3552720, Ics::sequence($retreat), 'SEQUENCE example from SPEC §8.1');
+			expect(3552720, Ics::sequence($retreat), 'SEQUENCE example of the reference retreat');
 			expect(0, Ics::sequence(koyomi_test_event_modified(0)), 'SEQUENCE 0 for modified 0');
 			expect(0, Ics::sequence(koyomi_test_event_modified(1)), 'SEQUENCE 0 before the epoch');
 			expect(3552730, Ics::sequence(koyomi_test_event_modified(1791000600)), 'SEQUENCE grows with modified (10 minutes later)');
@@ -213,7 +213,7 @@ final class IcsTest extends TestCase
 			expect(
 				ics_test_retreat_vevent(),
 				Ics::vevent($retreat, ics_test_options()),
-				'full VEVENT of the reference retreat (SPEC §8.1)',
+				'full VEVENT of the reference retreat',
 			);
 			holds(ics_test_line(Ics::vevent(koyomi_test_event_modified(0), ics_test_options()), 'LAST-MODIFIED:') === null, 'LAST-MODIFIED omitted when modified = 0');
 
@@ -256,7 +256,7 @@ final class IcsTest extends TestCase
 					'X-PUBLISHED-TTL:PT6H',
 				]),
 				array_slice($withHeader, 0, count($header) + 5),
-				'calendar header with X-WR-* and refresh, in SPEC order',
+				'calendar header with X-WR-* and refresh, in output order',
 			);
 			expect('BEGIN:VTIMEZONE', $withHeader[count($header) + 5], 'VTIMEZONE follows the header');
 			$noWrLines = ics_test_unfold(Ics::calendar([$retreat], ics_test_options()));
@@ -316,7 +316,7 @@ final class IcsTest extends TestCase
 			expect('DTEND:20270312T200000Z', ics_test_line($utcLines, 'DTEND'), 'UTC zone: Z form end');
 			holds(!str_contains($utcDocument, 'TZID') && !str_contains($utcDocument, 'VTIMEZONE'), 'UTC zone: no TZID and no VTIMEZONE');
 
-			// Status mapping (SPEC §7) and SUMMARY/DESCRIPTION prefixes.
+			// Status mapping and SUMMARY/DESCRIPTION prefixes.
 			$cancelled = ics_test_retreat(['title' => 'Breathing Workshop', 'status' => 'cancelled', 'statusNote' => 'Venue flooded']);
 			$cancelledLines = Ics::vevent($cancelled, ics_test_options());
 			expect('SUMMARY:Cancelled: Breathing Workshop', ics_test_line($cancelledLines, 'SUMMARY:'), 'cancelled: SUMMARY prefix');
@@ -428,7 +428,7 @@ final class IcsTest extends TestCase
 			$overnightEnd = Ics::vevent($overnight, ics_test_options());
 			expect('DTEND:20271031T013000Z', ics_test_line($overnightEnd, 'DTEND'), 'overnight end in the overlap: UTC form, same instant as the page (02:30+01:00)');
 
-			// Privacy: onlineUrl never reaches any output (SPEC §0, PrivacyTest).
+			// Privacy: onlineUrl never reaches any output.
 			$secret = Event::fromArray(koyomi_raw_event([
 				'id' => 'evt-secret', 'title' => 'Zoom Session', 'attendance' => 'online', 'onlinePlatform' => 'Zoom',
 				'onlineUrl' => 'https://zoom.us/j/SECRET', 'description' => 'Join us.',

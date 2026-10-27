@@ -6,7 +6,7 @@ use Sayamaapps\Koyomi\Event;
 use Sayamaapps\Koyomi\I18n;
 use Sayamaapps\Koyomi\Rss;
 
-/** The retreat of SPEC §8 as raw content, with some fields replaced. */
+/** The retreat as raw content, with some fields replaced. */
 function rss_event(array $changes = []): Event
 {
 	return Event::fromArray(koyomi_raw_event(array_replace([
@@ -20,7 +20,7 @@ function rss_event(array $changes = []): Event
 	], $changes)));
 }
 
-/** The channel options of SPEC §8.4. */
+/** The channel options of the reference feed. */
 function rss_channel(array $extra = []): array
 {
 	return $extra + [
@@ -37,7 +37,7 @@ function rss_item(string $xml): string
 }
 
 /**
- * RSS 2.0 feed (SPEC §8.4): the reference document exactly, item rules
+ * RSS 2.0 feed: the reference document exactly, item rules
  * (status prefix, all-day dates, location, guid, pubDate, description),
  * escaping and the language of the channel.
  */
@@ -52,7 +52,7 @@ final class RssTest extends TestCase
 
 		try {
 
-			// §8.4 — the whole document, byte for byte.
+			// The whole document, byte for byte.
 			$expected = implode("\n", [
 				'<?xml version="1.0" encoding="UTF-8"?>',
 				'<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:ev="http://purl.org/rss/1.0/modules/event/">',
@@ -78,7 +78,7 @@ final class RssTest extends TestCase
 				'  </channel>',
 				'</rss>',
 			]) . "\n";
-			expect($expected, Rss::feed([rss_event()], rss_channel()), 'SPEC 8.4 document, byte for byte');
+			expect($expected, Rss::feed([rss_event()], rss_channel()), 'reference document, byte for byte');
 
 			$xml = Rss::feed([rss_event()], rss_channel());
 			holds(str_ends_with($xml, "</rss>\n") && !str_contains($xml, "\r"), 'final newline, LF only');

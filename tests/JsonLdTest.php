@@ -8,7 +8,7 @@ use Sayamaapps\Koyomi\Event;
 use Sayamaapps\Koyomi\JsonLd;
 use Sayamaapps\Koyomi\Status;
 
-/** The retreat of SPEC §8 (the reference object) as raw content. */
+/** The retreat (the reference object) as raw content. */
 function jsonld_retreat_fields(): array
 {
 	return [
@@ -28,7 +28,7 @@ function jsonld_retreat(array $changes = []): Event
 	return Event::fromArray(koyomi_raw_event(array_replace(jsonld_retreat_fields(), $changes)));
 }
 
-/** The exact array of SPEC §8.3. */
+/** The exact JSON-LD array of the reference retreat. */
 function jsonld_reference(): array
 {
 	return [
@@ -58,7 +58,7 @@ function jsonld_reference(): array
 }
 
 /**
- * schema.org JSON-LD (SPEC §8.3): the reference array of the retreat, every
+ * schema.org JSON-LD: the reference array of the retreat, every
  * rule (all-day, location, offers, organizer, language), the enumeration
  * mappings, encode()/script(), and the koyomi/jsonld snippet rendered by Kirby.
  */
@@ -74,10 +74,10 @@ final class JsonLdTest extends TestCase
 
 		try {
 
-			// §8.3 — the whole array, key order included (=== on arrays compares order).
+			// The whole array, key order included (=== on arrays compares order).
 			$retreat = jsonld_retreat();
-			expect(jsonld_reference(), JsonLd::event($retreat), 'SPEC 8.3 reference array of the retreat');
-			expect(array_keys(jsonld_reference()), array_keys(JsonLd::event($retreat)), 'SPEC 8.3 key order');
+			expect(jsonld_reference(), JsonLd::event($retreat), 'reference array of the retreat');
+			expect(array_keys(jsonld_reference()), array_keys(JsonLd::event($retreat)), 'key order');
 
 			// Dates: all-day uses dates, end is the INCLUSIVE last day.
 			$allDay = Event::fromArray(koyomi_raw_event(['id' => 'evt-workshop', 'title' => 'Breathing', 'startDate' => '2027-03-25',
@@ -239,7 +239,7 @@ final class JsonLdTest extends TestCase
 			);
 			holds(!array_key_exists('location', $bareEvent) && !array_key_exists('offers', $bareEvent), 'no venue and no price: no location, no offers');
 
-			// Every mapping of §7 → full schema.org URLs.
+			// Every status mapping → full schema.org URLs.
 			expect([
 				Status::SCHEDULED => 'https://schema.org/EventScheduled',
 				Status::CANCELLED => 'https://schema.org/EventCancelled',

@@ -3,7 +3,7 @@
 use Sayamaapps\Koyomi\Api;
 
 /**
- * schema.org JSON-LD of one event (SPEC §8.3, §8.14), for the <head> of an
+ * schema.org JSON-LD of one event, for the <head> of an
  * event page. Koyomi's layout calls it for koyomi-event pages only; a site
  * with its own layout calls it the same way:
  *

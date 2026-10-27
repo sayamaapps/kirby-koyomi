@@ -25,7 +25,7 @@ function vtz_test_ts(string $wall, string $zone): int
 
 /**
  * VTimezone (VTIMEZONE from PHP's tz database): the Berlin example of
- * SPEC §8.2 exactly, a zone without transitions (Tokyo), UTC, New York and
+ * the reference example exactly, a zone without transitions (Tokyo), UTC, New York and
  * Sydney (northern and southern DST), and the offset() formatter.
  */
 #[CoversClass(VTimezone::class)]
@@ -35,7 +35,7 @@ final class VTimezoneTest extends TestCase
 	{
 		koyomi_require_core();
 
-		// SPEC §8.2: the Berlin example, window of the reference retreat.
+		// The Berlin example, window of the reference retreat.
 		$retreat = Event::fromArray(koyomi_raw_event([
 			'id' => 'evt-retreat', 'title' => 'Silent Retreat', 'endDate' => '2027-03-14', 'endTime' => '13:00',
 		]));
@@ -77,7 +77,7 @@ final class VTimezoneTest extends TestCase
 				'END:VTIMEZONE',
 			],
 			$berlin,
-			'Berlin example of SPEC §8.2, line by line',
+			'Berlin example, line by line',
 		);
 		$observances = array_values(array_filter($berlin, fn (string $l) => $l === 'BEGIN:STANDARD' || $l === 'BEGIN:DAYLIGHT'));
 		expect(5, count($observances), 'Berlin: base observance plus one per real transition in the window');

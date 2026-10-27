@@ -5,7 +5,7 @@ use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Duplicate hook (Sayamaapps\Koyomi\Hooks::duplicateAfter, SPEC §8.13): duplicating an
+ * Duplicate hook (Sayamaapps\Koyomi\Hooks::duplicateAfter, duplicate hook): duplicating an
  * event resets its status fields and keeps the dates; off switches and other
  * templates leave the copy alone; the hook always hands back a page.
  */

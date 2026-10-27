@@ -14,7 +14,7 @@ use InvalidArgumentException;
  * only in the content file and the Panel; since no output ever sees it, no
  * output can leak it. fromArray() ignores an `onlineUrl` key.
  *
- * Time model (SPEC.md §4):
+ * Time model:
  * - `start` and `end` are instants in the event's own zone.
  * - `end` is EXCLUSIVE. For all-day events it is 00:00 of the day AFTER the
  *   last day (a retreat on 12.–14. ends at 15. 00:00), like ICS DTEND.
@@ -89,7 +89,7 @@ final class Event
 	}
 
 	/**
-	 * Builds an event from the raw content contract (SPEC.md §5): all values
+	 * Builds an event from the raw content contract: all values
 	 * may be strings as Kirby stores them.
 	 *
 	 *   Event::fromArray([

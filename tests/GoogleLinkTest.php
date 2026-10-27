@@ -14,7 +14,7 @@ function google_test_query(string $url): array
 }
 
 /**
- * GoogleLink: the example URL of SPEC §8.6 exactly, all-day and UTC events,
+ * GoogleLink: the example URL exactly, all-day and UTC events,
  * the location rules, the description cut, the details without a URL, and
  * that the language argument is restored. Kirby-free.
  */
@@ -29,7 +29,7 @@ final class GoogleLinkTest extends TestCase
 
 			I18n::setLanguage('en');
 
-			// SPEC §8.6: the example, byte for byte.
+			// The example URL, byte for byte.
 			$retreat = Event::fromArray(koyomi_raw_event([
 				'id' => 'evt-retreat', 'title' => 'Silent Retreat', 'url' => 'https://example.test/events/retreat',
 				'endDate' => '2027-03-14', 'endTime' => '13:00',
@@ -42,7 +42,7 @@ final class GoogleLinkTest extends TestCase
 			expect(
 				'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Silent%20Retreat&dates=20270312T180000%2F20270314T130000&ctz=Europe%2FBerlin&details=Three%20days%20of%20silence.%0A%0Ahttps%3A%2F%2Fexample.test%2Fevents%2Fretreat&location=Seminarhaus%20Beispielhof%2C%20Musterstra%C3%9Fe%201%2C%2012345%20Musterstadt%2C%20DE',
 				GoogleLink::url($retreat, 'en'),
-				'SPEC §8.6 example'
+				'example URL'
 			);
 
 			// All-day: date form, exclusive end, no ctz.

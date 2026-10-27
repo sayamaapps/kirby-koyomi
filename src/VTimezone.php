@@ -10,7 +10,6 @@ use DateTimeZone;
  * No RRULEs: every real transition in the window becomes its own STANDARD or
  * DAYLIGHT sub-component with an explicit DTSTART. That is valid RFC 5545,
  * exact for any zone PHP knows, and needs no guessing of rules.
- * Contract: SPEC.md §8.2.
  */
 final class VTimezone
 {

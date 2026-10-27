@@ -68,7 +68,7 @@ function koyomi_assert_labels(mixed $label, string $what): void
 
 /**
  * Panel blueprints (Sayamaapps\Koyomi\Blueprints). Two parts:
- *   1. Kirby-free: every field of SPEC §5.1–5.3 with its type, when, default,
+ *   1. Kirby-free: every field of the event, venue and organizer blueprints with its type, when, default,
  *      required flag, options from settings, labels, no status/image field.
  *   2. Kirby: the blueprints load through Kirby for one page per template,
  *      proving Kirby accepts the syntax; options follow the configuration.
@@ -149,7 +149,7 @@ final class BlueprintsTest extends TestCase
 				'options(): kind keys'
 			);
 
-			// --- event (SPEC §5.1) ----------------------------------------------
+			// --- event ----------------------------------------------
 
 			$event = Blueprints::event($settings);
 			expect('{{ page.startDate.toDate("Ymd") }}', $event['num'], 'event num from the start date');
@@ -160,7 +160,7 @@ final class BlueprintsTest extends TestCase
 			expect(I18n::all('tab.when'), $event['tabs']['when']['label'], 'when tab label');
 
 			$fields = koyomi_blueprint_fields($event);
-			// Field name => [type, extra checks]. Every field of §5.1 must be present.
+			// Field name => [type, extra checks]. Every event field must be present.
 			$expected = [
 				'excerpt' => 'textarea', 'text' => 'blocks', 'cover' => 'files',
 				'startDate' => 'date', 'startTime' => 'time', 'endDate' => 'date', 'endTime' => 'time',
@@ -178,7 +178,7 @@ final class BlueprintsTest extends TestCase
 				koyomi_assert_labels($fields[$name]['label'] ?? null, "event field $name");
 			}
 
-			// when conditions (equality only, SPEC §0)
+			// when conditions (equality only)
 			expect(['allDay' => false], $fields['startTime']['when'], 'startTime when allDay false');
 			expect(['allDay' => false], $fields['endTime']['when'], 'endTime when allDay false');
 			expect(['inPerson' => true], $fields['venue']['when'], 'venue when inPerson true');

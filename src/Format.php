@@ -8,7 +8,6 @@ use DateTimeImmutable;
  * Human-readable text for dates, prices, status … in the current I18n
  * language. Kirby-free. Returns PLAIN text — callers escape.
  *
- * Contract and expected outputs: SPEC.md §8.5.
  */
 final class Format
 {
@@ -305,7 +304,7 @@ final class Format
 	}
 
 	/**
-	 * "380 €" (de) / "€380" (en) — see SPEC.md §8.5 money rules. Whole
+	 * "380 €" (de) / "€380" (en) — see the money rules in money(). Whole
 	 * amounts have no decimals, others two. Plain spaces, no-break spaces
 	 * would break the expected output.
 	 */
@@ -405,7 +404,7 @@ final class Format
 	}
 
 	/**
-	 * The full "when" line (SPEC.md §8.5 table), e.g.
+	 * The full "when" line, e.g.
 	 *   de: "Freitag, 12. März 2027, 18:00–20:00 Uhr", "12.–14. März 2027",
 	 *       "Freitag, 12. März 2027, 18:00 Uhr – Sonntag, 14. März 2027, 13:00 Uhr"
 	 * plus " (Europe/Prague)" via when.timezone when the event zone differs

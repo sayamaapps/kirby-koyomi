@@ -12,7 +12,6 @@ namespace Sayamaapps\Koyomi;
  * site/blueprints/pages/koyomi-event.yml (Kirby looks there first).
  *
  * Labels are I18n::all('<key>') arrays (['en' => …, 'de' => …]).
- * Exact field contract: SPEC.md §5 and §8.12.
  *
  * $settings shape (Options::blueprintSettings()):
  *   ['timezone' => 'Europe/Berlin', 'timezones' => ['Europe/Berlin', …],

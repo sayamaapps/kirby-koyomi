@@ -6,7 +6,7 @@ use Sayamaapps\Koyomi\Filters;
 
 /**
  * Filters: query string in and out, URL building, activity. Kirby-free.
- * Contract: SPEC.md §8.7 (every example is a check) and §9 (FiltersTest row).
+ * Every documented example is a check.
  */
 #[CoversClass(Filters::class)]
 final class FiltersTest extends TestCase
@@ -22,7 +22,7 @@ final class FiltersTest extends TestCase
 
 		try {
 
-			// fromQuery(): the §8.7 example.
+			// fromQuery(): the documented example.
 			expect(
 				['category' => 'Retreat', 'attendance' => null, 'language' => 'cs', 'featured' => true, 'view' => 'upcoming', 'page' => 3],
 				Filters::fromQuery(['category' => ' Retreat ', 'attendance' => 'ONLINE', 'language' => 'CS', 'featured' => 'true', 'page' => '3', 'x' => 'y'], ['de', 'cs']),

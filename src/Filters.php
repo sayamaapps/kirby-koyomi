@@ -13,7 +13,6 @@ namespace Sayamaapps\Koyomi;
  *    'featured' => bool, 'view' => 'upcoming'|'past', 'page' => int]
  *
  * Query string parameters: ?category=Retreat&attendance=online&language=cs&featured=1&view=past&page=2
- * Contract: SPEC.md §8.7.
  */
 final class Filters
 {

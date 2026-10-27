@@ -24,7 +24,7 @@ function koyomi_snippet_event(array $override = []): Event
  *
  * Event and Venue objects come from fromArray(); no page model, Repository
  * or Filters is involved, so the test passes event/venue/events/list/
- * calendarUrl explicitly (SPEC §9).
+ * calendarUrl explicitly.
  */
 #[CoversNothing]
 final class SnippetsTest extends TestCase

@@ -10,7 +10,6 @@ use Kirby\Exception\NotFoundException;
  * Bodies and headers of the content representations
  * (templates/koyomi-*.ics.php, .rss.php, .json.php call these).
  *
- * Contract: SPEC.md §8.10.
  *
  * Every method first checks Options::route() for its switch (which includes
  * `active`). Switched off → throws Kirby\Exception\NotFoundException, which

@@ -7,7 +7,6 @@ use Sayamaapps\Koyomi\Repository;
 
 /**
  * Page model of template `koyomi-calendar`.
- * Contract: SPEC.md §8.11.
  */
 class CalendarPage extends Page
 {

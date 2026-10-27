@@ -7,7 +7,7 @@ use DateTimeImmutable;
 /**
  * Filtering, sorting, paging of Event lists, Kirby-free.
  *
- * Contract: SPEC.md §8.8. All methods are pure: arrays in, arrays out, the
+ * All methods are pure: arrays in, arrays out, the
  * input is never modified.
  */
 final class Query

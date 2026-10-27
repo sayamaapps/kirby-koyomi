@@ -10,7 +10,7 @@ use Sayamaapps\Koyomi\Venue;
 
 /**
  * Query: upcoming/past, filters, sort, paging, facets, venue and organizer
- * lists. Kirby-free. Contract: SPEC.md §8.8 and §9 (QueryTest row).
+ * lists. Kirby-free.
  */
 #[CoversClass(Query::class)]
 final class QueryTest extends TestCase
@@ -88,7 +88,7 @@ final class QueryTest extends TestCase
 			expect(['retreat', 'online', 'offline', 'moved'], $ids(Query::filter($catalog, ['category' => ''])), 'empty category is no filter');
 			expect(['retreat', 'moved'], $ids(Query::filter($catalog, ['category' => 'Retreat', 'view' => 'past', 'page' => 4])), 'view and page are ignored by filter()');
 
-			// 5. Facets over unfiltered events (SPEC §8.8 shape).
+			// 5. Facets over unfiltered events.
 			$facetEvents = [
 				$make(['id' => 'f1', 'categories' => 'Retreat, Meditation', 'languages' => 'de, cs', 'attendance' => 'mixed', 'featured' => 'true']),
 				$make(['id' => 'f2', 'categories' => 'meditation', 'languages' => 'de', 'attendance' => 'offline']),

@@ -6,7 +6,7 @@ namespace Sayamaapps\Koyomi;
  * Event status (content field `eventStatus` — NOT `status`, which is
  * Kirby's own draft/unlisted/listed and a Page method).
  *
- * Mapping used by the outputs (SPEC.md §7):
+ * Mapping used by the outputs:
  *   value        label key            schema.org eventStatus           ICS STATUS
  *   scheduled    status.scheduled     https://schema.org/EventScheduled   CONFIRMED
  *   cancelled    status.cancelled     https://schema.org/EventCancelled   CANCELLED

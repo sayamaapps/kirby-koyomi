@@ -13,7 +13,7 @@ use Sayamaapps\Koyomi\Api;
  *
  * Prints nothing when Koyomi is inactive or there is nothing to filter by.
  *
- * @var array|null $list     Repository::list() shape (SPEC §8.9)
+ * @var array|null $list     Repository::list() shape
  * @var \Kirby\Cms\Page|null $calendar used when $list is not given
  * @var bool|null $attendance false = no format select (koyomi/switch shows it);
  *                a chosen format is then kept as a hidden field

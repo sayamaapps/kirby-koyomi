@@ -14,7 +14,7 @@ use Kirby\Toolkit\Str;
  *
  * Reads fields ONLY via $page->content()->get('<field>') — never via magic
  * methods: `status` and `image` are Page methods, and a site's own page
- * model might add more. Field contract: SPEC.md §5.
+ * model might add more.
  *
  * Shared fields (Blueprints::SHARED_FIELDS: dates, status, price, venue,
  * organizers …) are read from the DEFAULT language on a multi-language site.
@@ -27,7 +27,7 @@ use Kirby\Toolkit\Str;
  */
 final class Mapper
 {
-	/** Longest description derived from the text blocks (SPEC §5.1). */
+	/** Longest description derived from the text blocks. */
 	public const EXCERPT_LENGTH = 300;
 
 	/**
@@ -103,7 +103,7 @@ final class Mapper
 	/**
 	 * Not a draft (nor below one) and of the expected template. Drafts are
 	 * what an editor has not published yet; they must not reach any output
-	 * through a reference (SPEC §0). Unlisted pages are published
+	 * through a reference. Unlisted pages are published
 	 * (they have their own URL) and stay usable.
 	 */
 	private static function isPublished(Page $page, string $template): bool
@@ -112,7 +112,7 @@ final class Mapper
 	}
 
 	/**
-	 * Organizer::fromArray() from a koyomi-organizer page (SPEC.md §5.3).
+	 * Organizer::fromArray() from a koyomi-organizer page.
 	 * The email is passed only when `showEmail` is on, so a hidden address
 	 * never becomes part of any object.
 	 */
@@ -138,7 +138,7 @@ final class Mapper
 	}
 
 	/**
-	 * The fromArray() input for an event page (SPEC.md §5.1 mapping table).
+	 * The fromArray() input for an event page.
 	 * Exposed for tests and debugging. Venue and organizers are already
 	 * value objects, which Event::fromArray() accepts as they are.
 	 */
@@ -245,7 +245,7 @@ final class Mapper
 	}
 
 	/**
-	 * Venue::fromArray() from a koyomi-venue page (SPEC.md §5.2). The
+	 * Venue::fromArray() from a koyomi-venue page. The
 	 * `koyomi.mapUrl` closure, when set, supplies the map link; it receives
 	 * the venue without one.
 	 */

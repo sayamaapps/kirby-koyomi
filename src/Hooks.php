@@ -6,7 +6,6 @@ use Kirby\Cms\Page;
 
 /**
  * Kirby hooks.
- * Contract: SPEC.md §8.13.
  */
 final class Hooks
 {

@@ -44,8 +44,7 @@ function koyomi_berlin(string $wall): int
 /**
  * The Kirby glue on a real site (tests/lib/Fixture.php): Mapper, Repository
  * (cache, lists, venues, organizers), the page models, the collections and
- * the representation gating and headers of Output. Contract: SPEC.md §8.9,
- * §8.10, §8.11 and §9 (KirbyTest row).
+ * the representation gating and headers of Output.
  *
  * The bodies of .ics/.rss/.json are checked by their own tests and by
  * AcceptanceTest; this file checks status codes, headers, expiry and data.
@@ -207,7 +206,7 @@ final class KirbyTest extends TestCase
 
 			// 5. list(): shape, facets, filters, URLs, paging.
 			$list = Repository::list($calendar, []);
-			expect(['view', 'filters', 'events', 'pagination', 'facets', 'title', 'baseUrl', 'upcomingUrl', 'pastUrl', 'filtered'], array_keys($list), 'list: keys of the SPEC §8.9 shape');
+			expect(['view', 'filters', 'events', 'pagination', 'facets', 'title', 'baseUrl', 'upcomingUrl', 'pastUrl', 'filtered'], array_keys($list), 'list: keys of the list shape');
 			expect(['page', 'pages', 'total', 'perPage', 'hasPrev', 'hasNext', 'prevUrl', 'nextUrl'], array_keys($list['pagination']), 'list: pagination keys');
 			expect($upcomingTitles, koyomi_titles($list['events']), 'list: default view is upcoming, one page');
 			expect([1, 1, 7, 12, null, null], [$list['pagination']['page'], $list['pagination']['pages'], $list['pagination']['total'], $list['pagination']['perPage'], $list['pagination']['prevUrl'], $list['pagination']['nextUrl']], 'list: one page of seven');

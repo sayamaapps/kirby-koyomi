@@ -8,7 +8,7 @@ use DateTimeZone;
 /**
  * iCalendar (RFC 5545) writer, Kirby-free.
  *
- * Contract: SPEC.md §8.1. Summary:
+ * Summary:
  * - Content lines are joined with CRLF, the document ends with CRLF.
  * - Lines longer than 75 octets are folded (CRLF + one space), never inside
  *   a UTF-8 multibyte sequence.
@@ -175,7 +175,7 @@ final class Ics
 		return implode("\r\n ", $parts);
 	}
 
-	/** SPEC §7: postponed is TENTATIVE, cancelled is CANCELLED, everything else CONFIRMED. */
+	/** Postponed is TENTATIVE, cancelled is CANCELLED, everything else CONFIRMED. */
 	private static function icsStatus(string $status): string
 	{
 		return match ($status) {
@@ -336,7 +336,7 @@ final class Ics
 
 	/**
 	 * The unfolded content lines of one VEVENT, from BEGIN:VEVENT to
-	 * END:VEVENT (SPEC.md §8.1 lists every property and its order).
+	 * END:VEVENT.
 	 *
 	 * Lines are returned UNFOLDED on purpose: tests compare the properties,
 	 * and render() folds them once for the whole document.
