@@ -50,7 +50,14 @@ $options = [
 <nav class="koyomi-switch" aria-label="<?= esc(Api::t('switch.label')) ?>">
   <ul>
     <?php foreach ($options as [$code, $label, $count]) : ?>
-    <li><a class="koyomi-switch-option<?= $current === $code ? ' koyomi-switch-option--active' : '' ?>" href="<?= esc(\Sayamaapps\Koyomi\Filters::url($baseUrl, $filters, ['attendance' => $code])) ?>"<?= $current === $code ? ' aria-current="page"' : '' ?>><?= esc($label) ?> <span class="koyomi-switch-count" aria-label="<?= esc(Api::t('switch.count', ['count' => (string)$count])) ?>"><?= (int)$count ?></span></a></li>
+    <li><a class="koyomi-switch-option<?= $current === $code ? ' koyomi-switch-option--active' : '' ?>" href="<?= esc(\Sayamaapps\Koyomi\Filters::url(
+	$baseUrl,
+	$filters,
+	['attendance' => $code]
+)) ?>"<?= $current === $code ? ' aria-current="page"' : '' ?>><?= esc($label) ?> <span class="koyomi-switch-count" aria-label="<?= esc(Api::t(
+	'switch.count',
+	['count' => (string)$count]
+)) ?>"><?= (int)$count ?></span></a></li>
     <?php endforeach ?>
   </ul>
 </nav>

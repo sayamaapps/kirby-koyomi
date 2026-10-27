@@ -76,7 +76,8 @@ $seriesTotal = count($series);
   <?php snippet('koyomi/past', ['event' => $e, 'calendarUrl' => $calendarUrl]) ?>
 
   <?php if ($status !== '') : ?>
-  <p class="koyomi-status koyomi-status--<?= esc($e->status) ?>" role="status"><strong><?= esc($status) ?></strong><?php if ($e->statusNote !== '') : ?> <?= esc($e->statusNote) ?><?php endif ?></p>
+  <p class="koyomi-status koyomi-status--<?= esc($e->status) ?>" role="status"><strong><?= esc($status) ?></strong><?php if ($e->statusNote !== '') : ?> <?= esc($e->statusNote) ?>
+<?php endif ?></p>
   <?php endif ?>
   <?php if ($previous !== '') : ?>
   <p class="koyomi-previous"><?= esc($previous) ?></p>
@@ -96,7 +97,8 @@ $seriesTotal = count($series);
 
     <?php if ($price !== '' || $e->priceNote !== '' || $availability !== '') : ?>
     <dt><?= esc(Api::t('price.label')) ?></dt>
-    <dd class="koyomi-price"><?= esc($price) ?><?php if ($e->priceNote !== '') : ?> <span class="koyomi-price-note"><?= esc($e->priceNote) ?></span><?php endif ?><?php if ($availability !== '') : ?> <span class="koyomi-availability"><?= esc($availability) ?></span><?php endif ?></dd>
+    <dd class="koyomi-price"><?= esc($price) ?><?php if ($e->priceNote !== '') : ?> <span class="koyomi-price-note"><?= esc($e->priceNote) ?></span><?php endif ?>
+<?php if ($availability !== '') : ?> <span class="koyomi-availability"><?= esc($availability) ?></span><?php endif ?></dd>
     <?php endif ?>
 
     <?php if ($languages !== '') : ?>
@@ -109,7 +111,9 @@ $seriesTotal = count($series);
     <dd class="koyomi-organizers">
       <ul>
         <?php foreach ($organizers as $organizer) : ?>
-        <li class="koyomi-organizer"><?php if ($organizer->link() !== '') : ?><a href="<?= esc($organizer->link()) ?>"><?= esc($organizer->name) ?></a><?php else : ?><?= esc($organizer->name) ?><?php endif ?><?php if ($organizer->email !== '') : ?> <a class="koyomi-organizer-email" href="mailto:<?= esc($organizer->email) ?>"><?= esc($organizer->email) ?></a><?php endif ?></li>
+        <li class="koyomi-organizer"><?php if ($organizer->link() !== '') : ?><a href="<?= esc($organizer->link()) ?>"><?= esc($organizer->name) ?></a><?php else : ?>
+<?= esc($organizer->name) ?><?php endif ?><?php if ($organizer->email !== '') : ?> <a class="koyomi-organizer-email" href="mailto:<?= esc($organizer->email) ?>
+"><?= esc($organizer->email) ?></a><?php endif ?></li>
         <?php endforeach ?>
       </ul>
     </dd>
@@ -125,12 +129,16 @@ $seriesTotal = count($series);
     <?php if ($e->availability === \Sayamaapps\Koyomi\Availability::SOLDOUT) : ?>
     <p class="koyomi-booking koyomi-booking--soldout"><?= esc(Api::t('availability.soldout')) ?></p>
     <?php else : ?>
-    <p class="koyomi-booking"><a class="koyomi-booking-link" href="<?= esc($e->bookingUrl) ?>" target="_blank" rel="noopener"><?= esc($e->bookingLabel !== '' ? $e->bookingLabel : Api::t('booking.default')) ?><span class="koyomi-sr-only"> <?= esc(Api::t('booking.opensNewTab')) ?></span></a></p>
+    <p class="koyomi-booking"><a class="koyomi-booking-link" href="<?= esc($e->bookingUrl) ?>
+" target="_blank" rel="noopener"><?= esc($e->bookingLabel !== '' ? $e->bookingLabel : Api::t('booking.default')) ?>
+<span class="koyomi-sr-only"> <?= esc(Api::t('booking.opensNewTab')) ?></span></a></p>
     <?php endif ?>
   <?php endif ?>
 
   <?php if ($showCalendarLinks) : ?>
-  <p class="koyomi-calendar-links"><span class="koyomi-calendar-heading"><?= esc(Api::t('calendar.add')) ?></span><?php if ($icsLink) : ?> <a class="koyomi-calendar-ics" href="<?= esc($e->icsUrl()) ?>" download><?= esc(Api::t('calendar.ics')) ?></a><?php endif ?><?php if ($googleLink !== '') : ?> <a class="koyomi-calendar-google" href="<?= esc($googleLink) ?>" target="_blank" rel="noopener nofollow"><?= esc(Api::t('calendar.google')) ?></a><?php endif ?></p>
+  <p class="koyomi-calendar-links"><span class="koyomi-calendar-heading"><?= esc(Api::t('calendar.add')) ?></span><?php if ($icsLink) : ?>
+ <a class="koyomi-calendar-ics" href="<?= esc($e->icsUrl()) ?>" download><?= esc(Api::t('calendar.ics')) ?></a><?php endif ?><?php if ($googleLink !== '') : ?>
+ <a class="koyomi-calendar-google" href="<?= esc($googleLink) ?>" target="_blank" rel="noopener nofollow"><?= esc(Api::t('calendar.google')) ?></a><?php endif ?></p>
   <?php endif ?>
 
   <?php if ($seriesTotal > 0) : ?>

@@ -65,8 +65,11 @@ $priceLine = implode(' · ', array_values(array_filter(
   <?php if ($e->image !== '') : ?>
   <img class="koyomi-card-image" src="<?= esc($e->image) ?>" alt="<?= esc($e->imageAlt) ?>" loading="lazy">
   <?php endif ?>
-  <p class="koyomi-card-date" aria-hidden="true"><span class="koyomi-card-weekday"><?= esc($sheet['weekday']) ?></span> <span class="koyomi-card-day"><?= esc($sheet['day']) ?></span> <span class="koyomi-card-month"><?= esc($sheet['month']) ?></span><?php if ($sheet['until'] !== '') : ?> <span class="koyomi-card-until"><?= esc($sheet['until']) ?></span><?php endif ?></p>
-  <h<?= $level ?> class="koyomi-card-title"><?php if ($e->url !== '') : ?><a href="<?= esc($e->url) ?>"><?= esc($e->title) ?></a><?php else : ?><?= esc($e->title) ?><?php endif ?></h<?= $level ?>>
+  <p class="koyomi-card-date" aria-hidden="true"><span class="koyomi-card-weekday"><?= esc($sheet['weekday']) ?></span> <span class="koyomi-card-day"><?= esc($sheet['day']) ?>
+</span> <span class="koyomi-card-month"><?= esc($sheet['month']) ?></span><?php if ($sheet['until'] !== '') : ?> <span class="koyomi-card-until"><?= esc($sheet['until']) ?>
+</span><?php endif ?></p>
+  <h<?= $level ?> class="koyomi-card-title"><?php if ($e->url !== '') : ?><a href="<?= esc($e->url) ?>"><?= esc($e->title) ?></a><?php else : ?><?= esc($e->title) ?><?php endif ?>
+</h<?= $level ?>>
   <p class="koyomi-card-when"><time datetime="<?= esc($datetime) ?>"><?= esc(\Sayamaapps\Koyomi\Format::when($e)) ?></time></p>
   <p class="koyomi-card-time" aria-hidden="true"><?= esc(\Sayamaapps\Koyomi\Format::clock($e)) ?></p>
   <?php if ($status !== '') : ?>

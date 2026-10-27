@@ -74,7 +74,10 @@ if ($list !== null) {
     <?php endif ?>
     <?php foreach (\Sayamaapps\Koyomi\Query::byMonth($items) as $month) : $monthLevel = min(6, $level + 1); ?>
     <section class="koyomi-month" aria-labelledby="koyomi-month-<?= esc($month['key'], 'attr') ?>">
-      <h<?= $monthLevel ?> class="koyomi-month-title" id="koyomi-month-<?= esc($month['key'], 'attr') ?>"><time datetime="<?= esc($month['key']) ?>"><?= esc(\Sayamaapps\Koyomi\Format::monthTitle($month['first'])) ?></time></h<?= $monthLevel ?>>
+      <h<?= $monthLevel ?> class="koyomi-month-title" id="koyomi-month-<?= esc(
+	$month['key'],
+	'attr'
+) ?>"><time datetime="<?= esc($month['key']) ?>"><?= esc(\Sayamaapps\Koyomi\Format::monthTitle($month['first'])) ?></time></h<?= $monthLevel ?>>
       <ol class="koyomi-events">
         <?php foreach ($month['events'] as $event) : ?>
         <li class="koyomi-events-item"><?php snippet('koyomi/card', ['event' => $event, 'level' => min(6, $level + 2)]) ?></li>

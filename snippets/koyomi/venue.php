@@ -42,7 +42,10 @@ $mapLink = $v->mapLink();
   <p class="koyomi-venue-directions"><strong><?= esc(Api::t('venue.directions')) ?></strong><br><?= nl2br(esc($v->directions)) ?></p>
   <?php endif ?>
   <?php if (!$compact && $v->showMap && $v->mapImage !== '') : ?>
-  <img class="koyomi-venue-map" src="<?= esc($v->mapImage) ?>" alt="<?= esc($v->mapImageAlt !== '' ? $v->mapImageAlt : Api::t('venue.mapAlt', ['name' => $v->name])) ?>" loading="lazy">
+  <img class="koyomi-venue-map" src="<?= esc($v->mapImage) ?>" alt="<?= esc($v->mapImageAlt !== '' ? $v->mapImageAlt : Api::t(
+	'venue.mapAlt',
+	['name' => $v->name]
+)) ?>" loading="lazy">
   <?php endif ?>
   <?php if ($mapLink !== '' || $v->website !== '') : ?>
   <p class="koyomi-venue-links">

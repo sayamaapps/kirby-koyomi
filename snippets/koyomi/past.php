@@ -26,4 +26,5 @@ if (!isset($calendarUrl)) {
 }
 $calendarUrl = (string)($calendarUrl ?? '');
 ?>
-<p class="koyomi-past" role="note"><?= esc(Api::t('event.pastNote')) ?><?php if ($calendarUrl !== '') : ?> <a href="<?= esc($calendarUrl) ?>"><?= esc(Api::t('event.toUpcoming')) ?></a><?php endif ?></p>
+<p class="koyomi-past" role="note"><?= esc(Api::t('event.pastNote')) ?><?php if ($calendarUrl !== '') : ?> <a href="<?= esc($calendarUrl) ?>"><?= esc(Api::t('event.toUpcoming')) ?>
+</a><?php endif ?></p>
