@@ -134,233 +134,263 @@ final class Blueprints
 			'create' => ['fields' => ['startDate']],
 			'options' => ['changeTemplate' => false],
 			'tabs' => [
-				'event' => [
-					'label' => I18n::all('tab.event'),
-					'columns' => [
-						'main' => [
-							'width' => '2/3',
-							'fields' => [
-								'excerpt' => [
-									'label' => I18n::all('field.excerpt'),
-									'type' => 'textarea',
-									'buttons' => false,
-									'maxlength' => 500,
-									'help' => I18n::all('field.excerpt.help'),
-								],
-								'text' => [
-									'label' => I18n::all('field.text'),
-									'type' => 'blocks',
-								],
-							],
-						],
-						'sidebar' => [
-							'width' => '1/3',
-							'fields' => [
-								'cover' => [
-									'label' => I18n::all('field.cover'),
-									'type' => 'files',
-									'multiple' => false,
-									'query' => 'page.images',
-								],
-							],
-						],
-					],
-				],
-				'when' => [
-					'label' => I18n::all('tab.when'),
+				'event' => self::eventTabEvent(),
+				'when' => self::eventTabWhen($settings),
+				'status' => self::eventTabStatus(),
+				'tickets' => self::eventTabTickets($settings),
+				'details' => self::eventTabDetails($settings),
+			],
+		]));
+	}
+
+	/** The Event tab: title, the main columns and the sidebar. */
+	private static function eventTabEvent(): array
+	{
+		return [
+			'label' => I18n::all('tab.event'),
+			'columns' => [
+				'main' => [
+					'width' => '2/3',
 					'fields' => [
-						'startDate' => [
-							'label' => I18n::all('field.startDate'),
-							'type' => 'date',
-							'required' => true,
-							'width' => '1/2',
-						],
-						'startTime' => [
-							'label' => I18n::all('field.startTime'),
-							'type' => 'time',
-							'width' => '1/2',
-							'when' => ['allDay' => false],
-							'required' => true,
-						],
-						'endDate' => [
-							'label' => I18n::all('field.endDate'),
-							'type' => 'date',
-							'width' => '1/2',
-							'help' => I18n::all('field.endDate.help'),
-						],
-						'endTime' => [
-							'label' => I18n::all('field.endTime'),
-							'type' => 'time',
-							'width' => '1/2',
-							'when' => ['allDay' => false],
-							// For the package Fude: a chat bot asks for it before a new event. Kirby ignores the key.
-							'fudeAsk' => true,
-						],
-						'allDay' => [
-							'label' => I18n::all('field.allDay'),
-							'type' => 'toggle',
-							'default' => false,
-							'width' => '1/2',
-						],
-						'timezone' => [
-							'label' => I18n::all('field.timezone'),
-							'type' => 'select',
-							'options' => self::zoneOptions($settings),
-							'default' => self::setting($settings, 'timezone', Time::DEFAULT_ZONE),
-							'required' => true,
-							'width' => '1/2',
-						],
-						'inPerson' => [
-							'label' => I18n::all('field.inPerson'),
-							'type' => 'toggle',
-							'default' => true,
-							'width' => '1/2',
-						],
-						'online' => [
-							'label' => I18n::all('field.online'),
-							'type' => 'toggle',
-							'default' => false,
-							'width' => '1/2',
-						],
-						// Venue is required for offline and hybrid events only (Kirby's when tests equality).
-						'venue' => [
-							'label' => I18n::all('field.venue'),
-							'type' => 'pages',
-							'multiple' => false,
-							'query' => 'kirby.collection("koyomi/venues")',
-							'when' => ['inPerson' => true],
-							'required' => true,
-						],
-						'onlinePlatform' => [
-							'label' => I18n::all('field.onlinePlatform'),
-							'type' => 'text',
-							'width' => '1/2',
-							'when' => ['online' => true],
-							'placeholder' => I18n::all('field.onlinePlatform.placeholder'),
-						],
-						// Private: stored in the content, read by nothing that renders (Event has no such property).
-						'onlineUrl' => [
-							'label' => I18n::all('field.onlineUrl'),
-							'type' => 'url',
-							'width' => '1/2',
-							'when' => ['online' => true],
-							'required' => true,
-							'help' => I18n::all('field.onlineUrl.help'),
-						],
-					],
-				],
-				'status' => [
-					'label' => I18n::all('tab.status'),
-					'fields' => [
-						'eventStatus' => [
-							'label' => I18n::all('field.eventStatus'),
-							'type' => 'select',
-							'options' => self::options(Status::ALL, 'status.'),
-							'default' => Status::SCHEDULED,
-							'required' => true,
-						],
-						'previousStart' => [
-							'label' => I18n::all('field.previousStart'),
-							'type' => 'date',
-							'time' => true,
-							'when' => ['eventStatus' => Status::RESCHEDULED],
-						],
-						'statusNote' => [
-							'label' => I18n::all('field.statusNote'),
+						'excerpt' => [
+							'label' => I18n::all('field.excerpt'),
 							'type' => 'textarea',
 							'buttons' => false,
+							'maxlength' => 500,
+							'help' => I18n::all('field.excerpt.help'),
+						],
+						'text' => [
+							'label' => I18n::all('field.text'),
+							'type' => 'blocks',
 						],
 					],
 				],
-				'tickets' => [
-					'label' => I18n::all('tab.tickets'),
+				'sidebar' => [
+					'width' => '1/3',
 					'fields' => [
-						'isFree' => [
-							'label' => I18n::all('field.isFree'),
-							'type' => 'toggle',
-							'default' => false,
-						],
-						'price' => [
-							'label' => I18n::all('field.price'),
-							'type' => 'number',
-							'min' => 0,
-							'step' => 0.01,
-							'width' => '1/3',
-							'when' => ['isFree' => false],
-							'fudeAsk' => true,
-						],
-						'currency' => [
-							'label' => I18n::all('field.currency'),
-							'type' => 'select',
-							'options' => self::plainOptions($settings['currencies'] ?? self::DEFAULT_CURRENCIES),
-							'default' => self::setting($settings, 'currency', self::DEFAULT_CURRENCIES[0]),
-							'width' => '1/3',
-							'when' => ['isFree' => false],
-						],
-						'availability' => [
-							'label' => I18n::all('field.availability'),
-							'type' => 'select',
-							'options' => self::options(Availability::ALL, 'availability.'),
-							'default' => Availability::AVAILABLE,
-							'width' => '1/3',
-						],
-						'priceNote' => [
-							'label' => I18n::all('field.priceNote'),
-							'type' => 'text',
-							'placeholder' => I18n::all('field.priceNote.placeholder'),
-						],
-						'bookingUrl' => [
-							'label' => I18n::all('field.bookingUrl'),
-							'type' => 'url',
-							'width' => '2/3',
-							'fudeAsk' => true,
-						],
-						'bookingLabel' => [
-							'label' => I18n::all('field.bookingLabel'),
-							'type' => 'text',
-							'width' => '1/3',
-							'placeholder' => I18n::all('booking.default'),
-						],
-					],
-				],
-				'details' => [
-					'label' => I18n::all('tab.details'),
-					'fields' => [
-						'organizers' => [
-							'label' => I18n::all('field.organizers'),
-							'type' => 'pages',
-							'query' => 'kirby.collection("koyomi/organizers")',
-						],
-						'categories' => [
-							'label' => I18n::all('field.categories'),
-							'type' => 'tags',
-						],
-						'eventLanguages' => [
-							'label' => I18n::all('field.languages'),
-							'type' => 'multiselect',
-							'options' => self::languageOptions($settings),
-						],
-						'featured' => [
-							'label' => I18n::all('field.featured'),
-							'type' => 'toggle',
-							'default' => false,
-						],
-						'series' => [
-							'label' => I18n::all('field.series'),
-							'type' => 'pages',
-							'query' => 'page.siblings(false)',
-						],
-						'seriesPart' => [
-							'label' => I18n::all('field.seriesPart'),
-							'type' => 'number',
-							'min' => 1,
-							'step' => 1,
-							'width' => '1/3',
+						'cover' => [
+							'label' => I18n::all('field.cover'),
+							'type' => 'files',
+							'multiple' => false,
+							'query' => 'page.images',
 						],
 					],
 				],
 			],
-		]));
+		];
+	}
+
+	/** The When tab: dates, times, the all-day toggle and the zone. */
+	private static function eventTabWhen(array $settings): array
+	{
+		return [
+			'label' => I18n::all('tab.when'),
+			'fields' => [
+				'startDate' => [
+					'label' => I18n::all('field.startDate'),
+					'type' => 'date',
+					'required' => true,
+					'width' => '1/2',
+				],
+				'startTime' => [
+					'label' => I18n::all('field.startTime'),
+					'type' => 'time',
+					'width' => '1/2',
+					'when' => ['allDay' => false],
+					'required' => true,
+				],
+				'endDate' => [
+					'label' => I18n::all('field.endDate'),
+					'type' => 'date',
+					'width' => '1/2',
+					'help' => I18n::all('field.endDate.help'),
+				],
+				'endTime' => [
+					'label' => I18n::all('field.endTime'),
+					'type' => 'time',
+					'width' => '1/2',
+					'when' => ['allDay' => false],
+					// For the package Fude: a chat bot asks for it before a new event. Kirby ignores the key.
+					'fudeAsk' => true,
+				],
+				'allDay' => [
+					'label' => I18n::all('field.allDay'),
+					'type' => 'toggle',
+					'default' => false,
+					'width' => '1/2',
+				],
+				'timezone' => [
+					'label' => I18n::all('field.timezone'),
+					'type' => 'select',
+					'options' => self::zoneOptions($settings),
+					'default' => self::setting($settings, 'timezone', Time::DEFAULT_ZONE),
+					'required' => true,
+					'width' => '1/2',
+				],
+				'inPerson' => [
+					'label' => I18n::all('field.inPerson'),
+					'type' => 'toggle',
+					'default' => true,
+					'width' => '1/2',
+				],
+				'online' => [
+					'label' => I18n::all('field.online'),
+					'type' => 'toggle',
+					'default' => false,
+					'width' => '1/2',
+				],
+				// Venue is required for offline and hybrid events only (Kirby's when tests equality).
+				'venue' => [
+					'label' => I18n::all('field.venue'),
+					'type' => 'pages',
+					'multiple' => false,
+					'query' => 'kirby.collection("koyomi/venues")',
+					'when' => ['inPerson' => true],
+					'required' => true,
+				],
+				'onlinePlatform' => [
+					'label' => I18n::all('field.onlinePlatform'),
+					'type' => 'text',
+					'width' => '1/2',
+					'when' => ['online' => true],
+					'placeholder' => I18n::all('field.onlinePlatform.placeholder'),
+				],
+				// Private: stored in the content, read by nothing that renders (Event has no such property).
+				'onlineUrl' => [
+					'label' => I18n::all('field.onlineUrl'),
+					'type' => 'url',
+					'width' => '1/2',
+					'when' => ['online' => true],
+					'required' => true,
+					'help' => I18n::all('field.onlineUrl.help'),
+				],
+			],
+		];
+	}
+
+	/** The Status tab: event status, notes and attendance. */
+	private static function eventTabStatus(): array
+	{
+		return [
+			'label' => I18n::all('tab.status'),
+			'fields' => [
+				'eventStatus' => [
+					'label' => I18n::all('field.eventStatus'),
+					'type' => 'select',
+					'options' => self::options(Status::ALL, 'status.'),
+					'default' => Status::SCHEDULED,
+					'required' => true,
+				],
+				'previousStart' => [
+					'label' => I18n::all('field.previousStart'),
+					'type' => 'date',
+					'time' => true,
+					'when' => ['eventStatus' => Status::RESCHEDULED],
+				],
+				'statusNote' => [
+					'label' => I18n::all('field.statusNote'),
+					'type' => 'textarea',
+					'buttons' => false,
+				],
+			],
+		];
+	}
+
+	/** The Tickets tab: price, currency, availability and the registration fields. */
+	private static function eventTabTickets(array $settings): array
+	{
+		return [
+			'label' => I18n::all('tab.tickets'),
+			'fields' => [
+				'isFree' => [
+					'label' => I18n::all('field.isFree'),
+					'type' => 'toggle',
+					'default' => false,
+				],
+				'price' => [
+					'label' => I18n::all('field.price'),
+					'type' => 'number',
+					'min' => 0,
+					'step' => 0.01,
+					'width' => '1/3',
+					'when' => ['isFree' => false],
+					'fudeAsk' => true,
+				],
+				'currency' => [
+					'label' => I18n::all('field.currency'),
+					'type' => 'select',
+					'options' => self::plainOptions($settings['currencies'] ?? self::DEFAULT_CURRENCIES),
+					'default' => self::setting($settings, 'currency', self::DEFAULT_CURRENCIES[0]),
+					'width' => '1/3',
+					'when' => ['isFree' => false],
+				],
+				'availability' => [
+					'label' => I18n::all('field.availability'),
+					'type' => 'select',
+					'options' => self::options(Availability::ALL, 'availability.'),
+					'default' => Availability::AVAILABLE,
+					'width' => '1/3',
+				],
+				'priceNote' => [
+					'label' => I18n::all('field.priceNote'),
+					'type' => 'text',
+					'placeholder' => I18n::all('field.priceNote.placeholder'),
+				],
+				'bookingUrl' => [
+					'label' => I18n::all('field.bookingUrl'),
+					'type' => 'url',
+					'width' => '2/3',
+					'fudeAsk' => true,
+				],
+				'bookingLabel' => [
+					'label' => I18n::all('field.bookingLabel'),
+					'type' => 'text',
+					'width' => '1/3',
+					'placeholder' => I18n::all('booking.default'),
+				],
+			],
+		];
+	}
+
+	/** The Details tab: venue, organizers, series and the description. */
+	private static function eventTabDetails(array $settings): array
+	{
+		return [
+			'label' => I18n::all('tab.details'),
+			'fields' => [
+				'organizers' => [
+					'label' => I18n::all('field.organizers'),
+					'type' => 'pages',
+					'query' => 'kirby.collection("koyomi/organizers")',
+				],
+				'categories' => [
+					'label' => I18n::all('field.categories'),
+					'type' => 'tags',
+				],
+				'eventLanguages' => [
+					'label' => I18n::all('field.languages'),
+					'type' => 'multiselect',
+					'options' => self::languageOptions($settings),
+				],
+				'featured' => [
+					'label' => I18n::all('field.featured'),
+					'type' => 'toggle',
+					'default' => false,
+				],
+				'series' => [
+					'label' => I18n::all('field.series'),
+					'type' => 'pages',
+					'query' => 'page.siblings(false)',
+				],
+				'seriesPart' => [
+					'label' => I18n::all('field.seriesPart'),
+					'type' => 'number',
+					'min' => 1,
+					'step' => 1,
+					'width' => '1/3',
+				],
+			],
+		];
 	}
 
 	/**
@@ -498,7 +528,9 @@ final class Blueprints
 		];
 	}
 
-	/** @param list<string> $values */
+	/**
+	 * @param list<string> $values
+	 */
 	private static function plainOptions(array $values): array
 	{
 		return array_map(fn (string $value) => ['value' => $value, 'text' => $value], $values);
