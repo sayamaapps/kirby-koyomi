@@ -11,16 +11,23 @@ All notable changes to this project are documented here. Versions follow
 
 ## [Unreleased]
 
+No breaking changes: the 1.x names and their behaviour stay as they are.
+
+### Changed
+
+- Code follows the Kirby plugin conventions. Classes live in the namespace
+  `Sayamaapps\Koyomi`. Plugin definitions are in `config/`, and `index.php` is
+  short. The output and the stored content do not change.
+- The 1.x class names (`Koyomi\…`) and global functions (`koyomi_active()` and
+  so on) still work. They are marked `@deprecated`. Nothing is logged at runtime.
+- `Format::reset()` and `Repository::reset()` are kept as `@deprecated @internal`
+  test helpers, as in 1.x.
+
 ### Fixed
 
 - **README privacy statement.** It said nothing is loaded from third parties, but
   an image or video block with a web address in an event's text loads from that
   server when the page opens. The README says so again. No output changed.
-
-### Removed
-
-- `Format::reset()` and `Repository::reset()`. They were test hooks in the
-  production code, not documented API.
 
 ## [1.4.0] — 2026-10-25
 

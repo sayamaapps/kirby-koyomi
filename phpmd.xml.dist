@@ -4,12 +4,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
 	xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
-	<description>PHP Mess Detector rules for Koyomi (TST-10). Every exclusion and raised threshold has its reason here.</description>
+	<description>PHP Mess Detector rules for Koyomi. Every exclusion and raised threshold has its reason here.</description>
 
 	<rule ref="rulesets/cleancode.xml">
 		<!-- Options, I18n, Format, Time and Normalize are static helpers by design, as in Kirby's own code. -->
 		<exclude name="StaticAccess" />
-		<!-- Boolean arguments are event fields and option switches; they are part of the public API (VER-3). -->
+		<!-- Boolean arguments are event fields and option switches; they are part of the public API. -->
 		<exclude name="BooleanArgumentFlag" />
 		<!-- The assignment in a condition keeps the candidate lookup in reading order. -->
 		<exclude name="IfStatementAssignment" />
@@ -27,7 +27,7 @@
 		</properties>
 	</rule>
 	<rule ref="rulesets/codesize.xml">
-		<!-- Event's constructor takes every field of an event; the signature is public API (VER-3). -->
+		<!-- Event's constructor takes every field of an event; the signature is public API. -->
 		<exclude name="ExcessiveParameterList" />
 		<!-- Set above: the exceptions are listed on their rules. -->
 		<exclude name="CyclomaticComplexity" />
@@ -39,7 +39,7 @@
 	</rule>
 
 	<rule ref="rulesets/design.xml">
-		<!-- The public domain classes (Event, Options, Blueprints) keep their public methods; splitting them changes the API (VER-3). -->
+		<!-- The public domain classes (Event, Options, Blueprints) keep their public methods; splitting them changes the API. -->
 		<exclude name="TooManyPublicMethods" />
 		<exclude name="TooManyMethods" />
 		<exclude name="CouplingBetweenObjects" />

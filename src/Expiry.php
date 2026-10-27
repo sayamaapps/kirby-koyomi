@@ -9,13 +9,14 @@ use DateTimeImmutable;
  *
  * A cached calendar page must not keep showing an event that has ended, nor
  * miss the moment an event starts ("Happening now"). The answer is the
- * earliest start or end that is still in the future. index.php's
- * Api::expires() passes it to Kirby: $kirby->response()->expires($ts)
+ * earliest start or end that is still in the future. Api::expires()
+ * passes it to Kirby: $kirby->response()->expires($ts)
  * (Kirby\Cms\Responder::expires(), which only ever LOWERS an expiry, so
  * several lists on one page combine correctly). The subscription feed also
  * changes when an event leaves its window (leaving()), and a timeline's
  * "Today" line at local midnight (midnight()); Api::expiresAt() passes those.
  *
+ * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

@@ -5,7 +5,7 @@ namespace Sayamaapps\Koyomi;
 /**
  * Page blueprints as PHP arrays, Kirby-free.
  *
- * index.php registers them as closures
+ * config/blueprints.php registers them as closures
  *   'pages/koyomi-event' => fn () => Blueprints::event(Options::blueprintSettings(App::instance()))
  * so option-dependent choices (zones, currencies, languages) are read when
  * the Panel needs the blueprint. A site overrides one by placing
@@ -23,6 +23,7 @@ namespace Sayamaapps\Koyomi;
  * Missing settings keys fall back to the defaults below, so a hand-made
  * array (tests) works too.
  *
+ * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder
@@ -47,7 +48,7 @@ class Blueprints
 		'eventStatus', 'statusNote', 'isFree', 'price', 'priceNote', 'availability', 'bookingUrl',
 	];
 
-	/** Blueprint names index.php registers, all under pages/. */
+	/** Blueprint names config/blueprints.php registers, all under pages/. */
 	public const NAMES = ['koyomi-calendar', 'koyomi-event', 'koyomi-venues', 'koyomi-venue', 'koyomi-organizers', 'koyomi-organizer'];
 
 	/**

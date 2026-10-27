@@ -10,6 +10,7 @@ use DateTimeImmutable;
  * All methods are pure: arrays in, arrays out, the
  * input is never modified.
  *
+ * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

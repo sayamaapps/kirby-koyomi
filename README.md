@@ -46,12 +46,12 @@ Use the release tags (for example `1.4.0`), not the `main` branch, on a live sit
 
 ## Setup
 
-Koyomi is off by default. In `site/config/config.php`, switch it on and set the default zone (the 1.x names `koyomi.active` and `koyomi.timezone` still work, see [Deprecations](#deprecations)):
+Koyomi is off by default. In `site/config/config.php`, switch it on and set the default zone:
 
 ```php
 return [
-    'sayamaapps.koyomi.active'   => true,
-    'sayamaapps.koyomi.timezone' => 'Europe/Berlin', // default zone of new events
+    'koyomi.active'   => true,
+    'koyomi.timezone' => 'Europe/Berlin', // default zone of new events
 ];
 ```
 
@@ -108,11 +108,11 @@ Fields, snippets, page methods and helpers are listed in [docs/reference.md](doc
 | `/events.rss` | `rss` | RSS 2.0 with upcoming events. |
 | `/events.json` | `json` | Upcoming events as JSON. Off by default. |
 
-A switched-off output returns Kirby's 404 page, and `sayamaapps.koyomi.active` switches all of them off. The `koyomi/subscribe` snippet shows the `webcal://` address.
+A switched-off output returns Kirby's 404 page, and `koyomi.active` switches all of them off. The `koyomi/subscribe` snippet shows the `webcal://` address.
 
 ## Options
 
-Every option is `sayamaapps.koyomi.<name>`, flat or nested. `null` means "not set". The 1.x spelling `koyomi.<name>` is read when the new name is not set, with a deprecation in debug mode (see [Deprecations](#deprecations)).
+Every option is `koyomi.<name>`, flat or nested (`'koyomi.active' => true` or `'koyomi' => ['active' => true]`). `null` means "not set".
 
 | Option | Default | Description |
 |---|---|---|
@@ -143,15 +143,14 @@ Every option is `sayamaapps.koyomi.<name>`, flat or nested. `null` means "not se
 | `organizers` | first `koyomi-organizers` | Page ID of the organizers container. |
 | `now` | real time | Pins the clock, for example `'2027-03-10 12:00'`, for tests and previews. |
 
-Koyomi keeps its own texts in `translations/` and reads them through its `I18n` class, not through Kirby's `$t` or `I18n::translate()`. The language of a page follows the `language` option, which can differ from the Kirby site language, and Kirby's translations would follow the site language.
+Koyomi's texts are also registered as Kirby translations under `koyomi.<key>` (`config/translations.php`), so a site can call `t('koyomi.status.cancelled')`. The prefix is `koyomi.`, the 1.x name, because sites already use it. Koyomi reads its own copy in `translations/` through its `I18n` class, not through Kirby's `$t`: the language of the plugin follows the `language` option, which can differ from the Kirby site language, and a missing Kirby translation must not turn a German page English.
 
 ## Deprecations
 
-Koyomi 1.x names keep working until the next major version. Each one logs a deprecation when Kirby's debug mode is on. Move to the new name when you touch the site.
+The 1.x names keep working in every 1.x release. Koyomi logs nothing for them, so debug mode and the error log stay as they are. Each name is marked `@deprecated` in the code; the table shows what replaces it.
 
 | 1.x | Use instead |
 |---|---|
-| Option `koyomi.<name>` | `sayamaapps.koyomi.<name>`, same values. |
 | `koyomi_option($name, $default)` | `Sayamaapps\Koyomi\Api::option($kirby, $name, $default)` |
 | `koyomi_active()` | `Sayamaapps\Koyomi\Api::active($kirby)` |
 | `koyomi_now()` | `Sayamaapps\Koyomi\Api::now($kirby)` |
@@ -160,9 +159,19 @@ Koyomi 1.x names keep working until the next major version. Each one logs a depr
 | `koyomi_event($value)` | `Sayamaapps\Koyomi\Api::event($value)` |
 | `koyomi_expires($events)` | `Sayamaapps\Koyomi\Api::expires($kirby, $events)` |
 | `koyomi_expires_at($timestamp)` | `Sayamaapps\Koyomi\Api::expiresAt($kirby, $timestamp)` |
-| Classes `Koyomi\…`, for example `Koyomi\Event` | `Sayamaapps\Koyomi\…`, same names |
+| Classes `Koyomi\…`, for example `Koyomi\Event` | `Sayamaapps\Koyomi\…`, same names (class aliases in `legacy.php`) |
 
-The functions are wrappers: a site that defines a function of the same name keeps its own. Blueprint, snippet, template, page method and route names do not change, and neither do the feed URLs or the stored content.
+The functions are guarded by Kirby's `Helpers::hasOverride()`, which looks only for the constant `KIRBY_HELPER_<NAME>`, for example `KIRBY_HELPER_KOYOMI_ACTIVE`. A site that declares its own `koyomi_active()` must define that constant first; without it, the declaration fails with "Cannot redeclare", as it did in 1.x.
+
+Blueprint, snippet, template, page method and route names do not change, and neither do the feed URLs or the stored content.
+
+### Planned for 2.0
+
+These changes would break existing sites, so they wait for the next major version:
+
+- Option names `sayamaapps.koyomi.<name>`, read in place of `koyomi.<name>`.
+- Deprecation notices at runtime for the 1.x names, shown in debug mode.
+- Removal of the 1.x functions, the `Koyomi\` class aliases, and the test helpers `Format::reset()` and `Repository::reset()`.
 
 ## Privacy
 

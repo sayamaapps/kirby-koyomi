@@ -11,6 +11,7 @@ use Sayamaapps\Koyomi\Repository;
 /**
  * Page model of template `koyomi-organizer`.
  *
+ * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

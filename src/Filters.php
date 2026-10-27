@@ -14,6 +14,7 @@ namespace Sayamaapps\Koyomi;
  *
  * Query string parameters: ?category=Retreat&attendance=online&language=cs&featured=1&view=past&page=2
  *
+ * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

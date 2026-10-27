@@ -6,15 +6,16 @@ namespace Sayamaapps\Koyomi;
  * Strings of snippets, feeds and Panel labels, Kirby-free.
  *
  * The tables live in translations/<language>.php and are also registered as
- * Kirby plugin translations under `koyomi.<key>` (index.php), so site
- * snippets can use t('koyomi.status.cancelled'). Koyomi itself reads its own
- * tables: a missing Kirby translation must never silently turn a German
+ * Kirby plugin translations under `koyomi.<key>` (config/translations.php), so
+ * site snippets can use t('koyomi.status.cancelled'). Koyomi itself reads its
+ * own tables: a missing Kirby translation must never silently turn a German
  * page English.
  *
  * The language is set per request (Api::i18n(), from
  * Options::language()) and defaults to English. Missing keys fall back to
  * English, then to the key itself.
  *
+ * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder

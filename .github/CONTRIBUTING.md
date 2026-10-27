@@ -18,9 +18,10 @@ To try the plugin on a site, link or copy the folder to `site/plugins/koyomi/`.
 
 ## Checks
 
-Run these before you open a pull request. CI runs the same checks on PHP 8.2 to 8.5.
+Run `composer ci` before you open a pull request. It runs the checks below in CI order. CI runs them on PHP 8.2 to 8.5.
 
 ```sh
+composer ci                       # all of the following
 composer test                     # PHPUnit
 composer analyze:psalm            # Psalm
 composer analyze:phpmd            # PHP Mess Detector
