@@ -13,7 +13,7 @@ use DateTimeImmutable;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Format
+class Format
 {
 	/**
 	 * Pattern defaults per language. Tokens (PHP date() letters, own names):

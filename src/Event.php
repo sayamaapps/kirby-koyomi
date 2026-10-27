@@ -26,7 +26,7 @@ use InvalidArgumentException;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Event
+class Event
 {
 	/** Fallbacks for fromArray(); Options::eventDefaults() supplies the configured ones. */
 	public const DEFAULTS = ['timezone' => Time::DEFAULT_ZONE, 'currency' => 'EUR', 'defaultDuration' => 120];

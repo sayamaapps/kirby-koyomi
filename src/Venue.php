@@ -16,7 +16,7 @@ namespace Sayamaapps\Koyomi;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Venue
+class Venue
 {
 	/**
 	 * @param $id stable id (page UUID without scheme, else page id)

@@ -17,7 +17,7 @@ use Kirby\Cms\App;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Api
+class Api
 {
 	/** True only when the plugin is switched on (`sayamaapps.koyomi.active`). */
 	public static function active(App $kirby): bool

@@ -12,7 +12,7 @@ use DateTimeImmutable;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Rss
+class Rss
 {
 	/** RSS event module namespace for ev:startdate / ev:enddate / ev:location. */
 	public const EV_NS = 'http://purl.org/rss/1.0/modules/event/';

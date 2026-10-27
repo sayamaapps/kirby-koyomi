@@ -24,7 +24,7 @@ use Kirby\Exception\NotFoundException;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Output
+class Output
 {
 	/** /<calendar>.ics — switch `feed`. Upcoming + events that ended within feedPastDays, cancelled included. Content-Disposition: inline; filename="<slug>.ics". */
 	public static function calendarIcs(Page $calendar): string

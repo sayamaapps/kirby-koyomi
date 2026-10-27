@@ -21,7 +21,7 @@ use DateTimeImmutable;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Expiry
+class Expiry
 {
 	/**
 	 * Unix timestamp of the first future moment an event leaves a window that

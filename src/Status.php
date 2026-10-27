@@ -19,7 +19,7 @@ namespace Sayamaapps\Koyomi;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Status
+class Status
 {
 	public const ALL = [self::SCHEDULED, self::CANCELLED, self::POSTPONED, self::RESCHEDULED, self::MOVED_ONLINE];
 	public const CANCELLED = 'cancelled';

@@ -16,7 +16,7 @@ namespace Sayamaapps\Koyomi;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class JsonLd
+class JsonLd
 {
 	public const CONTEXT = 'https://schema.org';
 

@@ -21,7 +21,7 @@ namespace Sayamaapps\Koyomi;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Attendance
+class Attendance
 {
 	public const ALL = [self::OFFLINE, self::ONLINE, self::MIXED];
 	public const MIXED = 'mixed';

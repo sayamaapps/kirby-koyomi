@@ -14,7 +14,7 @@ namespace Sayamaapps\Koyomi;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Organizer
+class Organizer
 {
 	public const ORGANIZATION = 'organization';
 	public const PERSON = 'person';

@@ -30,7 +30,7 @@ use Kirby\Toolkit\Str;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Mapper
+class Mapper
 {
 	/** Longest description derived from the text blocks. */
 	public const EXCERPT_LENGTH = 300;

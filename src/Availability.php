@@ -15,7 +15,7 @@ namespace Sayamaapps\Koyomi;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Availability
+class Availability
 {
 	public const ALL = [self::AVAILABLE, self::LIMITED, self::SOLDOUT];
 	public const AVAILABLE = 'available';

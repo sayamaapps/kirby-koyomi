@@ -26,7 +26,7 @@ use DateTimeZone;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Ics
+class Ics
 {
 	private const CONTINUATION_LIMIT = 74;
 

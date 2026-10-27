@@ -25,7 +25,7 @@ use Kirby\Cms\Helpers;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Options
+class Options
 {
 	public const DEFAULT_CURRENCIES = ['EUR', 'CZK', 'CHF'];
 	public const DEFAULT_LANGUAGES = ['de', 'en', 'cs'];

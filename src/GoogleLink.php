@@ -11,7 +11,7 @@ namespace Sayamaapps\Koyomi;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class GoogleLink
+class GoogleLink
 {
 	public const BASE = 'https://calendar.google.com/calendar/render';
 

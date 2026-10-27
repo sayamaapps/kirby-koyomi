@@ -23,7 +23,7 @@ use DateTimeZone;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Time
+class Time
 {
 	public const DEFAULT_ZONE = 'Europe/Berlin';
 

@@ -26,7 +26,7 @@ use WeakMap;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Repository
+class Repository
 {
 	/** @var WeakMap<App, array<string, list<Event>>>|null calendar id → events, per App */
 	private static WeakMap|null $cache = null;

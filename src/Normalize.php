@@ -12,7 +12,7 @@ namespace Sayamaapps\Koyomi;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Normalize
+class Normalize
 {
 	/** "120", "120.5", "120,50", 120 → float; "", "abc", negatives, NAN → null. */
 	public static function amount(mixed $value): float|null

@@ -16,7 +16,7 @@ use DateTimeZone;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class VTimezone
+class VTimezone
 {
 	/** Fixed DTSTART of the base observance (RFC 5545 needs a start before any transition). */
 	private const BASE_START = '19700101T000000';

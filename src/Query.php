@@ -15,7 +15,7 @@ use DateTimeImmutable;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Query
+class Query
 {
 	/**
 	 * Events whose venue id is $venueId (physicalVenue() only).

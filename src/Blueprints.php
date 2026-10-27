@@ -28,7 +28,7 @@ namespace Sayamaapps\Koyomi;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Blueprints
+class Blueprints
 {
 	/** Where a page's status is set: the Panel offers drafts and unlisted pages only (containers and children). */
 	private const CONTAINER_STATUS = ['draft' => true, 'unlisted' => true, 'listed' => false];

@@ -12,7 +12,7 @@ use Kirby\Cms\Page;
  * @copyright Simon Räder
  * @license   https://opensource.org/licenses/MIT
  */
-final class Hooks
+class Hooks
 {
 	/** Field values a duplicated event gets (dates and everything else are kept — the copy is a draft). */
 	public const DUPLICATE_RESET = [
