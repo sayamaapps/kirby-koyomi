@@ -145,7 +145,7 @@ class Event
 		$allDay = Normalize::bool($data['allDay'] ?? false) || Time::wall($startDate, $startTime, $zone) === null || $startTime === '';
 		$start = Time::wall($startDate, $allDay ? '' : $startTime, $zone);
 		if ($start === null) {
-			throw new InvalidArgumentException('Koyomi: event "' . $id . '" has no valid start date');
+			throw new InvalidArgumentException(message: 'Koyomi: event "' . $id . '" has no valid start date');
 		}
 		[$end, $hasEndTime, $hasEndDate, $endDateGiven] = self::span(
 			$start,
