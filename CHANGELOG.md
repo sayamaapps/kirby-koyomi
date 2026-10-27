@@ -17,6 +17,11 @@ All notable changes to this project are documented here. Versions follow
   an image or video block with a web address in an event's text loads from that
   server when the page opens. The README says so again. No output changed.
 
+### Removed
+
+- `Format::reset()` and `Repository::reset()`. They were test hooks in the
+  production code, not documented API.
+
 ## [1.4.0] — 2026-10-25
 
 ### Added
@@ -128,7 +133,7 @@ All notable changes to this project are documented here. Versions follow
 
 ## [1.0.0] — 2026-10-11
 
-### Timeline (Simon 11.10.2026: "a calendar is always a time line")
+### Timeline
 
 - `koyomi/list` shows the events as a timeline by default: a "today" line,
   month headings, and per card a calendar-sheet date (weekday, day, month) and

@@ -20,6 +20,8 @@ Koyomi keeps venues and organizers as pages of their own, so an address changes 
 | Kirby | 5 (`getkirby/cms` ^5.0) |
 | PHP | 8.2 to 8.5, with `mbstring` |
 
+Kirby 5.0 to 5.5 have security advisories, and Composer refuses to install them, so the lowest version the tests can install is 5.6.0. The constraint stays `^5.0`, so sites on those versions are not blocked from updating.
+
 ## Installation
 
 Pick one of three ways. Koyomi works the same in each.
@@ -140,6 +142,8 @@ Every option is `sayamaapps.koyomi.<name>`, flat or nested. `null` means "not se
 | `venues` | first `koyomi-venues` | Page ID of the venues container. |
 | `organizers` | first `koyomi-organizers` | Page ID of the organizers container. |
 | `now` | real time | Pins the clock, for example `'2027-03-10 12:00'`, for tests and previews. |
+
+Koyomi keeps its own texts in `translations/` and reads them through its `I18n` class, not through Kirby's `$t` or `I18n::translate()`. The language of a page follows the `language` option, which can differ from the Kirby site language, and Kirby's translations would follow the site language.
 
 ## Deprecations
 
