@@ -10,7 +10,7 @@ use Sayamaapps\Koyomi\Api;
  *   <?php snippet('koyomi/event', ['event' => $page]) ?>
  *   <?php snippet('koyomi/event', ['event' => $event, 'calendarUrl' => 'https://example.test/events']) ?>
  *
- * Calls Api::expires(kirby(), ) with this event alone, so the page is not cached
+ * Calls Api::expires(kirby(), [$e]) with this event alone, so the page is not cached
  * past its start or end. Prints nothing when Koyomi is inactive.
  *
  * @var \Sayamaapps\Koyomi\Event|\Sayamaapps\Koyomi\Models\EventPage|null $event       (or $page)
