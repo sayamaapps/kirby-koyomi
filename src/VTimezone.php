@@ -55,8 +55,12 @@ final class VTimezone
 
 		// PHP lists the state at the window begin first, then every real
 		// transition inside the window.
+		/** @psalm-suppress ArgumentTypeCoercion Zones come from Time::zone() or an event, never as an empty string. */
 		$transitions = (new DateTimeZone($zone))->getTransitions($from - self::MARGIN, $to + self::MARGIN);
+		/** @var list<array{abbr: string, isdst: bool, offset: int, time: string, ts: int}> $transitions */
 		$base = array_shift($transitions);
+		// The list starts with the state at the window begin, so the base is never null.
+		/** @var array{abbr: string, isdst: bool, offset: int, time: string, ts: int} $base */
 
 		$lines = ['BEGIN:VTIMEZONE', 'TZID:' . $zone];
 		// The base observance is written with a fixed DTSTART and FROM = TO:

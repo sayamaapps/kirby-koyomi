@@ -77,10 +77,13 @@ final class Repository
 	{
 		$kirby = $calendar->kirby();
 		$key = $calendar->id();
+		/** @psalm-suppress PropertyTypeCoercion WeakMap has no generic parameters at runtime; the property type declares them. */
 		self::$cache ??= new WeakMap();
+		/** @var array<string, list<Event>> $byCalendar */
 		$byCalendar = self::$cache[$kirby] ?? [];
 		if (!array_key_exists($key, $byCalendar)) {
 			$byCalendar[$key] = self::load($calendar);
+			/** @psalm-suppress PropertyTypeCoercion Same shape as the property: string keys, lists of Event. */
 			self::$cache[$kirby] = $byCalendar;
 		}
 		/** @var list<Event> $events */
@@ -118,7 +121,11 @@ final class Repository
 		return null;
 	}
 
-	/** Upcoming events of an organizer. @return list<Event> */
+	/**
+	 * Upcoming events of an organizer.
+	 *
+	 * @return list<Event>
+	 */
 	public static function forOrganizer(App $kirby, Page $organizer): array
 	{
 		$calendar = self::calendar($kirby);
@@ -128,7 +135,11 @@ final class Repository
 		return Query::byOrganizer(self::upcoming($calendar), Mapper::id($organizer));
 	}
 
-	/** Upcoming events at a venue (venue page id = Mapper::id()). @return list<Event> */
+	/**
+	 * Upcoming events at a venue (venue page id = Mapper::id()).
+	 *
+	 * @return list<Event>
+	 */
 	public static function forVenue(App $kirby, Page $venue): array
 	{
 		$calendar = self::calendar($kirby);
@@ -189,7 +200,11 @@ final class Repository
 		];
 	}
 
-	/** Maps the listed event pages; invalid ones are logged and left out. @return list<Event> */
+	/**
+	 * Maps the listed event pages; invalid ones are logged and left out.
+	 *
+	 * @return list<Event>
+	 */
 	private static function load(Page $calendar): array
 	{
 		$kirby = $calendar->kirby();
@@ -217,7 +232,11 @@ final class Repository
 		return self::findByTemplate($kirby, 'koyomi-organizers', Options::organizersId($kirby), true);
 	}
 
-	/** Query::past() over events(); calls Api::expires(). @return list<Event> */
+	/**
+	 * Query::past() over events(); calls Api::expires().
+	 *
+	 * @return list<Event>
+	 */
 	public static function past(Page $calendar, array $filters = []): array
 	{
 		$kirby = $calendar->kirby();
@@ -226,7 +245,11 @@ final class Repository
 		return Query::past($events, Options::now($kirby), $filters);
 	}
 
-	/** Query::upcoming() over events() with Options::now()/hideCancelled(); calls Api::expires(). @return list<Event> */
+	/**
+	 * Query::upcoming() over events() with Options::now()/hideCancelled(); calls Api::expires().
+	 *
+	 * @return list<Event>
+	 */
 	public static function upcoming(Page $calendar, array $filters = []): array
 	{
 		$kirby = $calendar->kirby();

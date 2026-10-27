@@ -42,7 +42,7 @@ final class Query
 	 * belongs to the month it starts in.
 	 *
 	 * @param list<Event> $events
-	 * @return list<array{key: string, first: DateTimeImmutable, events: list<Event>}>
+	 * @return array<int, array{key: non-empty-string, first: DateTimeImmutable, events: list<Event>}>
 	 */
 	public static function byMonth(array $events): array
 	{

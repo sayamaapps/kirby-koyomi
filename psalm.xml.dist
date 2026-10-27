@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="4"
+    errorLevel="3"
     phpVersion="8.2"
     resolveFromConfigFile="true"
     findUnusedBaselineEntry="false"
@@ -37,5 +37,11 @@
                 <file name="src/Mapper.php" />
             </errorLevel>
         </TypeDoesNotContainNull>
+        <!-- Kirby's Content::get() is typed loosely; the Field it returns has value(), the documented accessor. -->
+        <PossiblyInvalidMethodCall>
+            <errorLevel type="suppress">
+                <file name="src/Mapper.php" />
+            </errorLevel>
+        </PossiblyInvalidMethodCall>
     </issueHandlers>
 </psalm>

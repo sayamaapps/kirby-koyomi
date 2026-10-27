@@ -19,15 +19,11 @@
 
 	<!-- codesize: NPathComplexity is not used, the cyclomatic complexity below covers the same branching. -->
 	<rule ref="rulesets/codesize.xml/CyclomaticComplexity">
-		<!-- Open: Event::fromArray() (25) and Event::series() (14) branch on purpose. Splitting them is a follow-up. -->
+		<!-- Open: twelve methods reach 11 to 17 (Ics::vevent, Filters::fromQuery, Format::configure,
+		     Options::formats, Event::fromArray, Event::series and others), because each branches on
+		     purpose. Splitting them is a follow-up; 18 keeps any new method from growing past the current maximum. -->
 		<properties>
-			<property name="reportLevel" value="26" />
-		</properties>
-	</rule>
-	<rule ref="rulesets/codesize.xml/ExcessiveMethodLength">
-		<!-- Open: Blueprints::event() builds one blueprint array of about 240 lines. Splitting it is a follow-up. -->
-		<properties>
-			<property name="minimum" value="240" />
+			<property name="reportLevel" value="18" />
 		</properties>
 	</rule>
 	<rule ref="rulesets/codesize.xml">

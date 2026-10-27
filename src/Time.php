@@ -49,7 +49,11 @@ final class Time
 		return $time->format('Y-m-d\TH:i:sP');
 	}
 
-	/** IANA identifier PHP knows ("Europe/Berlin", "UTC"); no abbreviations, no offsets. */
+	/**
+	 * IANA identifier PHP knows ("Europe/Berlin", "UTC"); no abbreviations, no offsets.
+	 *
+	 * @psalm-assert-if-true non-empty-string $name
+	 */
 	public static function isValidZone(string $name): bool
 	{
 		self::$zones ??= array_fill_keys(DateTimeZone::listIdentifiers(), true);

@@ -81,7 +81,9 @@ final class I18n
 		return strtr($text, $pairs);
 	}
 
-	/** @return array<string,string> */
+	/**
+	 * @return array<string,string>
+	 */
 	public static function table(string $language): array
 	{
 		if (!in_array($language, self::LANGUAGES, true)) {

@@ -102,7 +102,7 @@ final class Output
 	private static function options(App $kirby, string $language): array
 	{
 		return [
-			'host' => parse_url($kirby->url('index'), PHP_URL_HOST) ?: 'localhost',
+			'host' => parse_url((string)$kirby->url('index'), PHP_URL_HOST) ?: 'localhost',
 			'now' => Options::now($kirby),
 			'language' => $language,
 		];

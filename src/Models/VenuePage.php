@@ -26,7 +26,11 @@ class VenuePage extends Page
 		return $this->koyomiVenueValue ??= Mapper::venue($this);
 	}
 
-	/** Repository::forVenue($this->kirby(), $this). @return list<\Sayamaapps\Koyomi\Event> */
+	/**
+	 * Repository::forVenue($this->kirby(), $this).
+	 *
+	 * @return list<\Sayamaapps\Koyomi\Event>
+	 */
 	public function upcomingEvents(): array
 	{
 		return Repository::forVenue($this->kirby(), $this);

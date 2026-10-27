@@ -38,13 +38,21 @@ class CalendarPage extends Page
 		return Repository::list($this, $query);
 	}
 
-	/** Repository::past($this, $filters). @return list<\Sayamaapps\Koyomi\Event> */
+	/**
+	 * Repository::past($this, $filters).
+	 *
+	 * @return list<\Sayamaapps\Koyomi\Event>
+	 */
 	public function koyomiPast(array $filters = []): array
 	{
 		return Repository::past($this, $filters);
 	}
 
-	/** Repository::upcoming($this, $filters). @return list<\Sayamaapps\Koyomi\Event> */
+	/**
+	 * Repository::upcoming($this, $filters).
+	 *
+	 * @return list<\Sayamaapps\Koyomi\Event>
+	 */
 	public function koyomiUpcoming(array $filters = []): array
 	{
 		return Repository::upcoming($this, $filters);

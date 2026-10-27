@@ -83,7 +83,9 @@ final class Options
 		return preg_match('/^[A-Z]{2}$/', $code) ? $code : '';
 	}
 
-	/** @return list<string> upper-case ISO 4217 codes, never empty */
+	/**
+	 * @return list<string> upper-case ISO 4217 codes, never empty
+	 */
 	public static function currencies(App $kirby): array
 	{
 		$option = self::get($kirby, 'currencies', self::DEFAULT_CURRENCIES);
@@ -247,7 +249,7 @@ final class Options
 		$option = self::get($kirby, 'languages', self::DEFAULT_LANGUAGES);
 		$out = [];
 		foreach ((array)$option as $key => $value) {
-			[$code, $label] = is_int($key) ? [(string)$value, ''] : [(string)$key, (string)$value];
+			[$code, $label] = is_int($key) ? [(string)$value, ''] : [$key, (string)$value];
 			$code = Normalize::languages($code)[0] ?? null;
 			if ($code !== null && !isset($out[$code])) {
 				$out[$code] = trim($label);

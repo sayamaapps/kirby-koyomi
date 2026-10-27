@@ -18,7 +18,9 @@ final class Rss
 	/** RSS event module namespace for ev:startdate / ev:enddate / ev:location. */
 	public const EV_NS = 'http://purl.org/rss/1.0/modules/event/';
 
-	/** @param list<Event> $events */
+	/**
+	 * @param list<Event> $events
+	 */
 	private static function document(array $events, array $channel, string $language): string
 	{
 		$link = (string)($channel['link'] ?? '');

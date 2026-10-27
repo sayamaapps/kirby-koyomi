@@ -26,7 +26,11 @@ class OrganizerPage extends Page
 		return $this->koyomiOrganizerValue ??= Mapper::organizer($this);
 	}
 
-	/** Repository::forOrganizer($this->kirby(), $this). @return list<\Sayamaapps\Koyomi\Event> */
+	/**
+	 * Repository::forOrganizer($this->kirby(), $this).
+	 *
+	 * @return list<\Sayamaapps\Koyomi\Event>
+	 */
 	public function upcomingEvents(): array
 	{
 		return Repository::forOrganizer($this->kirby(), $this);

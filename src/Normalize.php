@@ -89,7 +89,11 @@ final class Normalize
 		return filter_var($email, FILTER_VALIDATE_EMAIL) !== false ? $email : '';
 	}
 
-	/** Like list(), lower-cased, only codes matching /^[a-z]{2,3}(-[a-z0-9]{2,8})?$/ ("de", "cs", "pt-br"). @return list<string> */
+	/**
+	 * Like list(), lower-cased, only codes matching /^[a-z]{2,3}(-[a-z0-9]{2,8})?$/ ("de", "cs", "pt-br").
+	 *
+	 * @return list<string>
+	 */
 	public static function languages(mixed $value): array
 	{
 		$out = [];

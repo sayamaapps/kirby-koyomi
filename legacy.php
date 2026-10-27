@@ -122,6 +122,7 @@ if (Kirby\Cms\Helpers::hasOverride('koyomi_event') === false) {
 
 if (Kirby\Cms\Helpers::hasOverride('koyomi_expires') === false) {
 	/** Deprecated: use Sayamaapps\Koyomi\Api::expires(). */
+	/** @param list<\Sayamaapps\Koyomi\Event> $events */
 	function koyomi_expires(array $events): void
 	{
 		Kirby\Cms\Helpers::deprecated(

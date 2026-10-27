@@ -298,7 +298,11 @@ final class Format
 		return $name === $key ? strtoupper($code) : $name;
 	}
 
-	/** Language names of the event joined with ", " ("Deutsch, Tschechisch"). @param array<string,string> $custom code => label */
+	/**
+	 * Language names of the event joined with ", " ("Deutsch, Tschechisch").
+	 *
+	 * @param array<string,string> $custom code => label
+	 */
 	public static function languages(Event $event, array $custom = []): string
 	{
 		$names = [];

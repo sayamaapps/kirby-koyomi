@@ -197,7 +197,9 @@ final class JsonLd
 		return count($items) === 1 ? $items[0] : $items;
 	}
 
-	/** @return array<string,mixed> */
+	/**
+	 * @return array<string,mixed>
+	 */
 	private static function place(Venue $venue): array
 	{
 		$address = self::keep([

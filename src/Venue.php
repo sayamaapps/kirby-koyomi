@@ -71,7 +71,7 @@ final class Venue
 	 */
 	public function defaultMapLink(): string
 	{
-		if ($this->hasCoordinates()) {
+		if ($this->lat !== null && $this->lng !== null) {
 			$lat = self::coordinate($this->lat);
 			$lng = self::coordinate($this->lng);
 			return 'https://www.openstreetmap.org/?mlat=' . $lat . '&mlon=' . $lng . '#map=17/' . $lat . '/' . $lng;

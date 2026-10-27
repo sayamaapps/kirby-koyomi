@@ -71,7 +71,9 @@ final class Mapper
 		return $field;
 	}
 
-	/** @return array{0: string, 1: string} URL and alt text of a file, empty strings when there is none */
+	/**
+	 * @return array{0: string, 1: string} URL and alt text of a file, empty strings when there is none
+	 */
 	private static function file(File|null $file): array
 	{
 		if ($file === null) {
@@ -124,6 +126,7 @@ final class Mapper
 	 */
 	public static function organizer(Page $page): Organizer
 	{
+		/** @var Content $content */
 		$content = $page->content();
 		$shared = self::sharedContent($page);
 		$field = fn (string $name): Field => self::field($content, $shared, $name);
@@ -150,6 +153,7 @@ final class Mapper
 	 */
 	public static function raw(Page $page): array
 	{
+		/** @var Content $content */
 		$content = $page->content();
 		$shared = self::sharedContent($page);
 		$field = fn (string $name): Field => self::field($content, $shared, $name);
@@ -190,10 +194,12 @@ final class Mapper
 				continue;
 			}
 			$siblingShared = self::sharedContent($sibling);
-			$siblingField = fn (string $name): Field => self::field($sibling->content(), $siblingShared, $name);
+			/** @var Content $siblingContent */
+			$siblingContent = $sibling->content();
+			$siblingField = fn (string $name): Field => self::field($siblingContent, $siblingShared, $name);
 			$series[] = [
 				'id' => self::id($sibling),
-				'title' => $sibling->content()->get('title')->value(),
+				'title' => $siblingContent->get('title')->value(),
 				'url' => $sibling->url(),
 				'startDate' => $siblingField('startDate')->value(),
 				'startTime' => $siblingField('startTime')->value(),
@@ -257,6 +263,7 @@ final class Mapper
 	 */
 	public static function venue(Page $page): Venue
 	{
+		/** @var Content $content */
 		$content = $page->content();
 		$shared = self::sharedContent($page);
 		$field = fn (string $name): Field => self::field($content, $shared, $name);

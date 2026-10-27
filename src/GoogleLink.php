@@ -29,7 +29,9 @@ final class GoogleLink
 		return $event->isOnline() ? I18n::t('ics.online') : '';
 	}
 
-	/** @return array<string, string> in Google's parameter order */
+	/**
+	 * @return array<string, string> in Google's parameter order
+	 */
 	private static function params(Event $event): array
 	{
 		$params = ['action' => 'TEMPLATE', 'text' => $event->title];
