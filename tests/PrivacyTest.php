@@ -29,8 +29,8 @@ final class PrivacyTest extends TestCase
 				}
 			};
 
-			foreach (['en' => [], 'de' => ['sayamaapps.koyomi.language' => 'de']] as $language => $extra) {
-				$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.json' => true, 'sayamaapps.koyomi.google' => true] + $extra);
+			foreach (['en' => [], 'de' => ['koyomi.language' => 'de']] as $language => $extra) {
+				$kirby = KoyomiFixture::app($root, ['koyomi.json' => true, 'koyomi.google' => true] + $extra);
 				$all = '';
 
 				// Content representations.

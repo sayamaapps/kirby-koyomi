@@ -382,7 +382,7 @@ final class BlueprintsTest extends TestCase
 			}
 
 			// Options follow the configuration: USD and the Prague zone show up in the registered blueprint.
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.currencies' => ['EUR', 'USD'], 'sayamaapps.koyomi.timezone' => 'Europe/Prague']);
+			$kirby = KoyomiFixture::app($root, ['koyomi.currencies' => ['EUR', 'USD'], 'koyomi.timezone' => 'Europe/Prague']);
 			$blueprint = Blueprint::find('pages/koyomi-event');
 			$this->assertTrue(is_array($blueprint['tabs'] ?? null), 'registered event blueprint has tabs');
 			$encoded = json_encode($blueprint);

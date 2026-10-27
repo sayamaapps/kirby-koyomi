@@ -18,7 +18,7 @@ final class OptionsTest extends TestCase
 		$root = KoyomiFixture::create();
 		try {
 			$kirby = KoyomiFixture::app($root, [
-				'sayamaapps.koyomi.languages' => ['de' => ['x']],
+				'koyomi.languages' => ['de' => ['x']],
 			]);
 			$warnings = [];
 			set_error_handler(function (int $number, string $message) use (&$warnings): bool {
@@ -42,7 +42,7 @@ final class OptionsTest extends TestCase
 		$root = KoyomiFixture::create();
 		try {
 			$kirby = KoyomiFixture::app($root, [
-				'sayamaapps.koyomi.languages' => ['de' => null],
+				'koyomi.languages' => ['de' => null],
 			]);
 			$this->assertSame(['de' => ''], Options::languages($kirby));
 		} finally {
@@ -55,7 +55,7 @@ final class OptionsTest extends TestCase
 		$root = KoyomiFixture::create();
 		try {
 			$kirby = KoyomiFixture::app($root, [
-				'sayamaapps.koyomi.languages' => ['de', 'cs' => 'Čeština'],
+				'koyomi.languages' => ['de', 'cs' => 'Čeština'],
 			]);
 			$this->assertSame(['de' => '', 'cs' => 'Čeština'], Options::languages($kirby));
 		} finally {

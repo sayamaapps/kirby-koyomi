@@ -37,112 +37,95 @@ class_alias(\Sayamaapps\Koyomi\Models\OrganizerPage::class, 'Koyomi\\Models\\Org
 class_alias(\Sayamaapps\Koyomi\Models\VenuePage::class, 'Koyomi\\Models\\VenuePage');
 
 /*
- * The 1.x global functions. Each one is a wrapper around the Api call that
- * replaces it, and each one logs a deprecation in debug mode. A site that
- * defines a function of the same name keeps its own (the guard).
+ * The 1.x global functions. Each one answers as it did in 1.x and calls the Api
+ * method that replaces it. Nothing is logged: the functions are marked
+ * @deprecated here and in the README only.
+ *
+ * The hasOverride() check looks only for Kirby's constant KIRBY_HELPER_<NAME>, not
+ * for the function itself. A site that declares one of these functions without
+ * that constant gets "Cannot redeclare", as it did in 1.x. See the README.
  */
 
 if (Kirby\Cms\Helpers::hasOverride('koyomi_option') === false) {
-	/** Reads an option. Deprecated: use Sayamaapps\Koyomi\Api::option(). */
+	/**
+	 * Reads an option.
+	 *
+	 * @deprecated use Sayamaapps\Koyomi\Api::option()
+	 */
 	function koyomi_option(string $key, mixed $default = null): mixed
 	{
-		Kirby\Cms\Helpers::deprecated(
-			'koyomi_option() is deprecated, use Sayamaapps\Koyomi\Api::option()',
-			'koyomi-function'
-		);
-
 		return Sayamaapps\Koyomi\Api::option(Kirby\Cms\App::instance(), $key, $default);
 	}
 }
 
 if (Kirby\Cms\Helpers::hasOverride('koyomi_active') === false) {
-	/** Deprecated: use Sayamaapps\Koyomi\Api::active(). */
+	/**
+	 * @deprecated use Sayamaapps\Koyomi\Api::active()
+	 */
 	function koyomi_active(): bool
 	{
-		Kirby\Cms\Helpers::deprecated(
-			'koyomi_active() is deprecated, use Sayamaapps\Koyomi\Api::active()',
-			'koyomi-function'
-		);
-
 		return Sayamaapps\Koyomi\Api::active(Kirby\Cms\App::instance());
 	}
 }
 
 if (Kirby\Cms\Helpers::hasOverride('koyomi_now') === false) {
-	/** Deprecated: use Sayamaapps\Koyomi\Api::now(). */
+	/**
+	 * @deprecated use Sayamaapps\Koyomi\Api::now()
+	 */
 	function koyomi_now(): \DateTimeImmutable
 	{
-		Kirby\Cms\Helpers::deprecated(
-			'koyomi_now() is deprecated, use Sayamaapps\Koyomi\Api::now()',
-			'koyomi-function'
-		);
-
 		return Sayamaapps\Koyomi\Api::now(Kirby\Cms\App::instance());
 	}
 }
 
 if (Kirby\Cms\Helpers::hasOverride('koyomi_i18n') === false) {
-	/** Deprecated: use Sayamaapps\Koyomi\Api::i18n(). */
+	/**
+	 * @deprecated use Sayamaapps\Koyomi\Api::i18n()
+	 */
 	function koyomi_i18n(): string
 	{
-		Kirby\Cms\Helpers::deprecated(
-			'koyomi_i18n() is deprecated, use Sayamaapps\Koyomi\Api::i18n()',
-			'koyomi-function'
-		);
-
 		return Sayamaapps\Koyomi\Api::i18n(Kirby\Cms\App::instance());
 	}
 }
 
 if (Kirby\Cms\Helpers::hasOverride('koyomi_t') === false) {
-	/** Deprecated: use Sayamaapps\Koyomi\Api::t(). */
+	/**
+	 * @deprecated use Sayamaapps\Koyomi\Api::t()
+	 */
 	function koyomi_t(string $key, array $values = []): string
 	{
-		Kirby\Cms\Helpers::deprecated(
-			'koyomi_t() is deprecated, use Sayamaapps\Koyomi\Api::t()',
-			'koyomi-function'
-		);
-
 		return Sayamaapps\Koyomi\Api::t($key, $values);
 	}
 }
 
 if (Kirby\Cms\Helpers::hasOverride('koyomi_event') === false) {
-	/** Deprecated: use Sayamaapps\Koyomi\Api::event(). */
+	/**
+	 * @deprecated use Sayamaapps\Koyomi\Api::event()
+	 */
 	function koyomi_event(mixed $value): Sayamaapps\Koyomi\Event|null
 	{
-		Kirby\Cms\Helpers::deprecated(
-			'koyomi_event() is deprecated, use Sayamaapps\Koyomi\Api::event()',
-			'koyomi-function'
-		);
-
 		return Sayamaapps\Koyomi\Api::event($value);
 	}
 }
 
 if (Kirby\Cms\Helpers::hasOverride('koyomi_expires') === false) {
-	/** Deprecated: use Sayamaapps\Koyomi\Api::expires(). */
-	/** @param list<\Sayamaapps\Koyomi\Event> $events */
+	/**
+	 * @deprecated use Sayamaapps\Koyomi\Api::expires()
+	 *
+	 * @param list<\Sayamaapps\Koyomi\Event> $events
+	 */
 	function koyomi_expires(array $events): void
 	{
-		Kirby\Cms\Helpers::deprecated(
-			'koyomi_expires() is deprecated, use Sayamaapps\Koyomi\Api::expires()',
-			'koyomi-function'
-		);
-
 		Sayamaapps\Koyomi\Api::expires(Kirby\Cms\App::instance(), $events);
 	}
 }
 
 if (Kirby\Cms\Helpers::hasOverride('koyomi_expires_at') === false) {
-	/** Deprecated: use Sayamaapps\Koyomi\Api::expiresAt(). */
+	/**
+	 * @deprecated use Sayamaapps\Koyomi\Api::expiresAt()
+	 */
 	function koyomi_expires_at(int|null $timestamp): void
 	{
-		Kirby\Cms\Helpers::deprecated(
-			'koyomi_expires_at() is deprecated, use Sayamaapps\Koyomi\Api::expiresAt()',
-			'koyomi-function'
-		);
-
 		Sayamaapps\Koyomi\Api::expiresAt(Kirby\Cms\App::instance(), $timestamp);
 	}
 }

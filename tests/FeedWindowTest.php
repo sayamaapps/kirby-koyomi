@@ -60,13 +60,13 @@ final class FeedWindowTest extends TestCase
 				'running and upcoming events are in the feed'
 			);
 
-			$wider = $feed(['sayamaapps.koyomi.feedPastDays' => 60]);
+			$wider = $feed(['koyomi.feedPastDays' => 60]);
 			$this->assertTrue(
 				str_contains($wider, 'UID:evt-old@example.test') && str_contains($wider, 'UID:evt-recent@example.test'),
 				'feedPastDays 60: both past events are in the feed'
 			);
 
-			$none = $feed(['sayamaapps.koyomi.feedPastDays' => 0]);
+			$none = $feed(['koyomi.feedPastDays' => 0]);
 			$this->assertTrue(
 				!str_contains($none, 'UID:evt-recent@example.test') && !str_contains($none, 'UID:evt-old@example.test'),
 				'feedPastDays 0: nothing that has ended is in the feed'
@@ -119,15 +119,15 @@ final class FeedWindowTest extends TestCase
 					$app->response()->expires(),
 					'feed: expires when that event leaves the 30-day window, not at the next start in May'
 				);
-				$app = KoyomiFixture::app($sparse, ['sayamaapps.koyomi.feedPastDays' => 0]);
+				$app = KoyomiFixture::app($sparse, ['koyomi.feedPastDays' => 0]);
 				$app->render('events.ics');
 				$this->assertSame(feed_window_berlin('2027-05-01 18:00'), $app->response()->expires(), 'feedPastDays 0: nothing to leave, the next start');
 
-				$app = KoyomiFixture::app($sparse, ['sayamaapps.koyomi.groupBy' => 'month']);
+				$app = KoyomiFixture::app($sparse, ['koyomi.groupBy' => 'month']);
 				$html = (string)$app->render('events')?->body();
 				$this->assertTrue(str_contains($html, 'class="koyomi-today"'), 'calendar page: the timeline shows its Today line');
 				$this->assertSame(feed_window_berlin('2027-03-11 00:00'), $app->response()->expires(), 'calendar page with a Today line: expires at local midnight');
-				$app = KoyomiFixture::app($sparse, ['sayamaapps.koyomi.groupBy' => false]);
+				$app = KoyomiFixture::app($sparse, ['koyomi.groupBy' => false]);
 				$app->render('events');
 				$this->assertSame(feed_window_berlin('2027-05-01 18:00'), $app->response()->expires(), 'flat list without a Today line: the next start');
 			} finally {

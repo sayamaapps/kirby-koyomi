@@ -8,6 +8,7 @@ use DateTimeImmutable;
  * Human-readable text for dates, prices, status … in the current I18n
  * language. Kirby-free. Returns PLAIN text — callers escape.
  *
+ * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder
@@ -193,6 +194,19 @@ class Format
 		}
 		self::$formats = $merged;
 		self::$siteZone = Time::isValidZone($siteZone) ? $siteZone : Time::DEFAULT_ZONE;
+	}
+
+	/**
+	 * Back to the default patterns and Europe/Berlin. Kept from 1.x for tests. Not
+	 * part of the API.
+	 *
+	 * @deprecated 1.x test helper, kept for compatibility; not for production code.
+	 * @internal
+	 */
+	public static function reset(): void
+	{
+		self::$formats = self::DEFAULTS;
+		self::$siteZone = Time::DEFAULT_ZONE;
 	}
 
 	/** Name of an ISO country code: translation country.<CODE>, else the code as it is ("MT"). */

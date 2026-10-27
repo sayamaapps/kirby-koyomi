@@ -22,7 +22,7 @@ final class AcceptanceTest extends TestCase
 			$titles = fn (array $events) => array_map(fn ($e) => $e->title, $events);
 
 			// 1. Registered; strings as Kirby translations.
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.active' => false]);
+			$kirby = KoyomiFixture::app($root, ['koyomi.active' => false]);
 			$this->assertTrue($kirby->plugin('sayamaapps/koyomi') !== null, 'plugin registered');
 			$this->assertSame('Abgesagt', $kirby->translation('de')->get('koyomi.status.cancelled'), 'German Kirby translation');
 			$this->assertTrue(function_exists('koyomi_option') && function_exists('koyomi_event'), 'helpers defined');
@@ -34,7 +34,7 @@ final class AcceptanceTest extends TestCase
 			$this->assertSame('', trim((string)$kirby->snippet('koyomi/list', [], true)), 'inactive: list prints nothing');
 			$this->assertSame('', trim((string)$kirby->snippet('koyomi/event', ['event' => $kirby->page('events/retreat')], true)), 'inactive: event prints nothing');
 			$this->assertSame('', trim((string)$kirby->snippet('koyomi/jsonld', ['page' => $kirby->page('events/retreat')], true)), 'inactive: no JSON-LD');
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.active' => 'yes']);
+			$kirby = KoyomiFixture::app($root, ['koyomi.active' => 'yes']);
 			$this->assertSame(404, $code($kirby, 'events.ics'), 'only a real true switches on');
 
 			// 3. Switches.
@@ -43,18 +43,18 @@ final class AcceptanceTest extends TestCase
 			$this->assertSame(200, $code($kirby, 'events/retreat.ics'), 'event ics on by default');
 			$this->assertSame(200, $code($kirby, 'events.rss'), 'rss on by default');
 			$this->assertSame(404, $code($kirby, 'events.json'), 'json off by default');
-			$this->assertSame(200, $code(KoyomiFixture::app($root, ['sayamaapps.koyomi.json' => true]), 'events.json'), 'json switched on');
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.feed' => false, 'sayamaapps.koyomi.rss' => false]);
+			$this->assertSame(200, $code(KoyomiFixture::app($root, ['koyomi.json' => true]), 'events.json'), 'json switched on');
+			$kirby = KoyomiFixture::app($root, ['koyomi.feed' => false, 'koyomi.rss' => false]);
 			$this->assertSame(404, $code($kirby, 'events.ics'), 'feed off');
 			$this->assertSame(404, $code($kirby, 'events.rss'), 'rss off');
 			// A fresh App: Kirby keeps one Responder per App, so the 404 of the
 			// lines above would otherwise carry over to this render.
 			$this->assertSame(
 				200,
-				$code(KoyomiFixture::app($root, ['sayamaapps.koyomi.feed' => false, 'sayamaapps.koyomi.rss' => false]), 'events/retreat.ics'),
+				$code(KoyomiFixture::app($root, ['koyomi.feed' => false, 'koyomi.rss' => false]), 'events/retreat.ics'),
 				'event ics independent of feed'
 			);
-			$this->assertSame(404, $code(KoyomiFixture::app($root, ['sayamaapps.koyomi.ics' => false]), 'events/retreat.ics'), 'event ics off');
+			$this->assertSame(404, $code(KoyomiFixture::app($root, ['koyomi.ics' => false]), 'events/retreat.ics'), 'event ics off');
 			$this->assertSame(404, $code(KoyomiFixture::app($root), 'events/draft-event.ics'), 'draft never served');
 
 			// 4. Headers and body basics.
@@ -77,7 +77,7 @@ final class AcceptanceTest extends TestCase
 			$r = KoyomiFixture::app($root)->render('events.rss');
 			$this->assertTrue(str_starts_with((string)$r->type(), 'application/rss+xml'), 'rss type');
 			$this->assertTrue(str_contains($r->body(), '<title>Silent Retreat</title>'), 'rss item');
-			$r = KoyomiFixture::app($root, ['sayamaapps.koyomi.json' => true])->render('events.json');
+			$r = KoyomiFixture::app($root, ['koyomi.json' => true])->render('events.json');
 			$json = json_decode($r->body(), true);
 			$this->assertTrue(is_array($json) && isset($json['events'][0]['id']), 'json has events');
 			$this->assertSame('Spring Retreat', $json['events'][0]['title'], 'json: upcoming, ongoing first');
@@ -91,7 +91,7 @@ final class AcceptanceTest extends TestCase
 			$this->assertSame(['Past Workshop'], $titles($calendar->koyomiPast()), 'past');
 			$this->assertSame(
 				array_values(array_diff($upcoming, ['Breathing Workshop'])),
-				$titles(KoyomiFixture::app($root, ['sayamaapps.koyomi.hideCancelled' => true])->page('events')->koyomiUpcoming()),
+				$titles(KoyomiFixture::app($root, ['koyomi.hideCancelled' => true])->page('events')->koyomiUpcoming()),
 				'hideCancelled'
 			);
 			$list = fn (array $query) => $titles(KoyomiFixture::app($root)->page('events')->koyomiList($query)['events']);
@@ -104,7 +104,7 @@ final class AcceptanceTest extends TestCase
 			$this->assertSame(['Silent Retreat', 'Evening Concert'], $list(['language' => 'cs']), 'language filter');
 			$this->assertSame(['Silent Retreat'], $list(['featured' => '1']), 'featured filter');
 			$this->assertSame(['Past Workshop'], $list(['view' => 'past']), 'past view');
-			$paged = KoyomiFixture::app($root, ['sayamaapps.koyomi.perPage' => 3])->page('events')->koyomiList(['page' => '2']);
+			$paged = KoyomiFixture::app($root, ['koyomi.perPage' => 3])->page('events')->koyomiList(['page' => '2']);
 			$this->assertSame(['Evening Concert', 'Breathing Workshop', 'Mantra Course 1'], $titles($paged['events']), 'page 2 of 3');
 			$this->assertSame([2, 3, 7], [$paged['pagination']['page'], $paged['pagination']['pages'], $paged['pagination']['total']], 'pagination numbers');
 			$this->assertSame('https://example.test/events?page=3', $paged['pagination']['nextUrl'], 'next page URL');
@@ -118,7 +118,7 @@ final class AcceptanceTest extends TestCase
 				$kirby->response()->expires(),
 				'calendar page (timeline, Today line) expires at local midnight'
 			);
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.groupBy' => false]);
+			$kirby = KoyomiFixture::app($root, ['koyomi.groupBy' => false]);
 			$kirby->render('events');
 			$this->assertSame(
 				(new DateTimeImmutable('2027-03-11 19:00', new DateTimeZone('Europe/Berlin')))->getTimestamp(),
@@ -155,7 +155,7 @@ final class AcceptanceTest extends TestCase
 			);
 			$this->assertTrue(str_contains($html, 'calendar.google.com/calendar/render?action=TEMPLATE'), 'Google link on by default');
 			$this->assertTrue(
-				!str_contains(KoyomiFixture::app($root, ['sayamaapps.koyomi.google' => false])->render('events/retreat')->body(), 'calendar.google.com'),
+				!str_contains(KoyomiFixture::app($root, ['koyomi.google' => false])->render('events/retreat')->body(), 'calendar.google.com'),
 				'Google link switchable'
 			);
 			$html = KoyomiFixture::app($root)->render('events/series-part-1')->body();
@@ -165,7 +165,7 @@ final class AcceptanceTest extends TestCase
 			$html = KoyomiFixture::app($root)->render('events/concert')->body();
 			$this->assertTrue(str_contains($html, 'Rescheduled') && str_contains($html, 'Originally planned for'), 'rescheduled as text with previous date');
 			$this->assertTrue(str_contains($html, '(Europe/Prague)'), 'zone hint for a foreign zone');
-			$html = KoyomiFixture::app($root, ['sayamaapps.koyomi.language' => 'de'])->render('events/workshop-cancelled')->body();
+			$html = KoyomiFixture::app($root, ['koyomi.language' => 'de'])->render('events/workshop-cancelled')->body();
 			$this->assertTrue(str_contains($html, 'Abgesagt') && str_contains($html, 'Wegen Krankheit abgesagt.'), 'German status text and note');
 			$html = KoyomiFixture::app($root, ['locale' => 'de_DE.UTF-8'])->render('events/retreat')->body();
 			$this->assertTrue(str_contains($html, '380 €') && str_contains($html, 'Nur noch wenige Plätze') && str_contains($html, '18:00 Uhr'), 'German via locale');
@@ -178,7 +178,7 @@ final class AcceptanceTest extends TestCase
 			$this->assertSame('', $copy->content()->get('statusNote')->value(), 'duplicate: note cleared');
 			$this->assertSame('2027-03-25', substr($copy->content()->get('startDate')->value(), 0, 10), 'duplicate: date kept');
 			$copy->delete(true);
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.duplicateReset' => false]);
+			$kirby = KoyomiFixture::app($root, ['koyomi.duplicateReset' => false]);
 			$kirby->impersonate('kirby');
 			$copy = $kirby->page('events/workshop-cancelled')->duplicate('workshop-copy-2');
 			$this->assertSame('cancelled', $copy->content()->get('eventStatus')->value(), 'duplicateReset false keeps the status');
@@ -196,7 +196,7 @@ final class AcceptanceTest extends TestCase
 			unlink($root . '/site/snippets/koyomi/card.php');
 
 			// 12. Blueprints load through Kirby, options follow the config.
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.currencies' => ['EUR', 'USD'], 'sayamaapps.koyomi.timezone' => 'Europe/Prague']);
+			$kirby = KoyomiFixture::app($root, ['koyomi.currencies' => ['EUR', 'USD'], 'koyomi.timezone' => 'Europe/Prague']);
 			$blueprint = Blueprint::find('pages/koyomi-event');
 			$this->assertTrue(isset($blueprint['tabs']) && is_array($blueprint['tabs']), 'event blueprint has tabs');
 			$encoded = json_encode($blueprint);

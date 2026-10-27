@@ -302,7 +302,7 @@ final class JsonLdTest extends TestCase
 				'JSON-LD: an end date given keeps endDate'
 			);
 
-			$inactive = KoyomiFixture::app($root, ['sayamaapps.koyomi.active' => false]);
+			$inactive = KoyomiFixture::app($root, ['koyomi.active' => false]);
 			$this->assertSame('', (string)$inactive->snippet('koyomi/jsonld', ['event' => $retreat], true), 'inactive: the snippet prints nothing');
 
 		} finally {

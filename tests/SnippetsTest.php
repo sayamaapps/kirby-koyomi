@@ -121,7 +121,7 @@ final class SnippetsTest extends TestCase
 			$this->assertSame('', trim(koyomi_snippet_html($kirby, 'koyomi/card', ['event' => 'nope'])), 'card: not an event prints nothing');
 
 			// ---- German ---------------------------------------------------------------
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.language' => 'de']);
+			$kirby = KoyomiFixture::app($root, ['koyomi.language' => 'de']);
 			$html = koyomi_snippet_html($kirby, 'koyomi/card', ['event' => $retreat]);
 			$this->assertTrue(str_contains($html, 'Freitag, 12. März 2027, 18:00 Uhr – Sonntag, 14. März 2027, 13:00 Uhr'), 'de card: German when');
 			$this->assertTrue(str_contains($html, '<p class="koyomi-card-price">380 € · Nur noch wenige Plätze</p>'), 'de card: German money and availability');
@@ -223,7 +223,7 @@ final class SnippetsTest extends TestCase
 			$this->assertTrue(!str_contains($html, 'koyomi-booking') && !str_contains($html, 'koyomi-calendar-links'), 'event past: no booking, no calendar links');
 
 			// Switches: ics and google off.
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.ics' => false, 'sayamaapps.koyomi.google' => false]);
+			$kirby = KoyomiFixture::app($root, ['koyomi.ics' => false, 'koyomi.google' => false]);
 			$html = koyomi_snippet_html($kirby, 'koyomi/event', ['event' => $retreat, 'calendarUrl' => 'https://example.test/events']);
 			$this->assertTrue(
 				!str_contains($html, 'download>') && !str_contains($html, 'calendar.google.com') && !str_contains($html, 'koyomi-calendar-links'),
@@ -256,7 +256,7 @@ final class SnippetsTest extends TestCase
 			$this->assertSame('', trim(koyomi_snippet_html($kirby, 'koyomi/event', ['event' => 'nope', 'calendarUrl' => 'x'])), 'event: not an event prints nothing');
 
 			// German event.
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.language' => 'de']);
+			$kirby = KoyomiFixture::app($root, ['koyomi.language' => 'de']);
 			$html = koyomi_snippet_html($kirby, 'koyomi/event', ['event' => $retreat, 'calendarUrl' => 'https://example.test/events']);
 			$this->assertTrue(str_contains($html, 'Zur Anmeldung'), 'de event: booking label');
 			$this->assertTrue(
@@ -291,7 +291,7 @@ final class SnippetsTest extends TestCase
 			);
 			$html = koyomi_snippet_html($kirby, 'koyomi/past', ['event' => $past, 'calendarUrl' => '']);
 			$this->assertTrue(str_contains($html, 'This event has already taken place.') && !str_contains($html, '<a '), 'past: no link without a URL');
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.language' => 'de']);
+			$kirby = KoyomiFixture::app($root, ['koyomi.language' => 'de']);
 			$html = koyomi_snippet_html($kirby, 'koyomi/past', ['event' => $past, 'calendarUrl' => 'https://example.test/events']);
 			$this->assertTrue(
 				str_contains($html, 'Diese Veranstaltung hat bereits stattgefunden.') && str_contains($html, 'Zu den kommenden Terminen'),
@@ -342,7 +342,7 @@ final class SnippetsTest extends TestCase
 				'venue: unknown country code printed as is'
 			);
 
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.country' => 'de']);
+			$kirby = KoyomiFixture::app($root, ['koyomi.country' => 'de']);
 			$this->assertTrue(
 				str_contains(koyomi_snippet_html($kirby, 'koyomi/venue', ['venue' => $venue]), '<p class="koyomi-venue-address">Musterstraße 1<br>12345 Musterstadt</p>'),
 				'venue: home country (koyomi.country) left out'
@@ -352,7 +352,7 @@ final class SnippetsTest extends TestCase
 				'venue: other country kept with koyomi.country'
 			);
 
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.language' => 'de']);
+			$kirby = KoyomiFixture::app($root, ['koyomi.language' => 'de']);
 			$html = koyomi_snippet_html($kirby, 'koyomi/venue', ['venue' => $venue]);
 			$this->assertTrue(
 				str_contains($html, 'Anfahrt') && str_contains($html, 'Auf Karte zeigen') && str_contains($html, 'Karte: Seminarhaus Beispielhof') === false,
@@ -383,7 +383,7 @@ final class SnippetsTest extends TestCase
 				!str_contains($flat, 'koyomi-timeline') && substr_count($flat, '<h3 class="koyomi-card-title">') === 2,
 				'list group false: flat list, cards at level 3'
 			);
-			$kirbyFlat = KoyomiFixture::app($root, ['sayamaapps.koyomi.groupBy' => false]);
+			$kirbyFlat = KoyomiFixture::app($root, ['koyomi.groupBy' => false]);
 			$this->assertTrue(!str_contains(koyomi_snippet_html($kirbyFlat, 'koyomi/list', ['events' => [$retreat]]), 'koyomi-timeline'), 'koyomi.groupBy false: flat by default');
 			$kirby = KoyomiFixture::app($root);
 			$this->assertTrue(!str_contains($html, 'koyomi-list-switch'), 'list with events only: no switch link');
@@ -497,7 +497,7 @@ final class SnippetsTest extends TestCase
 			];
 			$this->assertSame('', trim(koyomi_snippet_html($kirby, 'koyomi/filters', ['list' => $nothing])), 'filters: nothing to filter by prints nothing');
 
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.languages' => ['de' => 'Deutsch (Deutschland)', 'cs' => 'Čeština']]);
+			$kirby = KoyomiFixture::app($root, ['koyomi.languages' => ['de' => 'Deutsch (Deutschland)', 'cs' => 'Čeština']]);
 			$html = koyomi_snippet_html($kirby, 'koyomi/filters', ['list' => $filterList]);
 			$this->assertTrue(str_contains($html, 'Čeština (1)') && str_contains($html, 'Deutsch (Deutschland) (3)'), 'filters: custom language labels from the options');
 
@@ -540,11 +540,11 @@ final class SnippetsTest extends TestCase
 			);
 			$this->assertTrue(str_contains($html, '<a href="https://example.test/events.rss" type="application/rss+xml">RSS feed</a>'), 'subscribe: rss link');
 
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.feed' => false]);
+			$kirby = KoyomiFixture::app($root, ['koyomi.feed' => false]);
 			$html = koyomi_snippet_html($kirby, 'koyomi/subscribe', ['calendar' => $kirby->page('events')]);
 			$this->assertTrue(!str_contains($html, 'webcal') && str_contains($html, 'events.rss'), 'subscribe: feed off, rss still there');
 
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.feed' => false, 'sayamaapps.koyomi.rss' => false]);
+			$kirby = KoyomiFixture::app($root, ['koyomi.feed' => false, 'koyomi.rss' => false]);
 			$this->assertSame('', trim(koyomi_snippet_html($kirby, 'koyomi/subscribe', ['calendar' => $kirby->page('events')])), 'subscribe: both off prints nothing');
 
 			// ---- layout -------------------------------------------------------------------
@@ -555,12 +555,12 @@ final class SnippetsTest extends TestCase
 			$this->assertTrue(str_contains($html, '<title>Events – Koyomi Test Site</title>'), 'layout: page title – site title');
 			$this->assertTrue(str_contains($html, '<main class="koyomi-main">'), 'layout: main landmark');
 			$this->assertTrue(!str_contains($html, 'application/ld+json'), 'layout: no JSON-LD on a calendar page');
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.language' => 'de', 'sayamaapps.koyomi.active' => false]);
+			$kirby = KoyomiFixture::app($root, ['koyomi.language' => 'de', 'koyomi.active' => false]);
 			$html = koyomi_snippet_html($kirby, 'koyomi/layout', ['page' => $kirby->page('events')]);
 			$this->assertTrue(str_contains($html, '<html lang="de">') && str_contains($html, '<main class="koyomi-main">'), 'layout: prints even when inactive, German lang');
 
 			// ---- inactive: every snippet prints nothing -----------------------------------
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.active' => false]);
+			$kirby = KoyomiFixture::app($root, ['koyomi.active' => false]);
 			$calendar = $kirby->page('events');
 			$inactive = [
 				'koyomi/card' => ['event' => $retreat],

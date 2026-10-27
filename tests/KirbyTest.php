@@ -167,7 +167,7 @@ final class KirbyTest extends TestCase
 				$stadthalle->mapLink(),
 				'venue: address search link without coordinates'
 			);
-			$customMap = KoyomiFixture::app($root, ['sayamaapps.koyomi.mapUrl' => fn (Venue $v): string => 'https://maps.example/' . $v->id]);
+			$customMap = KoyomiFixture::app($root, ['koyomi.mapUrl' => fn (Venue $v): string => 'https://maps.example/' . $v->id]);
 			$this->assertSame('https://maps.example/venue-beispielhof', Mapper::venue($customMap->page('venues/beispielhof'))->mapLink(), 'venue: koyomi.mapUrl closure');
 			// Page::kirby() is App::instance(), the most recently created App: re-create the main one before using its pages.
 			$kirby = KoyomiFixture::app($root);
@@ -181,12 +181,12 @@ final class KirbyTest extends TestCase
 			$this->assertSame('events', Repository::calendar($kirby)?->id(), 'calendar found by template');
 			$this->assertSame(
 				'events',
-				KoyomiFixture::app($root, ['sayamaapps.koyomi.calendar' => 'venues'])->site()->koyomiCalendar()?->id(),
+				KoyomiFixture::app($root, ['koyomi.calendar' => 'venues'])->site()->koyomiCalendar()?->id(),
 				'calendar option naming another template falls back'
 			);
 			$this->assertSame(
 				'events',
-				KoyomiFixture::app($root, ['sayamaapps.koyomi.calendar' => 'nope'])->site()->koyomiCalendar()?->id(),
+				KoyomiFixture::app($root, ['koyomi.calendar' => 'nope'])->site()->koyomiCalendar()?->id(),
 				'calendar option naming a missing page falls back'
 			);
 			// Page::kirby() is App::instance(), the most recently created App: re-create the main one before using its pages.
@@ -194,7 +194,7 @@ final class KirbyTest extends TestCase
 			$this->assertSame('venues', Repository::venuesPage($kirby)?->id(), 'venues container found');
 			$this->assertSame(
 				'venues',
-				Repository::venuesPage(KoyomiFixture::app($root, ['sayamaapps.koyomi.venues' => 'events']))?->id(),
+				Repository::venuesPage(KoyomiFixture::app($root, ['koyomi.venues' => 'events']))?->id(),
 				'venues option naming another template falls back'
 			);
 			// Page::kirby() is App::instance(), the most recently created App: re-create the main one before using its pages.
@@ -231,7 +231,7 @@ final class KirbyTest extends TestCase
 			$this->assertSame(['Silent Retreat', 'Evening Concert'], koyomi_titles(Repository::upcoming($calendar, ['language' => 'cs'])), 'upcoming with a filter');
 			$this->assertSame(
 				array_values(array_diff($upcomingTitles, ['Breathing Workshop'])),
-				koyomi_titles(Repository::upcoming(KoyomiFixture::app($root, ['sayamaapps.koyomi.hideCancelled' => true])->page('events'))),
+				koyomi_titles(Repository::upcoming(KoyomiFixture::app($root, ['koyomi.hideCancelled' => true])->page('events'))),
 				'hideCancelled removes the cancelled event from upcoming'
 			);
 			// Page::kirby() is App::instance(), the most recently created App: re-create the main one before using its pages.
@@ -292,7 +292,7 @@ final class KirbyTest extends TestCase
 			$beyond = Repository::list($calendar, ['category' => 'retreat', 'page' => '9']);
 			$this->assertSame([1, 1], [$beyond['pagination']['page'], $beyond['pagination']['pages']], 'list: a page beyond the end shows the last page');
 
-			$perPageOne = KoyomiFixture::app($root, ['sayamaapps.koyomi.perPage' => 1]);
+			$perPageOne = KoyomiFixture::app($root, ['koyomi.perPage' => 1]);
 			$pagedOne = Repository::list($perPageOne->page('events'), ['category' => 'retreat', 'page' => '2']);
 			$this->assertSame(['Silent Retreat'], koyomi_titles($pagedOne['events']), 'list: page 2 with one event per page');
 			$this->assertSame(
@@ -302,7 +302,7 @@ final class KirbyTest extends TestCase
 			);
 			$this->assertSame('https://example.test/events?category=retreat', $pagedOne['pagination']['prevUrl'], 'list: previous URL keeps the filter and drops page 1');
 			$this->assertSame(null, $pagedOne['pagination']['nextUrl'], 'list: no next URL on the last page');
-			$secondPage = KoyomiFixture::app($root, ['sayamaapps.koyomi.perPage' => 3])->page('events');
+			$secondPage = KoyomiFixture::app($root, ['koyomi.perPage' => 3])->page('events');
 			$this->assertSame('https://example.test/events?page=3', Repository::list($secondPage, ['page' => '2'])['pagination']['nextUrl'], 'list: next URL of page 2 of three');
 			// Page::kirby() is App::instance(), the most recently created App: re-create the main one before using its pages.
 			$kirby = KoyomiFixture::app($root);
@@ -321,7 +321,7 @@ final class KirbyTest extends TestCase
 			$this->assertTrue(str_starts_with($page->googleCalendarUrl(), 'https://calendar.google.com/calendar/render?action=TEMPLATE'), 'googleCalendarUrl() with the option on');
 			$this->assertSame(
 				'',
-				KoyomiFixture::app($root, ['sayamaapps.koyomi.google' => false])->page('events/retreat')->googleCalendarUrl(),
+				KoyomiFixture::app($root, ['koyomi.google' => false])->page('events/retreat')->googleCalendarUrl(),
 				'googleCalendarUrl() is empty when switched off'
 			);
 			// Page::kirby() is App::instance(), the most recently created App: re-create the main one before using its pages.
@@ -361,21 +361,21 @@ final class KirbyTest extends TestCase
 			// 7. Output gating: status codes. Kirby keeps the response of an App, so every render gets its own App.
 			$status = fn (array $options, string $path): int => KoyomiFixture::app($root, $options)->render($path)?->code() ?? 404;
 			foreach (['events.ics', 'events.rss', 'events.json', 'events/retreat.ics', 'events/unlisted-event.ics'] as $path) {
-				$this->assertSame(404, $status(['sayamaapps.koyomi.active' => false], $path), "inactive: $path is 404");
+				$this->assertSame(404, $status(['koyomi.active' => false], $path), "inactive: $path is 404");
 			}
 			$this->assertSame(200, $status([], 'events.ics'), 'feed on by default');
 			$this->assertSame(200, $status([], 'events/retreat.ics'), 'event ics on by default');
 			$this->assertSame(200, $status([], 'events.rss'), 'rss on by default');
 			$this->assertSame(404, $status([], 'events.json'), 'json off by default');
-			$this->assertSame(200, $status(['sayamaapps.koyomi.json' => true], 'events.json'), 'json switched on');
-			$this->assertSame(404, $status(['sayamaapps.koyomi.feed' => false], 'events.ics'), 'feed switch off');
-			$this->assertSame(404, $status(['sayamaapps.koyomi.rss' => false], 'events.rss'), 'rss switch off');
+			$this->assertSame(200, $status(['koyomi.json' => true], 'events.json'), 'json switched on');
+			$this->assertSame(404, $status(['koyomi.feed' => false], 'events.ics'), 'feed switch off');
+			$this->assertSame(404, $status(['koyomi.rss' => false], 'events.rss'), 'rss switch off');
 			$this->assertSame(
 				200,
-				$status(['sayamaapps.koyomi.feed' => false, 'sayamaapps.koyomi.rss' => false], 'events/retreat.ics'),
+				$status(['koyomi.feed' => false, 'koyomi.rss' => false], 'events/retreat.ics'),
 				'event ics independent of the feed and rss switches'
 			);
-			$this->assertSame(404, $status(['sayamaapps.koyomi.ics' => false], 'events/retreat.ics'), 'event ics switch off');
+			$this->assertSame(404, $status(['koyomi.ics' => false], 'events/retreat.ics'), 'event ics switch off');
 			$this->assertSame(404, $status([], 'events/draft-event.ics'), 'draft event .ics is 404');
 			$this->assertTrue(KoyomiFixture::app($root)->page('events/draft-event')?->isDraft() === true, 'the draft is really a draft');
 			$this->assertSame(200, $status([], 'events/unlisted-event.ics'), 'unlisted event .ics works on its own URL');
@@ -399,7 +399,7 @@ final class KirbyTest extends TestCase
 			$this->assertTrue(str_starts_with((string)$rss->type(), 'application/rss+xml'), 'rss: application/rss+xml');
 			$this->assertSame(koyomi_berlin('2027-03-11 19:00'), $rssApp->response()->expires(), 'rss: expires at the next start');
 
-			$json = KoyomiFixture::app($root, ['sayamaapps.koyomi.json' => true])->render('events.json');
+			$json = KoyomiFixture::app($root, ['koyomi.json' => true])->render('events.json');
 			$this->assertTrue(str_starts_with((string)$json->type(), 'application/json'), 'json: application/json');
 		};
 

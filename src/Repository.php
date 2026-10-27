@@ -21,6 +21,7 @@ use WeakMap;
  * - Every method that returns a list for rendering calls
  *   Api::expires($kirby, $events) so the page cache expires when the list changes.
  *
+ * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder
@@ -89,6 +90,18 @@ class Repository
 		$events = $byCalendar[$key] ?? [];
 
 		return $events;
+	}
+
+	/**
+	 * Forgets all cached lists. Kept from 1.x for tests that change content in the
+	 * same process. Not part of the API.
+	 *
+	 * @deprecated 1.x test helper, kept for compatibility; not for production code.
+	 * @internal
+	 */
+	public static function reset(): void
+	{
+		self::$cache = null;
 	}
 
 	/**

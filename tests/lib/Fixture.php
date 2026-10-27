@@ -57,7 +57,7 @@ final class KoyomiFixture
 	/**
 	 * A fresh App on the fixture. Defaults: url https://example.test,
 	 * koyomi.active true, koyomi.now 2027-03-10 12:00, debug on. $options
-	 * are merged over them (pass 'sayamaapps.koyomi.active' => false to switch off).
+	 * are merged over them (pass 'koyomi.active' => false to switch off).
 	 * Clears Kirby's per-process snippet and blueprint caches and Koyomi's
 	 * Repository cache, so options of this App take effect.
 	 */
@@ -77,8 +77,8 @@ final class KoyomiFixture
 			'options' => array_merge([
 				'url' => self::URL,
 				'debug' => true,
-				'sayamaapps.koyomi.active' => true,
-				'sayamaapps.koyomi.now' => self::NOW,
+				'koyomi.active' => true,
+				'koyomi.now' => self::NOW,
 			], $options),
 		]);
 	}

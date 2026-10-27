@@ -3,12 +3,11 @@
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 use Sayamaapps\Koyomi\Api;
-use Sayamaapps\Koyomi\Options;
 
 /**
- * The 1.x names keep working until the next major version: the global
- * functions (legacy.php) and the `koyomi.*` option spelling. Each one logs a
- * deprecation in debug mode, and the current spelling wins when both are set.
+ * The 1.x names keep working in 1.x: the global functions (legacy.php) and the
+ * `koyomi.*` option names. They log nothing, so a site with debug mode on runs
+ * as it did before. Only the 1.x names are read.
  */
 #[CoversNothing]
 final class LegacyTest extends TestCase
@@ -33,20 +32,7 @@ final class LegacyTest extends TestCase
 		restore_error_handler();
 	}
 
-	public function testCurrentOptionNameWinsOverOneXWithoutDeprecation(): void
-	{
-		$root = KoyomiFixture::create();
-		try {
-			$both = KoyomiFixture::app($root, ['sayamaapps.koyomi.timezone' => 'Europe/Prague', 'koyomi.timezone' => 'Europe/Vienna']);
-			$count = count($this->deprecations);
-			$this->assertSame('Europe/Prague', Options::timezone($both), 'the current option name wins over 1.x');
-			$this->assertSame($count, count($this->deprecations), 'the current option name logs nothing');
-		} finally {
-			KoyomiFixture::remove($root);
-		}
-	}
-
-	public function testEachOneXFunctionStillAnswersAndLogsOneDeprecation(): void
+	public function testOneXFunctionsStillAnswerWithoutDeprecation(): void
 	{
 		$root = KoyomiFixture::create();
 		try {
@@ -63,23 +49,30 @@ final class LegacyTest extends TestCase
 			koyomi_expires([$event]);
 			koyomi_expires_at(null);
 
-			$this->assertSame(
-				8,
-				count(array_filter($this->deprecations, fn (string $message): bool => str_contains($message, '() is deprecated, use Sayamaapps\Koyomi\Api::'))),
-				'each of the eight 1.x functions logs one deprecation'
-			);
+			$this->assertSame([], $this->deprecations, 'the 1.x functions log nothing');
 		} finally {
 			KoyomiFixture::remove($root);
 		}
 	}
 
-	public function testOneXSwitchStillSwitchesThePluginOnAndSaysSo(): void
+	public function testOneXSwitchSwitchesThePluginOn(): void
 	{
 		$root = KoyomiFixture::create();
 		try {
-			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.active' => null, 'koyomi.active' => true]);
-			$this->assertSame(true, Api::active($kirby), '1.x koyomi.active switches the plugin on');
-			$this->assertSame(['Koyomi: koyomi.active is deprecated, use sayamaapps.koyomi.active'], array_slice($this->deprecations, -1), 'option: deprecation names the new key');
+			$kirby = KoyomiFixture::app($root, ['koyomi.active' => true]);
+			$this->assertSame(true, Api::active($kirby), 'koyomi.active switches the plugin on');
+			$this->assertSame([], $this->deprecations, 'the 1.x option logs nothing');
+		} finally {
+			KoyomiFixture::remove($root);
+		}
+	}
+
+	public function testOnlyTheOneXOptionNameIsRead(): void
+	{
+		$root = KoyomiFixture::create();
+		try {
+			$kirby = KoyomiFixture::app($root, ['koyomi.active' => false, 'sayamaapps.koyomi.active' => true]);
+			$this->assertSame(false, Api::active($kirby), 'a name 1.x never read is not read');
 		} finally {
 			KoyomiFixture::remove($root);
 		}

@@ -142,9 +142,9 @@ The booking link carries a `koyomi-sr-only` span; the site's own CSS must hide i
 
 | Call | Returns |
 |---|---|
-| `Api::option($kirby, $name, $default)` | The value of `sayamaapps.koyomi.<name>`, else of the 1.x `koyomi.<name>`. |
+| `Api::option($kirby, $name, $default)` | The value of `koyomi.<name>`, or `$default` when it is not set. |
 | `Api::active($kirby)` | Whether Koyomi is switched on. |
-| `Api::now($kirby)` | The clock in the configured zone (`sayamaapps.koyomi.now` pins it). |
+| `Api::now($kirby)` | The clock in the configured zone (`koyomi.now` pins it). |
 | `Api::i18n($kirby)` | Sets language and date formats for the request; returns the language. Call it before printing texts yourself. |
 | `Api::t($key, $values)` | A Koyomi text in the current language. The texts are also Kirby translations, e.g. `t('koyomi.status.cancelled')`. |
 | `Api::event($value)` | The `Event` of an event page or an `Event`; otherwise `null`. |

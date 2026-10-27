@@ -136,7 +136,7 @@ final class DraftsTest extends TestCase
 				str_contains($planHtml, 'Public Host') && !str_contains($planHtml, 'Secret') && !str_contains($planHtml, 'Geheimweg') && !str_contains($planHtml, 'draft-org'),
 				'HTML: draft venue and organizer are not printed, the public organizer is'
 			);
-			$json = (string)KoyomiFixture::app($root, ['sayamaapps.koyomi.json' => true])->render('events.json')?->body();
+			$json = (string)KoyomiFixture::app($root, ['koyomi.json' => true])->render('events.json')?->body();
 			$this->assertTrue(
 				str_contains(
 					$json,
@@ -166,7 +166,7 @@ final class DraftsTest extends TestCase
 			$this->assertSame(null, $kirby->site()->koyomiCalendar(), 'site()->koyomiCalendar() is null for a draft calendar only');
 			$this->assertSame(
 				null,
-				Repository::calendar(KoyomiFixture::app($foreignRoot, ['sayamaapps.koyomi.calendar' => '_drafts/events'])),
+				Repository::calendar(KoyomiFixture::app($foreignRoot, ['koyomi.calendar' => '_drafts/events'])),
 				'a configured draft calendar is not used either'
 			);
 			$home = (string)KoyomiFixture::app($foreignRoot)->render('')?->body();

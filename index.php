@@ -8,8 +8,8 @@ use Kirby\Filesystem\F;
  *
  * Kirby loads this file. It registers the class map, the 1.x names and the
  * definitions in config/. The logic lives in src/. Off by default: without
- * `'sayamaapps.koyomi.active' => true` (or the older `koyomi.active`) every snippet
- * prints nothing and every feed URL is Kirby's 404.
+ * `'koyomi.active' => true` every snippet prints nothing and every feed URL is
+ * Kirby's 404.
  */
 F::loadClasses(require __DIR__ . '/autoload.php', __DIR__);
 require_once __DIR__ . '/legacy.php';
@@ -17,7 +17,6 @@ require_once __DIR__ . '/legacy.php';
 Kirby::plugin(
 	name: 'sayamaapps/koyomi',
 	extends: [
-		'options'      => require __DIR__ . '/config/options.php',
 		'translations' => require __DIR__ . '/config/translations.php',
 		'blueprints'   => require __DIR__ . '/config/blueprints.php',
 		'pageModels'   => require __DIR__ . '/config/page-models.php',

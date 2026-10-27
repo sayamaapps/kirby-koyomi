@@ -10,8 +10,9 @@ use Kirby\Cms\App;
  * it works on; nothing here looks the App up itself.
  *
  * These replace the 1.x global functions (koyomi_active(), koyomi_t(), …),
- * which legacy.php still offers with a deprecation.
+ * which legacy.php still offers as @deprecated functions.
  *
+ * @package   Kirby Koyomi
  * @author    Simon Räder
  * @link      https://github.com/sayamaapps/kirby-koyomi
  * @copyright Simon Räder
@@ -19,7 +20,7 @@ use Kirby\Cms\App;
  */
 class Api
 {
-	/** True only when the plugin is switched on (`sayamaapps.koyomi.active`). */
+	/** True only when the plugin is switched on (`koyomi.active`). */
 	public static function active(App $kirby): bool
 	{
 		return Options::active($kirby);
@@ -72,13 +73,13 @@ class Api
 		return $language;
 	}
 
-	/** The current time in the configured zone (`sayamaapps.koyomi.now` pins it). */
+	/** The current time in the configured zone (`koyomi.now` pins it). */
 	public static function now(App $kirby): DateTimeImmutable
 	{
 		return Options::now($kirby);
 	}
 
-	/** Reads an option: `sayamaapps.koyomi.<key>`, else the 1.x `koyomi.<key>`, else $default. */
+	/** Reads an option: `koyomi.<key>`, else $default. */
 	public static function option(App $kirby, string $key, mixed $default = null): mixed
 	{
 		return Options::get($kirby, $key, $default);

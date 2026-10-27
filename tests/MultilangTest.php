@@ -42,7 +42,7 @@ function multilang_app(string $root, array $options = []): App
 			'site' => $root . '/site', 'storage' => $root . '/storage',
 		],
 		'options' => array_merge([
-			'url' => 'https://example.test', 'debug' => true, 'sayamaapps.koyomi.active' => true, 'sayamaapps.koyomi.now' => '2027-03-10 12:00',
+			'url' => 'https://example.test', 'debug' => true, 'koyomi.active' => true, 'koyomi.now' => '2027-03-10 12:00',
 		], $options),
 	]);
 }
