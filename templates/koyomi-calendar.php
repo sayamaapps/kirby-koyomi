@@ -6,7 +6,7 @@ use Sayamaapps\Koyomi\Api;
  * Calendar page (template koyomi-calendar): title, intro, filters, the list of
  * the current view (upcoming or past), pagination and the subscription links.
  * All output comes from the koyomi/* snippets, which print nothing while
- * `koyomi.active` is off. A site replaces the whole page with its own
+ * `sayamaapps.koyomi.active` is off. A site replaces the whole page with its own
  * site/templates/koyomi-calendar.php; the .ics/.rss/.json outputs keep working.
  */
 Api::i18n(kirby());

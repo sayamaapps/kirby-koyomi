@@ -9,6 +9,14 @@ All notable changes to this project are documented here. Versions follow
 - A change to the names of options, fields, snippets or URLs is breaking and is
   a major version too.
 
+## [1.6.0] — 2026-10-31
+
+### Changed
+
+- Options are read as `sayamaapps.koyomi.<name>`. The 1.x names `koyomi.<name>`
+  keep working and are read without a warning. If both are set, the new one wins.
+- `Options::OPTION_PREFIX` is new. `Options::PREFIX` keeps its 1.x value.
+
 ## [1.5.0] — 2026-10-27
 
 No breaking changes to the 1.x API: the 1.x names and their behaviour stay as

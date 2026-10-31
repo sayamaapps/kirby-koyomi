@@ -19,7 +19,7 @@ use Kirby\Cms\App;
  */
 class Api
 {
-	/** True only when the plugin is switched on (`koyomi.active`). */
+	/** True only when the plugin is switched on (`sayamaapps.koyomi.active`). */
 	public static function active(App $kirby): bool
 	{
 		return Options::active($kirby);
@@ -72,13 +72,13 @@ class Api
 		return $language;
 	}
 
-	/** The current time in the configured zone (`koyomi.now` pins it). */
+	/** The current time in the configured zone (`sayamaapps.koyomi.now` pins it). */
 	public static function now(App $kirby): DateTimeImmutable
 	{
 		return Options::now($kirby);
 	}
 
-	/** Reads an option: `koyomi.<key>`, else $default. */
+	/** Reads an option: `sayamaapps.koyomi.<key>`, else $default. */
 	public static function option(App $kirby, string $key, mixed $default = null): mixed
 	{
 		return Options::get($kirby, $key, $default);

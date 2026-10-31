@@ -19,7 +19,7 @@ use Sayamaapps\Koyomi\Api;
  * @var string|false|null $title  heading text; false = no heading
  * @var int|null $level  heading level, 2 by default; months use level + 1, cards level + 2
  * @var string|false|null $group  'month' = timeline with month headings (default from
- *                        koyomi.groupBy), false = one flat list (cards use level + 1)
+ *                        sayamaapps.koyomi.groupBy), false = one flat list (cards use level + 1)
  */
 if (!Api::active(kirby())) {
 	return;

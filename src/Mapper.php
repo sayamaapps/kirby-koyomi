@@ -257,7 +257,7 @@ class Mapper
 
 	/**
 	 * Venue::fromArray() from a koyomi-venue page. The
-	 * `koyomi.mapUrl` closure, when set, supplies the map link; it receives
+	 * `sayamaapps.koyomi.mapUrl` closure, when set, supplies the map link; it receives
 	 * the venue without one.
 	 */
 	public static function venue(Page $page): Venue

@@ -37,6 +37,10 @@ final class AcceptanceTest extends TestCase
 			$this->assertSame('', trim((string)$kirby->snippet('koyomi/jsonld', ['page' => $kirby->page('events/retreat')], true)), 'inactive: no JSON-LD');
 			$kirby = KoyomiFixture::app($root, ['koyomi.active' => 'yes']);
 			$this->assertSame(404, $code($kirby, 'events.ics'), 'only a real true switches on');
+			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.active' => true, 'koyomi.active' => false]);
+			$this->assertSame(200, $code($kirby, 'events.ics'), 'sayamaapps.koyomi.active switches on (wins over koyomi.active)');
+			$kirby = KoyomiFixture::app($root, ['sayamaapps.koyomi.active' => false]);
+			$this->assertSame(404, $code($kirby, 'events.ics'), 'sayamaapps.koyomi.active => false switches off');
 
 			// 3. Switches.
 			$kirby = KoyomiFixture::app($root);

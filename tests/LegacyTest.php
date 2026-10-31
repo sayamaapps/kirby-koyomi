@@ -7,7 +7,7 @@ use Sayamaapps\Koyomi\Api;
 /**
  * The 1.x names keep working in 1.x: the global functions (legacy.php) and the
  * `koyomi.*` option names. They log nothing, so a site with debug mode on runs
- * as it did before. Only the 1.x names are read.
+ * as it did before. The option names are read as a fallback (OptionsPrefixTest).
  */
 #[CoversClass(Api::class)]
 final class LegacyTest extends TestCase
@@ -60,19 +60,8 @@ final class LegacyTest extends TestCase
 		$root = KoyomiFixture::create();
 		try {
 			$kirby = KoyomiFixture::app($root, ['koyomi.active' => true]);
-			$this->assertSame(true, Api::active($kirby), 'koyomi.active switches the plugin on');
+			$this->assertSame(true, Api::active($kirby), 'koyomi.active still switches the plugin on');
 			$this->assertSame([], $this->deprecations, 'the 1.x option logs nothing');
-		} finally {
-			KoyomiFixture::remove($root);
-		}
-	}
-
-	public function testOnlyTheOneXOptionNameIsRead(): void
-	{
-		$root = KoyomiFixture::create();
-		try {
-			$kirby = KoyomiFixture::app($root, ['koyomi.active' => false, 'sayamaapps.koyomi.active' => true]);
-			$this->assertSame(false, Api::active($kirby), 'a name 1.x never read is not read');
 		} finally {
 			KoyomiFixture::remove($root);
 		}

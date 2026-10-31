@@ -11,7 +11,7 @@ use Sayamaapps\Koyomi\Api;
  *   <?php snippet('koyomi/switch', ['list' => $list]) ?>
  *   <?php snippet('koyomi/switch', ['calendar' => $page]) ?>   (the list of that calendar)
  *
- * Prints nothing when Koyomi is inactive, when koyomi.attendanceSwitch is
+ * Prints nothing when Koyomi is inactive, when sayamaapps.koyomi.attendanceSwitch is
  * false, or when the view has no in-person or no online event (nothing to
  * switch). The counts are those of the whole view, before other filters.
  *

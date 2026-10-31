@@ -6,7 +6,7 @@ use Sayamaapps\Koyomi\Api;
  * Subscription links of a calendar: the feed as "webcal://" (subscribe in the
  * calendar app, new dates arrive by themselves) and the RSS feed. The URLs
  * are built from the calendar's own URL, nothing else. Each link is printed
- * only when its output switch is on (`koyomi.feed`, `koyomi.rss`).
+ * only when its output switch is on (`sayamaapps.koyomi.feed`, `sayamaapps.koyomi.rss`).
  *
  *   <?php snippet('koyomi/subscribe', ['calendar' => $page]) ?>
  *

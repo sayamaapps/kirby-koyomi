@@ -8,12 +8,15 @@ use DateTimeInterface;
 use Kirby\Cms\App;
 
 /**
- * Reads the plugin's options, `koyomi.<key>`. The 1.x names are the only names
- * read, so a site's config works unchanged on every 1.x release.
+ * Reads the plugin's options: `sayamaapps.koyomi.<key>`, falling back to the
+ * 1.x name `koyomi.<key>`. The 1.x name is read silently until 2.0 (README,
+ * Deprecations).
  *
- * `null` counts as "not set", like Kirby's own option(). Both spellings work,
- * flat (`'koyomi.active' => true`) and nested (`'koyomi' => ['active' => true]`),
- * because Kirby's option() finds both.
+ * `null` counts as "not set", like Kirby's own option(). The flat form
+ * (`'sayamaapps.koyomi.active' => true`) is the one to use. The nested form
+ * (`'koyomi' => ['active' => true]`) works for the 1.x prefix only: Kirby
+ * resolves `sayamaapps.koyomi.*` through the plugin's own options block first,
+ * which shadows a nested `sayamaapps` array.
  *
  * Defaults are given here, at the call sites.
  *
@@ -27,7 +30,14 @@ class Options
 	public const DEFAULT_CURRENCIES = ['EUR', 'CZK', 'CHF'];
 	public const DEFAULT_LANGUAGES = ['de', 'en', 'cs'];
 
-	/** Option prefix. Kirby's option() reads `koyomi.<key>` from the site config. */
+	/** Option prefix since 1.6. */
+	public const OPTION_PREFIX = 'sayamaapps.koyomi.';
+
+	/**
+	 * Option prefix of 1.x (`koyomi.<key>`). Still read as a fallback until 2.0.
+	 *
+	 * @deprecated 1.6 use OPTION_PREFIX; removal planned for 2.0
+	 */
 	public const PREFIX = 'koyomi.';
 
 	/** Output switches and their defaults (all need `active` as well). */
@@ -62,14 +72,14 @@ class Options
 		];
 	}
 
-	/** Page id of the calendar (`koyomi.calendar`), or null = find the first koyomi-calendar page. */
+	/** Page id of the calendar (`sayamaapps.koyomi.calendar`), or null = find the first koyomi-calendar page. */
 	public static function calendarId(App $kirby): string|null
 	{
 		$id = self::get($kirby, 'calendar');
 		return is_string($id) && trim($id, ' /') !== '' ? trim($id, ' /') : null;
 	}
 
-	/** Home country (`koyomi.country`, ISO code, upper case), left out of displayed addresses. Unset or invalid → "". */
+	/** Home country (`sayamaapps.koyomi.country`, ISO code, upper case), left out of displayed addresses. Unset or invalid → "". */
 	public static function country(App $kirby): string
 	{
 		$code = strtoupper(trim((string)self::get($kirby, 'country', '')));
@@ -92,7 +102,7 @@ class Options
 		return $codes === [] ? self::DEFAULT_CURRENCIES : $codes;
 	}
 
-	/** Default currency of new events: `koyomi.currency`, else the first of currencies(). */
+	/** Default currency of new events: `sayamaapps.koyomi.currency`, else the first of currencies(). */
 	public static function currency(App $kirby): string
 	{
 		$code = strtoupper(trim((string)self::get($kirby, 'currency', '')));
@@ -160,9 +170,17 @@ class Options
 		return $out;
 	}
 
-	/** Reads `koyomi.<key>`; $default when it is not set. */
+	/**
+	 * Reads an option under the sayamaapps.koyomi.* spelling, then under the
+	 * 1.x koyomi.* spelling. Returns $default when neither is set.
+	 */
 	public static function get(App $kirby, string $key, mixed $default = null): mixed
 	{
+		$value = $kirby->option(self::OPTION_PREFIX . $key);
+		if ($value !== null) {
+			return $value;
+		}
+
 		return $kirby->option(self::PREFIX . $key) ?? $default;
 	}
 
@@ -188,7 +206,7 @@ class Options
 	}
 
 	/**
-	 * Language of snippets and feeds: `koyomi.language`, else the current
+	 * Language of snippets and feeds: `sayamaapps.koyomi.language`, else the current
 	 * language of a multi-language site, else its default language, else the
 	 * first two letters of Kirby's `locale` option, else English. Only
 	 * languages Koyomi ships (I18n::LANGUAGES) are returned.
@@ -219,7 +237,7 @@ class Options
 	/**
 	 * Event languages offered in the Panel and the filter, code => custom
 	 * label ("" = use the translation `language.<code>`).
-	 * `koyomi.languages` may be a list (['de', 'cs']) or a map
+	 * `sayamaapps.koyomi.languages` may be a list (['de', 'cs']) or a map
 	 * (['de' => 'Deutsch', 'cs' => 'Čeština']).
 	 *
 	 * @return array<string,string>
@@ -239,7 +257,7 @@ class Options
 	}
 
 	/**
-	 * `koyomi.mapUrl`: a closure fn (Sayamaapps\Koyomi\Venue $venue): string replacing
+	 * `sayamaapps.koyomi.mapUrl`: a closure fn (Sayamaapps\Koyomi\Venue $venue): string replacing
 	 * the OpenStreetMap link, or null.
 	 */
 	public static function mapUrl(App $kirby): Closure|null
@@ -249,7 +267,7 @@ class Options
 	}
 
 	/**
-	 * The clock. `koyomi.now` (a "Y-m-d H:i" string, a DateTimeInterface or
+	 * The clock. `sayamaapps.koyomi.now` (a "Y-m-d H:i" string, a DateTimeInterface or
 	 * a closure returning either) pins it — for tests and for previewing a
 	 * calendar as it will look on a given day. Otherwise the real time. Always
 	 * in the default zone.
@@ -270,7 +288,7 @@ class Options
 		return new DateTimeImmutable('now', $zone);
 	}
 
-	/** Page id of the organizers container (`koyomi.organizers`), or null = first koyomi-organizers page. */
+	/** Page id of the organizers container (`sayamaapps.koyomi.organizers`), or null = first koyomi-organizers page. */
 	public static function organizersId(App $kirby): string|null
 	{
 		$id = self::get($kirby, 'organizers');
@@ -304,7 +322,7 @@ class Options
 	}
 
 	/**
-	 * Zones offered in the Panel select. `koyomi.timezones` = list of IANA
+	 * Zones offered in the Panel select. `sayamaapps.koyomi.timezones` = list of IANA
 	 * names (invalid ones dropped); unset = all identifiers PHP knows. The
 	 * default zone is always included.
 	 *
@@ -323,7 +341,7 @@ class Options
 		return array_values(array_unique($zones));
 	}
 
-	/** Page id of the venues container (`koyomi.venues`), or null = first koyomi-venues page. */
+	/** Page id of the venues container (`sayamaapps.koyomi.venues`), or null = first koyomi-venues page. */
 	public static function venuesId(App $kirby): string|null
 	{
 		$id = self::get($kirby, 'venues');
