@@ -50,8 +50,8 @@ Koyomi is off by default. In `site/config/config.php`, switch it on and set the 
 
 ```php
 return [
-    'koyomi.active'   => true,
-    'koyomi.timezone' => 'Europe/Berlin', // default zone of new events
+    'sayamaapps.koyomi.active'   => true,
+    'sayamaapps.koyomi.timezone' => 'Europe/Berlin', // default zone of new events
 ];
 ```
 
@@ -108,11 +108,11 @@ Fields, snippets, page methods and helpers are listed in [docs/reference.md](doc
 | `/events.rss` | `rss` | RSS 2.0 with upcoming events. |
 | `/events.json` | `json` | Upcoming events as JSON. Off by default. |
 
-A switched-off output returns Kirby's 404 page, and `koyomi.active` switches all of them off. The `koyomi/subscribe` snippet shows the `webcal://` address.
+A switched-off output returns Kirby's 404 page, and `sayamaapps.koyomi.active` switches all of them off. The `koyomi/subscribe` snippet shows the `webcal://` address.
 
 ## Options
 
-Every option is `koyomi.<name>`, flat or nested (`'koyomi.active' => true` or `'koyomi' => ['active' => true]`). `null` means "not set".
+Every option is `sayamaapps.koyomi.<name>`, written flat: `'sayamaapps.koyomi.active' => true`. `null` means "not set". The 1.x name `koyomi.<name>` still works as a fallback until 2.0, flat or nested, and is read without a warning. If both names are set, the new one wins. See [Deprecations](#deprecations).
 
 | Option | Default | Description |
 |---|---|---|
@@ -159,6 +159,7 @@ The 1.x names keep working in every 1.x release. Koyomi logs nothing for them, s
 | `koyomi_event($value)` | `Sayamaapps\Koyomi\Api::event($value)` |
 | `koyomi_expires($events)` | `Sayamaapps\Koyomi\Api::expires($kirby, $events)` |
 | `koyomi_expires_at($timestamp)` | `Sayamaapps\Koyomi\Api::expiresAt($kirby, $timestamp)` |
+| `'koyomi.<option>'` in `config.php` | `'sayamaapps.koyomi.<option>'`, flat. Still read as fallback; rename the keys in your site config. |
 | Classes `Koyomi\…`, for example `Koyomi\Event` | `Sayamaapps\Koyomi\…`, same names (class aliases in `legacy.php`) |
 
 The functions are guarded by Kirby's `Helpers::hasOverride()`, which looks only for the constant `KIRBY_HELPER_<NAME>`, for example `KIRBY_HELPER_KOYOMI_ACTIVE`. A site that declares its own `koyomi_active()` must define that constant first; without it, the declaration fails with "Cannot redeclare", as it did in 1.x.
@@ -178,7 +179,6 @@ No site output changes. Two things differ in the code itself:
 
 These changes would break existing sites, so they wait for the next major version:
 
-- Option names `sayamaapps.koyomi.<name>`, read in place of `koyomi.<name>`.
 - Deprecation notices at runtime for the 1.x names, shown in debug mode.
 - Removal of the 1.x functions, the `Koyomi\` class aliases, and the test helpers `Format::reset()` and `Repository::reset()`.
 - Translation keys `koyomi.<key>`: only `sayamaapps.koyomi.<key>` remains.

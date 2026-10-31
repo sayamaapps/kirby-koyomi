@@ -5,7 +5,7 @@ use Sayamaapps\Koyomi\Api;
 /**
  * A venue: name, address, and (outside compact mode) directions and the
  * self-hosted map image. Links: a plain OpenStreetMap link (or
- * `koyomi.mapUrl`) and the venue's website. The map image is only shown when
+ * `sayamaapps.koyomi.mapUrl`) and the venue's website. The map image is only shown when
  * the venue has `showMap` on — Koyomi never loads a map from a third party.
  *
  *   <?php snippet('koyomi/venue', ['venue' => $venue]) ?>

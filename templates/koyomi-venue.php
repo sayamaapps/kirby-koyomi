@@ -5,7 +5,7 @@ use Sayamaapps\Koyomi\Api;
 /**
  * Venue page (template koyomi-venue, unlisted): the venue, then its upcoming
  * events as cards. The venues container and the events are read by the page
- * model; the snippets print nothing while `koyomi.active` is off.
+ * model; the snippets print nothing while `sayamaapps.koyomi.active` is off.
  */
 Api::i18n(kirby());
 $upcoming = Api::active(kirby()) ? $page->upcomingEvents() : [];

@@ -32,7 +32,7 @@ class Repository
 	private static WeakMap|null $cache = null;
 
 	/**
-	 * The public calendar: `koyomi.calendar` page id if it is a published koyomi-calendar
+	 * The public calendar: `sayamaapps.koyomi.calendar` page id if it is a published koyomi-calendar
 	 * page, else the first one among site children, else in the whole index, else null.
 	 * A draft calendar is not a calendar for the site: its listed children would otherwise
 	 * appear on every page that shows upcoming events.
@@ -225,7 +225,7 @@ class Repository
 		return self::childrenWithTemplate(self::organizersPage($kirby), 'koyomi-organizer');
 	}
 
-	/** Organizers container (koyomi-organizers): option `koyomi.organizers`, else first found; null if none. Drafts found too (see venuesPage()). */
+	/** Organizers container (koyomi-organizers): option `sayamaapps.koyomi.organizers`, else first found; null if none. Drafts found too (see venuesPage()). */
 	public static function organizersPage(App $kirby): Page|null
 	{
 		return self::findByTemplate($kirby, 'koyomi-organizers', Options::organizersId($kirby), true);
@@ -279,7 +279,7 @@ class Repository
 	}
 
 	/**
-	 * Venues container (koyomi-venues): option `koyomi.venues`, else first found; null if none.
+	 * Venues container (koyomi-venues): option `sayamaapps.koyomi.venues`, else first found; null if none.
 	 * Drafts are found too: the Panel's venue picker works from this container, and a venue
 	 * draft is hidden from the public by Mapper, not here.
 	 */

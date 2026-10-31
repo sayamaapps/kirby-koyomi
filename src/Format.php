@@ -69,7 +69,7 @@ class Format
 	/**
 	 * Address of a venue as display lines, empty ones left out:
 	 * ["Musterstraße 1", "12345 Musterstadt", "Tschechien"]. The country is shown by
-	 * name, and left out when it is $homeCountry (`koyomi.country`).
+	 * name, and left out when it is $homeCountry (`sayamaapps.koyomi.country`).
 	 *
 	 * @return list<string>
 	 */

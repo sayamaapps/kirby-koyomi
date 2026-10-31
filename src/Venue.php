@@ -8,7 +8,7 @@ namespace Sayamaapps\Koyomi;
  *
  * Koyomi never embeds a map and never requests anything from a map service.
  * `mapImage` is a self-hosted static image the editor uploaded; `mapLink` is
- * a plain link (OpenStreetMap by default, `koyomi.mapUrl` to change) that
+ * a plain link (OpenStreetMap by default, `sayamaapps.koyomi.mapUrl` to change) that
  * only opens on click.
  *
  * @author    Simon Räder
