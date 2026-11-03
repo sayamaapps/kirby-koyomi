@@ -9,6 +9,16 @@ All notable changes to this project are documented here. Versions follow
 - A change to the names of options, fields, snippets or URLs is breaking and is
   a major version too.
 
+## [1.6.1] — 2026-11-03
+
+### Fixed
+
+- The subscription feed and its cache expiry now use the same rule for when a
+  past event leaves the feed. At a daylight-saving change a cached feed no longer
+  keeps a past event up to an hour too long, and an event no longer reappears
+  during the repeated hour in autumn. The feed still keeps events that ended
+  within `feedPastDays`; only at a clock change the edge moves by at most an hour.
+
 ## [1.6.0] — 2026-10-31
 
 ### Changed

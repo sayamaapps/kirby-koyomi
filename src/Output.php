@@ -36,11 +36,11 @@ class Output
 
 		$language = Api::i18n($kirby);
 		$now = Options::now($kirby);
-		$cutoff = $now->modify('-' . Options::feedPastDays($kirby) . ' days');
+		$days = Options::feedPastDays($kirby);
 		$all = Repository::events($calendar);
 		Api::expires($kirby, $all);
-		Api::expiresAt($kirby, Expiry::leaving($all, $now, Options::feedPastDays($kirby)));
-		$events = Query::sort(array_values(array_filter($all, fn (Event $e): bool => $e->end > $cutoff)), 'asc');
+		Api::expiresAt($kirby, Expiry::leaving($all, $now, $days));
+		$events = Query::sort(array_values(array_filter($all, fn (Event $e): bool => Expiry::leavesAt($e, $now->getTimezone(), $days) > $now->getTimestamp())), 'asc');
 
 		$response = $kirby->response();
 		$response->type('text/calendar');
