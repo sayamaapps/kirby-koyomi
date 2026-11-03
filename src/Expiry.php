@@ -3,6 +3,7 @@
 namespace Sayamaapps\Koyomi;
 
 use DateTimeImmutable;
+use DateTimeZone;
 
 /**
  * When does a rendered list go stale? Kirby-free.
@@ -24,9 +25,22 @@ use DateTimeImmutable;
 class Expiry
 {
 	/**
+	 * Unix timestamp of the moment $event leaves a window that keeps events for
+	 * $days calendar days after their end, counted forward from the end on the
+	 * wall clock of $zone. The subscription feed filter and the cache expiry
+	 * both use it, so the feed changes exactly when the cache expires, also
+	 * across a daylight-saving change.
+	 */
+	public static function leavesAt(Event $event, DateTimeZone $zone, int $days): int
+	{
+		return $event->end->setTimezone($zone)->modify('+' . $days . ' days')->getTimestamp();
+	}
+
+	/**
 	 * Unix timestamp of the first future moment an event leaves a window that
-	 * keeps events for $days days after their end (the subscription feed keeps
-	 * end > now − $days days), or null when none will.
+	 * keeps events for $days days after their end (leavesAt(): the subscription
+	 * feed keeps an event while that moment is still ahead), or null when none
+	 * will.
 	 *
 	 * @param list<Event> $events
 	 */
@@ -38,7 +52,7 @@ class Expiry
 			if (!$event instanceof Event) {
 				continue;
 			}
-			$moment = $event->end->setTimezone($now->getTimezone())->modify('+' . $days . ' days')->getTimestamp();
+			$moment = self::leavesAt($event, $now->getTimezone(), $days);
 			if ($moment > $limit && ($next === null || $moment < $next)) {
 				$next = $moment;
 			}

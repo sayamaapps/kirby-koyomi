@@ -12,6 +12,33 @@ use Sayamaapps\Koyomi\Expiry;
 #[CoversClass(Expiry::class)]
 final class ExpiryTest extends TestCase
 {
+	/**
+	 * leavesAt(): the one rule behind the feed filter and the cache expiry: the
+	 * end plus N calendar days on the wall clock of the given zone, also across a
+	 * daylight-saving change. Window 30 days, Europe/Berlin.
+	 */
+	public function testLeavesAtAcrossDaylightSaving(): void
+	{
+		$zone = new DateTimeZone('Europe/Berlin');
+		$at = fn (string $instant): int => (new DateTimeImmutable($instant))->getTimestamp();
+		$ending = fn (string $date, string $end): Event => Event::fromArray(koyomi_raw_event(['id' => 'dst', 'startDate' => $date, 'startTime' => '02:00', 'endTime' => $end]));
+
+		$normal = $ending('2027-02-25', '02:30');
+		$spring = $ending('2027-02-26', '02:30');
+		$autumn = $ending('2027-10-01', '02:30');
+
+		$this->assertSame($at('2027-03-27 02:30:00+01:00'), Expiry::leavesAt($normal, $zone, 30), 'no clock change in between: the same wall time');
+		$this->assertSame($at('2027-03-28 03:30:00+02:00'), Expiry::leavesAt($spring, $zone, 30), 'spring: 02:30 does not exist on 28 March, PHP moves it forward');
+		$this->assertSame($at('2027-10-31 02:30:00+02:00'), Expiry::leavesAt($autumn, $zone, 30), 'autumn: the first of the two 02:30');
+		$this->assertSame($at('2027-04-19 11:00:00+00:00'), Expiry::leavesAt($ending('2027-03-20', '12:00'), new DateTimeZone('UTC'), 30), 'counted in the given zone: no daylight saving in UTC');
+		$this->assertSame($at('2027-03-20 12:00:00+01:00'), Expiry::leavesAt($ending('2027-03-20', '12:00'), $zone, 0), 'window 0: the end itself');
+
+		// leaving() reports exactly that moment while it is ahead, and nothing once it has come.
+		$this->assertSame($at('2027-03-28 03:30:00+02:00'), Expiry::leaving([$spring], new DateTimeImmutable('2027-03-28 01:55', $zone), 30), 'spring: leaving() agrees with leavesAt()');
+		$this->assertSame($at('2027-10-31 02:30:00+02:00'), Expiry::leaving([$autumn], (new DateTimeImmutable('2027-10-31 02:15:00+02:00'))->setTimezone($zone), 30), 'autumn: leaving() agrees with leavesAt()');
+		$this->assertSame(null, Expiry::leaving([$autumn], (new DateTimeImmutable('2027-10-31 02:15:00+01:00'))->setTimezone($zone), 30), 'autumn: after the first 02:30 nothing is left to leave');
+	}
+
 	public function testSuite(): void
 	{
 		$zone = new DateTimeZone('Europe/Berlin');

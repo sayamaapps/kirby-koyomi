@@ -36,6 +36,42 @@ function feed_window_site(): string
 	return $root;
 }
 
+/** A pinned instant with an explicit offset as a timestamp (wall time alone is ambiguous in the autumn hour). */
+function feed_window_at(string $instant): int
+{
+	return (new DateTimeImmutable($instant))->getTimestamp();
+}
+
+/** An empty site with the plugin linked in and one event: Berlin wall time, $date $start–$end. */
+function feed_window_single_site(string $date, string $start, string $end): string
+{
+	$root = sys_get_temp_dir() . '/koyomi-fixture-' . bin2hex(random_bytes(6));
+	foreach (['public', 'site/plugins', 'site/templates', 'storage', 'content'] as $dir) {
+		mkdir($root . '/' . $dir, 0700, true);
+	}
+	symlink(dirname(__DIR__), $root . '/site/plugins/koyomi');
+	file_put_contents($root . '/site/templates/default.php', '<?= $page->title()->escape() ?>');
+	KoyomiFixture::write($root . '/content/site.txt', ['Title' => 'Feed Site']);
+	KoyomiFixture::write($root . '/content/1_events/koyomi-calendar.txt', ['Title' => 'Events', 'Uuid' => 'calendar-feed']);
+	KoyomiFixture::write($root . '/content/1_events/' . str_replace('-', '', $date) . '_single/koyomi-event.txt', [
+		'Title' => 'Single', 'Uuid' => 'evt-single', 'StartDate' => $date, 'StartTime' => $start, 'EndTime' => $end,
+		'AllDay' => 'false', 'Timezone' => 'Europe/Berlin', 'InPerson' => 'true', 'Online' => 'false',
+	]);
+	return $root;
+}
+
+/**
+ * Renders events.ics with the clock pinned to $instant (an exact moment, offset included).
+ *
+ * @return array{bool, int|null} whether the event is in the feed, and the page cache expiry
+ */
+function feed_window_probe(string $root, string $instant): array
+{
+	$app = KoyomiFixture::app($root, ['koyomi.now' => new DateTimeImmutable($instant)]);
+	$body = (string)$app->render('events.ics')?->body();
+	return [str_contains($body, 'UID:evt-single@example.test'), $app->response()->expires()];
+}
+
 /**
  * The subscription feed window (koyomi.feedPastDays) and the cache expiry of
  * own markup (review round, findings 7, 10 and 18): an event that ended inside
@@ -46,6 +82,58 @@ function feed_window_site(): string
 #[CoversClass(Output::class)]
 final class FeedWindowTest extends TestCase
 {
+	/**
+	 * The feed filter and the cache expiry use one rule (Expiry::leavesAt()), so the
+	 * feed changes exactly when the cache expires, also when the clocks change.
+	 * Window 30 days, Europe/Berlin; instants carry their offset because wall time
+	 * is ambiguous in the autumn hour.
+	 */
+	public function testFeedAndExpiryAgreeAcrossDaylightSaving(): void
+	{
+		// Normal case: ends 02:30 CET on 25 February, leaves 30 days later at 02:30 CET.
+		$root = feed_window_single_site('2027-02-25', '02:00:00', '02:30:00');
+		try {
+			$leaves = feed_window_at('2027-03-27 02:30:00+01:00');
+			$this->assertSame([true, $leaves], feed_window_probe($root, '2027-03-27 02:29:59+01:00'), 'normal: in the feed one second before, expiry is the leaving moment');
+			$this->assertSame([false, null], feed_window_probe($root, '2027-03-27 02:30:00+01:00'), 'normal: gone at that moment, nothing left to expire');
+		} finally {
+			KoyomiFixture::remove($root);
+		}
+
+		// Spring: ends 02:30 CET on 26 February; 30 days later, 02:30 does not exist
+		// (the clocks jump 02:00 → 03:00 on 28 March), so the event leaves at 03:30 CEST.
+		// The old backward filter dropped it at 03:00 CEST, half an hour before the cache expired.
+		$root = feed_window_single_site('2027-02-26', '02:00:00', '02:30:00');
+		try {
+			$leaves = feed_window_at('2027-03-28 03:30:00+02:00');
+			$this->assertSame([true, $leaves], feed_window_probe($root, '2027-03-28 01:55:00+01:00'), 'spring: before the jump the expiry is the leaving moment');
+			$this->assertSame([true, $leaves], feed_window_probe($root, '2027-03-28 03:00:00+02:00'), 'spring: still in the feed at the jump instant');
+			$this->assertSame([true, $leaves], feed_window_probe($root, '2027-03-28 03:29:59+02:00'), 'spring: in the feed one second before the expiry');
+			$this->assertSame([false, null], feed_window_probe($root, '2027-03-28 03:30:00+02:00'), 'spring: gone at the expiry');
+		} finally {
+			KoyomiFixture::remove($root);
+		}
+
+		// Autumn: ends 02:30 CEST on 1 October; 30 days later (31 October) 02:00–03:00 happens twice.
+		// The event leaves at the first 02:30 CEST and must not come back at 02:xx CET.
+		$root = feed_window_single_site('2027-10-01', '02:00:00', '02:30:00');
+		try {
+			$leaves = feed_window_at('2027-10-31 02:30:00+02:00');
+			$this->assertSame([true, $leaves], feed_window_probe($root, '2027-10-31 02:29:59+02:00'), 'autumn: in the feed one second before the expiry');
+			foreach ([
+				'2027-10-31 02:30:00+02:00' => 'at the expiry (first 02:30)',
+				'2027-10-31 02:45:00+02:00' => 'later in the first 02:xx hour',
+				'2027-10-31 02:15:00+01:00' => 'in the repeated hour, before 02:30 CET (the old filter brought it back)',
+				'2027-10-31 02:45:00+01:00' => 'in the repeated hour, after 02:30 CET',
+				'2027-10-31 03:30:00+01:00' => 'after the repeated hour',
+			] as $instant => $when) {
+				$this->assertSame([false, null], feed_window_probe($root, $instant), 'autumn: gone ' . $when);
+			}
+		} finally {
+			KoyomiFixture::remove($root);
+		}
+	}
+
 	public function testSuite(): void
 	{
 		$root = feed_window_site();
