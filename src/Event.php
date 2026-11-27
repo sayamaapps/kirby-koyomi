@@ -137,9 +137,9 @@ class Event
 		$id = Normalize::string($data['id'] ?? '');
 		$zone = Time::zone(Normalize::string($data['timezone'] ?? ''), (string)$defaults['timezone']);
 
-		$startDate = Normalize::string($data['startDate'] ?? '');
+		$startDate = Normalize::date($data['startDate'] ?? '');
 		$startTime = Normalize::string($data['startTime'] ?? '');
-		$endDateRaw = Normalize::string($data['endDate'] ?? '');
+		$endDateRaw = Normalize::date($data['endDate'] ?? '');
 		$endTime = Normalize::string($data['endTime'] ?? '');
 
 		$allDay = Normalize::bool($data['allDay'] ?? false) || Time::wall($startDate, $startTime, $zone) === null || $startTime === '';
@@ -159,7 +159,7 @@ class Event
 
 		$status = Status::normalize($data['status'] ?? '');
 		$previousStart = $status === Status::RESCHEDULED
-			? Time::parse(Normalize::string($data['previousStart'] ?? ''), $zone)
+			? Time::parse(Normalize::date($data['previousStart'] ?? ''), $zone)
 			: null;
 
 		$isFree = Normalize::bool($data['isFree'] ?? false);
@@ -326,7 +326,7 @@ class Event
 			$itemAllDay = Normalize::bool($item['allDay'] ?? false) || Normalize::string($item['startTime'] ?? '') === '';
 			$itemStart = $item['start'] ?? null;
 			if (!$itemStart instanceof DateTimeImmutable) {
-				$itemStart = Time::wall(Normalize::string($item['startDate'] ?? ''), $itemAllDay ? '' : Normalize::string($item['startTime'] ?? ''), $itemZone);
+				$itemStart = Time::wall(Normalize::date($item['startDate'] ?? ''), $itemAllDay ? '' : Normalize::string($item['startTime'] ?? ''), $itemZone);
 			}
 			if ($itemStart === null) {
 				continue;

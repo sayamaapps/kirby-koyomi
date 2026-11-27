@@ -81,6 +81,18 @@ class Normalize
 		return $number >= $min && $number <= $max ? $number : null;
 	}
 
+	/**
+	 * A date as the content stores it, or the Unix time Kirby 6 makes of an
+	 * unquoted date in YAML (`startDate: 2026-11-21` → 1795219200), read in
+	 * UTC, which gives back the written date and time as "Y-m-d H:i:s". Fewer
+	 * than 9 digits (a year, "20261121") are no Unix time.
+	 */
+	public static function date(mixed $value): string
+	{
+		$text = self::string($value);
+		return preg_match('/^\d{9,10}$/', $text) ? gmdate('Y-m-d H:i:s', (int)$text) : $text;
+	}
+
 	/** Plausible email address or "". */
 	public static function email(mixed $value): string
 	{
