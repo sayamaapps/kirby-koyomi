@@ -9,7 +9,7 @@ All notable changes to this project are documented here. Versions follow
 - A change to the names of options, fields, snippets or URLs is breaking and is
   a major version too.
 
-## [Unreleased]
+## [1.7.0] — 2026-11-27
 
 ### Added
 
