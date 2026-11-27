@@ -18,9 +18,11 @@ All notable changes to this project are documented here. Versions follow
 
 ### Fixed
 
-- Dates that Kirby 6 reads as a Unix time (stored unquoted by Kirby 5, for example
-  `startDate: 2026-11-21`) are read as that date again. This applies to `Event::fromArray()`: start, end,
-  previous start and series parts.
+- `Event::fromArray()` reads a date given as a Unix time (start, end, previous
+  start, series parts). This concerns code that passes it dates from YAML, such as
+  a structure field of the site: Kirby 6 reads an unquoted `2026-11-21` there as a
+  number. Koyomi's own event pages store their dates in page fields, which Kirby 6
+  still reads as text.
 
 ## [1.6.1] — 2026-11-03
 
