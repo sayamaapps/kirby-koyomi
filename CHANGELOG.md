@@ -9,6 +9,19 @@ All notable changes to this project are documented here. Versions follow
 - A change to the names of options, fields, snippets or URLs is breaking and is
   a major version too.
 
+## [Unreleased]
+
+### Added
+
+- Kirby 6 is supported next to Kirby 5 (`getkirby/cms` `^5.0 || ^6.0`). Kirby 6 itself
+  needs PHP 8.3 or newer; the plugin still runs on PHP 8.2 with Kirby 5.
+
+### Fixed
+
+- Dates that Kirby 6 reads as a Unix time (stored unquoted by Kirby 5, for example
+  `startDate: 2026-11-21`) are read as that date again. This applies to `Event::fromArray()`: start, end,
+  previous start and series parts.
+
 ## [1.6.1] — 2026-11-03
 
 ### Fixed

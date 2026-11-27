@@ -271,4 +271,34 @@ final class EventTest extends TestCase
 		$this->assertTrue(!str_contains(json_encode($array), 'SECRET'), 'onlineUrl never in toArray');
 		$this->assertTrue(!property_exists($e, 'onlineUrl'), 'Event has no onlineUrl property');
 	}
+
+	/**
+	 * Kirby 6 reads YAML with Symfony: a date a structure field stored unquoted
+	 * (`startDate: 2026-11-21`) arrives as the Unix time 1795219200.
+	 */
+	public function testStructureDatesAsUnixTime(): void
+	{
+		foreach ([1795219200, '1795219200'] as $stored) {
+			$event = Event::fromArray(['id' => 'evt', 'startDate' => $stored, 'endDate' => 1795305600]);
+			$this->assertSame(['2026-11-21', '2026-11-22'], [Time::date($event->start), Time::date($event->lastDay())], 'start and end date');
+		}
+
+		$event = Event::fromArray([
+			'id' => 'evt-2',
+			'startDate' => 1795305600,
+			'startTime' => '18:00',
+			'status' => 'rescheduled',
+			'previousStart' => 1795284000, // 2026-11-21 18:00 unquoted
+			'series' => [['id' => 'evt-1', 'startDate' => 1795219200]],
+		]);
+		$this->assertSame('2026-11-22T18:00:00+01:00', Time::iso($event->start), 'date plus time');
+		$this->assertSame('2026-11-21T18:00:00+01:00', Time::iso($event->previousStart), 'date with time');
+		$this->assertSame(['evt-1', 'evt-2'], array_column($event->series, 'id'), 'series part kept');
+		$this->assertSame('2026-11-21', Time::date($event->series[0]['start']), 'series date');
+
+		// A year or a compact date is no Unix time and stays invalid.
+		foreach ([2026, 20261121] as $junk) {
+			$this->assertSame('', Time::wall(Normalize::date($junk), '', new DateTimeZone('UTC'))?->format('Y-m-d') ?? '', 'not a date: ' . $junk);
+		}
+	}
 }

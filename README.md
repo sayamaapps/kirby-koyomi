@@ -1,6 +1,6 @@
 # Koyomi
 
-Event calendar for [Kirby CMS](https://getkirby.com) 5, with ICS files, feeds and structured data.
+Event calendar for [Kirby CMS](https://getkirby.com) 5 and 6, with ICS files, feeds and structured data.
 
 Koyomi keeps venues and organizers as pages of their own, so an address changes in one place. Status and attendance are event fields, and the event page, calendar files, feeds and JSON-LD all read the same data. The plugin loads nothing from third parties itself; media an editor embeds from another server is the exception, see [Privacy](#privacy).
 
@@ -17,10 +17,10 @@ Koyomi keeps venues and organizers as pages of their own, so an address changes 
 
 | | Supported |
 |---|---|
-| Kirby | 5 (`getkirby/cms` ^5.0) |
+| Kirby | 5 or 6 (`getkirby/cms` ^5.0 \|\| ^6.0); Kirby 6 needs PHP 8.3 or newer |
 | PHP | 8.2 to 8.5, with `mbstring` |
 
-Kirby 5.0 to 5.5 have security advisories, and Composer refuses to install them, so the lowest version the tests can install is 5.6.0. The constraint stays `^5.0`, so sites on those versions are not blocked from updating.
+Kirby 5.0 to 5.5 have security advisories, and Composer refuses to install them, so the lowest version the tests can install is 5.6.0. The constraint still starts at `^5.0`, so sites on those versions are not blocked from updating.
 
 ## Installation
 
